@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class GhostChase : GhostBehavior
 {
+    
+    private void OnEnable()
+    {
+        this.ghost.scatter.Disable();
+    }
+    
     private void OnDisable() // automatically called by unity when disabled
     {
         this.ghost.scatter.Enable();

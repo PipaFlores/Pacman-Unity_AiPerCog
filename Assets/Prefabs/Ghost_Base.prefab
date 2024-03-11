@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6228207105607688215}
   - component: {fileID: 3438757860423626606}
   - component: {fileID: 3290490542251289036}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: White
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21bc00935f1ac504fa8b7b2963b1c196, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 0}
   sprites:
   - {fileID: 21300000, guid: 7031ccde0b7585f4593ec9ccd2626e05, type: 3}
   - {fileID: 21300000, guid: d5e15c75b88558b469ecc97990cce215, type: 3}
@@ -121,7 +122,7 @@ GameObject:
   - component: {fileID: 1082519639284314403}
   - component: {fileID: 3259383534176084201}
   - component: {fileID: 1900563455134990016}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Ghost_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,6 +282,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 8
+  body: {fileID: 3942944822459169073}
+  eyes: {fileID: 2063010825157069958}
+  blue: {fileID: 34471474669379422}
+  white: {fileID: 3438757860423626606}
 --- !u!114 &1900563455134990016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -294,6 +299,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 0
+  inside: {fileID: 0}
+  outside: {fileID: 0}
 --- !u!1 &7101563653935463695
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,7 +312,7 @@ GameObject:
   - component: {fileID: 352947554229275487}
   - component: {fileID: 3942944822459169073}
   - component: {fileID: 5527540378272958794}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -391,6 +398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21bc00935f1ac504fa8b7b2963b1c196, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 0}
   sprites:
   - {fileID: 21300000, guid: afc3b534b8a93544984cf1676ba61ae4, type: 3}
   - {fileID: 21300000, guid: 6f51e42bf59063c4ab7a5608a42bd23d, type: 3}
@@ -407,7 +415,7 @@ GameObject:
   - component: {fileID: 8287778280799656309}
   - component: {fileID: 34471474669379422}
   - component: {fileID: 8181349486723991607}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -493,6 +501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21bc00935f1ac504fa8b7b2963b1c196, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 0}
   sprites:
   - {fileID: 21300000, guid: 7031ccde0b7585f4593ec9ccd2626e05, type: 3}
   - {fileID: 21300000, guid: d5e15c75b88558b469ecc97990cce215, type: 3}
@@ -508,7 +517,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5601808140087431926}
   - component: {fileID: 2063010825157069958}
-  m_Layer: 7
+  - component: {fileID: 7247720561492397076}
+  m_Layer: 9
   m_Name: Eyes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -582,3 +592,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7247720561492397076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8026063744705454047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb10e05c6360baf41a4f978f0c4a12d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  up: {fileID: 21300000, guid: 7391304e6dcdc594484288107bfd217f, type: 3}
+  down: {fileID: 21300000, guid: b97167c35748db84fb4d32f4f242922a, type: 3}
+  right: {fileID: 21300000, guid: 07ddb51374d9f19458dad756bbbcd880, type: 3}
+  left: {fileID: 21300000, guid: d65aa956b7569874fab274083826a77f, type: 3}
