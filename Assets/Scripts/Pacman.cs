@@ -6,8 +6,15 @@ using UnityEngine;
 public class Pacman : MonoBehaviour
 {
     public Movement movement { get; private set; }
+    public AnimatedSprite deathSequence;
+    public SpriteRenderer spriteRenderer;
+    private new Collider2D collider;
+    
+    
     private void Awake(){
         this.movement = GetComponent<Movement>();
+        this.spriteRenderer = GetComponent<SpriteRenderer>();
+        collider = GetComponent<Collider2D>();
     }
     
     private void Update(){
@@ -28,14 +35,23 @@ public class Pacman : MonoBehaviour
         this.transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward); // Sets rot to the angle
     }
 
-    public void Start()
+    public void DeathSequence()
     {
-
+        enabled = false;
+        spriteRenderer.enabled = false;
+        collider.enabled = false;
+        movement.enabled = false;
+        deathSequence.enabled = true;
+        deathSequence.Restart();
     }
     public void ResetState()
     {
-        this.gameObject.SetActive(true);
-        this.movement.ResetState();
+        enabled = true;
+        spriteRenderer.enabled = true;
+        collider.enabled = true;
+        deathSequence.enabled = false;
+        movement.ResetState();
+        gameObject.SetActive(true);
     }
     
 }

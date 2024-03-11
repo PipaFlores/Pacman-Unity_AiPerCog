@@ -36,12 +36,14 @@ public class Ghost : MonoBehaviour
         this.gameObject.SetActive(true);
         this.movement.ResetState();
         
+        //this.home.CancelInvoke(); // Fixing bug: ghosts leaving home before time on Roundreset
         this.frightened.Disable();
         this.chase.Disable();
         this.scatter.Disable();
         
         if (this.home != this.initialBehavior){
             this.home.Disable();
+            //Debug.Log(this.gameObject.name  + ": Home disabled");
         }
         if (this.initialBehavior != null){
             this.initialBehavior.Enable();

@@ -1,12 +1,21 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    
+    public static GameManager Instance { get; private set; } // I dont understand this one and the Awake start
     public Ghost[] ghosts;
     
     public Pacman pacman;
     
     public Transform pellets;
+
+    public Text Gameover;
+    public Text ScoreText;
+    public Text livesText;
+
+    public Text restartKey;
 
     public int ghostMultiplier { get; private set; } = 1;
 
@@ -14,6 +23,17 @@ public class GameManager : MonoBehaviour
     
     public int lives {get ; private set; }
 
+    private void Awake()
+    {
+        if (Instance != null) {
+            DestroyImmediate(gameObject);
+        } else {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
+    
     private void Start()
     {
         NewGame();
@@ -35,6 +55,9 @@ public class GameManager : MonoBehaviour
 
     private void NewRound()
     {
+        
+        Gameover.enabled = false;
+        restartKey.enabled = false;
         foreach (Transform pellet in this.pellets) // reset all pellets
         {
             pellet.gameObject.SetActive(true);
@@ -44,6 +67,7 @@ public class GameManager : MonoBehaviour
             this.ghosts[i].ResetState();
         }
         this.pacman.ResetState(); // reset pacman
+
     }
 
     private void ResetState()  // If pacman dies, resets ghots and pacman but not pellet
@@ -65,16 +89,20 @@ public class GameManager : MonoBehaviour
 
         this.pacman.gameObject.SetActive(false); 
         // Game over screen
+        Gameover.enabled = true;
+        restartKey.enabled = true;
     }
 
     private void SetScore(int score)
     {
         this.score = score;
+        ScoreText.text = score.ToString().PadLeft(2, '0');
     }
 
     private void SetLives(int lives)
     {
         this.lives = lives;
+        livesText.text = "x" + lives.ToString();
     }
 
     public void GhostEaten(Ghost ghost)
@@ -86,7 +114,9 @@ public class GameManager : MonoBehaviour
 
     public void PacmanEaten()
     {
-        this.pacman.gameObject.SetActive(false);
+        
+        this.pacman.DeathSequence();
+
 
         SetLives(this.lives - 1);
 
@@ -113,7 +143,9 @@ public class GameManager : MonoBehaviour
 
     public void PowerPelletEaten (PowerPellet pellet)
     {
-
+        for (int i = 0; i < this.ghosts.Length; i++){
+            this.ghosts[i].frightened.Enable(pellet.duration);
+        }
         PelletEaten(pellet);
         CancelInvoke(); // If you take more than one powerpellet, cancel the first invoke timer and start it again
         Invoke(nameof(ResetGhostMultiplier), pellet.duration);

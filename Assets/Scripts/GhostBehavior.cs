@@ -22,6 +22,7 @@ public abstract class GhostBehavior : MonoBehaviour
     {
         this.enabled = true;
         //Debug.Log(this.ghost.gameObject.name + "--Enabled " + this.GetType().Name + " Behavior");
+        CancelInvoke(); // Fixing bug: ghosts leaving home before time on Roundreset
         Invoke(nameof(Disable), duration);
     }
 

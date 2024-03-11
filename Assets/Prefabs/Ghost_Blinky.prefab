@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ghost_Blinky
       objectReference: {fileID: 0}
+    - target: {fileID: 3438757860423626606, guid: d4a28a5efbb24e647a046463524a6b16, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3902451119310139229, guid: d4a28a5efbb24e647a046463524a6b16, type: 3}
       propertyPath: initialDirection.x
       value: -1
