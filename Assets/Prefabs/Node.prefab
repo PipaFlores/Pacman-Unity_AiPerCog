@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3290321307319654064}
   - component: {fileID: 6889244191047491736}
   - component: {fileID: 62674384357561492}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Node
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,4 +92,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 128
