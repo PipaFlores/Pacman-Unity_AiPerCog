@@ -9,12 +9,16 @@ public class GameDataCollector : MonoBehaviour
     public GameObject[] ghosts; // Assuming you have multiple enemies
     private List<GameDataPoint> dataPointsList = new List<GameDataPoint>();
 
-    void Start()
-    {
-        // Initialize data collection or other startup logic here
-    }
+ 
+    // GameManager calls Startdatacollection at the beginning of each round. Datacollection stops
+    // with the CancelInvoke in SaveData() at GameOver or !HasRemainingPellets
 
-    void CollectGameData()
+    public void Startdatacollection(){
+        InvokeRepeating(nameof(CollectGameData), 1f, 1f); 
+        // Adjust timing as needed// }
+    }
+    
+    private void CollectGameData()
     {
         Vector2 playerPos = player.transform.position;
         Vector2[] ghostsPos = new Vector2[ghosts.Length];
@@ -39,53 +43,63 @@ public class GameDataCollector : MonoBehaviour
         dataPointsList.Add(dataPoint);
     }
 
-    // private System.Collections.IEnumerator SendGameData(string gameDataJson)
-    // {
-    //     string url = "http://yourserver.com/saveGameData.php";
-    //     UnityWebRequest www = UnityWebRequest.Post(url, gameDataJson);
-    //     www.SetRequestHeader("Content-Type", "application/json");
-    //     yield return www.SendWebRequest();
-    
-    //     if (www.result != UnityWebRequest.Result.Success)
-    //     {
-    //         Debug.Log(www.error);
-    //     }
-    //     else
-    //     {
-    //         Debug.Log("Game data uploaded successfully.");
-    //     }
-    // }
-    public void SaveData()
+    private System.Collections.IEnumerator SendGameData(string gameDataJson)
     {
+        string url = "http://localhost/savegamedata.php";
+        UnityWebRequest www = UnityWebRequest.Post(url, gameDataJson, "application/json");
+        yield return www.SendWebRequest();
+    
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log("Game data uploaded successfully.");
+            this.dataPointsList.Clear();
+        }
+    }
+
+        public void SaveData()
+    {
+        CancelInvoke();
         GameDataContainer container = new GameDataContainer { dataPoints = dataPointsList };
         string json = JsonUtility.ToJson(container, true);
-        //var projectFolder = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-        //var path = Path.Combine(projectFolder, @"TestData\data.json");
+        StartCoroutine(SendGameData(json));
+
         // Logic to save json to a file or send it to a server
-        string fileName = @"D:\PacmanUnity\Logs\Datacollection\data.json";
-        string directory = Path.GetDirectoryName(fileName);
-        if (!Directory.Exists(directory)){
-            Directory.CreateDirectory(directory);
-        }
-        System.IO.File.WriteAllText(fileName, json);
-        //@"D:\PacmanUnity\Logs\Datacollection\data.json"
-        // "../Datacollection2/data.json" writes to d:\Datacoll....
-        //"file:../Datacollection2/data.json" gets the local path but adds the "file:.."
+        
     }
+    // public void SaveData()  // Local save data
+    // {
+    //     GameDataContainer container = new GameDataContainer { dataPoints = dataPointsList };
+    //     string json = JsonUtility.ToJson(container, true);
 
-    void OnEnable()
-    {
-        CancelInvoke();
-        InvokeRepeating(nameof(CollectGameData), 1f, 1f); // Adjust timing as needed
-    }
+    //     // Logic to save json to a file or send it to a server
+    //     string fileName = @"D:\PacmanUnity\Logs\Datacollection\data.json";
+    //     string directory = Path.GetDirectoryName(fileName);
+    //     if (!Directory.Exists(directory)){
+    //         Directory.CreateDirectory(directory);
+    //     }
+    //     System.IO.File.WriteAllText(fileName, json);
+    //     //@"D:\PacmanUnity\Logs\Datacollection\data.json"
+    //     // "../Datacollection2/data.json" writes to d:\Datacoll....
+    //     //"file:../Datacollection2/data.json" gets the local path but adds the "file:.."
+    // }
 
-    void OnDisable()
-    {
-        CancelInvoke();
-        SaveData();
-        // Optionally clear the list if planning to reuse this instance
-        dataPointsList.Clear();
-    }
+    // void OnEnable()
+    // {
+    //     CancelInvoke();
+    //     InvokeRepeating(nameof(CollectGameData), 1f, 1f); // Adjust timing as needed
+    // }
+
+    // void OnDisable()
+    // {
+    //     CancelInvoke();
+    //     SaveData();
+    //     // Optionally clear the list if planning to reuse this instance
+    //     dataPointsList.Clear();
+    // }
 
     [System.Serializable]
     public class GameDataPoint
