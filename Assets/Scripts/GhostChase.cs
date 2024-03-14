@@ -35,6 +35,7 @@ public class GhostChase : GhostBehavior
                 //Debug.Log("Estimated new position=" + "(" + newPosition.x + "," + newPosition.y + ")");
                 float distance = (this.ghost.target.position - newPosition).sqrMagnitude; 
                 //Debug.Log("Estimated distance to target=" + distance);
+                // TOIMPROVE: If calculated distances are equal, then choose at random to avoid glitching
                 if (distance < minDistance){
                     chasingdirection = availableDirection;
                     minDistance = distance;

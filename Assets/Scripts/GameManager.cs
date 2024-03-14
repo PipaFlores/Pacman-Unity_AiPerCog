@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-
+// TODO: Implement game identifiers
 public class GameManager : MonoBehaviour
 {
     
@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public Pacman pacman;
     
     public Transform pellets;
+
+    public GameDataCollector gameDatacollector;
 
     public Text Gameover;
     public Text ScoreText;
@@ -51,11 +53,12 @@ public class GameManager : MonoBehaviour
         SetLives(3);
         NewRound();
 
+
     }
 
     private void NewRound()
     {
-        
+        gameDatacollector.Startdatacollection();
         Gameover.enabled = false;
         restartKey.enabled = false;
         foreach (Transform pellet in this.pellets) // reset all pellets
@@ -67,7 +70,6 @@ public class GameManager : MonoBehaviour
             this.ghosts[i].ResetState();
         }
         this.pacman.ResetState(); // reset pacman
-
     }
 
     private void ResetState()  // If pacman dies, resets ghots and pacman but not pellet
@@ -91,6 +93,7 @@ public class GameManager : MonoBehaviour
         // Game over screen
         Gameover.enabled = true;
         restartKey.enabled = true;
+        gameDatacollector.SaveData();
     }
 
     private void SetScore(int score)
@@ -138,6 +141,7 @@ public class GameManager : MonoBehaviour
         if (!HasRemainingPellets()){
             this.pacman.gameObject.SetActive(false);
             Invoke(nameof(NewRound), 3.0f);
+            gameDatacollector.SaveData();
         }
     }
 
