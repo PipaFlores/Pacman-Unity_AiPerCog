@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     
     public Transform pellets;
 
+    public GameDataCollector gameDatacollector;
+
     public Text Gameover;
     public Text ScoreText;
     public Text livesText;
@@ -51,11 +53,12 @@ public class GameManager : MonoBehaviour
         SetLives(3);
         NewRound();
 
+
     }
 
     private void NewRound()
     {
-        
+        gameDatacollector.enabled = true;
         Gameover.enabled = false;
         restartKey.enabled = false;
         foreach (Transform pellet in this.pellets) // reset all pellets
@@ -91,6 +94,7 @@ public class GameManager : MonoBehaviour
         // Game over screen
         Gameover.enabled = true;
         restartKey.enabled = true;
+        gameDatacollector.enabled = false;
     }
 
     private void SetScore(int score)
@@ -138,6 +142,7 @@ public class GameManager : MonoBehaviour
         if (!HasRemainingPellets()){
             this.pacman.gameObject.SetActive(false);
             Invoke(nameof(NewRound), 3.0f);
+            gameDatacollector.enabled = false;
         }
     }
 
