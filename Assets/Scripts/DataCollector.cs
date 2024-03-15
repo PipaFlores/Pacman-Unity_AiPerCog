@@ -2,12 +2,15 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public class GameDataCollector : MonoBehaviour
 {
     public GameObject player;
     public GameObject[] ghosts; // Assuming you have multiple enemies
     private List<GameDataPoint> dataPointsList = new List<GameDataPoint>();
+
+    public string dataType = "json";
 
  
     // GameManager calls Startdatacollection at the beginning of each round. Datacollection stops
@@ -43,32 +46,65 @@ public class GameDataCollector : MonoBehaviour
         dataPointsList.Add(dataPoint);
     }
 
-    private System.Collections.IEnumerator SendGameData(string gameDataJson)
+    private System.Collections.IEnumerator SendGameData(string gameData)
     {
-        string url = "http://localhost/savegamedata.php";
-        UnityWebRequest www = UnityWebRequest.Post(url, gameDataJson, "application/json");
-        yield return www.SendWebRequest();
-    
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-            Debug.Log(www.error);
+        if (dataType == "json"){
+            string url = "http://localhost/savegamedata_json.php";
+            UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
+            yield return www.SendWebRequest();
+        
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Game data uploaded successfully.");
+                this.dataPointsList.Clear();
+            }
         }
-        else
-        {
-            Debug.Log("Game data uploaded successfully.");
-            this.dataPointsList.Clear();
+        else if (dataType == "csv"){
+            string url = "http://localhost/savegamedata_csv.php";
+            // Use a form to send CSV data
+            WWWForm form = new WWWForm();
+            form.AddField("data", gameData);
+
+            UnityWebRequest www = UnityWebRequest.Post(url, form);
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success){
+                Debug.Log(www.error);
+                }
+            else{
+                Debug.Log("Game data uploaded successfully.");
+                this.dataPointsList.Clear();
+                }
         }
+        
     }
 
         public void SaveData()
     {
-        CancelInvoke();
-        GameDataContainer container = new GameDataContainer { dataPoints = dataPointsList };
-        string json = JsonUtility.ToJson(container, true);
-        StartCoroutine(SendGameData(json));
-
-        // Logic to save json to a file or send it to a server
         
+        if (dataType == "json"){
+            CancelInvoke();
+            GameDataContainer container = new GameDataContainer { dataPoints = dataPointsList };
+            string json = JsonUtility.ToJson(container, true);
+            StartCoroutine(SendGameData(json));
+        }
+        else if (dataType == "csv"){
+            CancelInvoke();
+            List<string> csvLines = new List<string>(); // headers initialized in server's php
+            foreach (var dataPoint in dataPointsList){
+                csvLines.Add(dataPoint.ToCsvString()); // Implement ToCsvString in GameDataPoint
+            }
+            
+            string csvString = string.Join("\n", csvLines);
+            StartCoroutine(SendGameData(csvString));
+        }
+        else{
+            Debug.Log("Select a valid data type (json or csv)");
+        }        
     }
     // public void SaveData()  // Local save data
     // {
@@ -109,6 +145,11 @@ public class GameDataCollector : MonoBehaviour
         public int score;
         public int livesRemaining;
         public float timeElapsed;
+        public string ToCsvString()
+        {
+            // Example for formatting; adjust based on your actual fields
+            return $"{playerPosition.x};{playerPosition.y};{string.Join("|", ghostsPositions.Select(gp => gp.ToString()))};{score};{livesRemaining};{timeElapsed}";
+        }
     }
 
     [System.Serializable]
