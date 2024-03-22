@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-
+// TODO: Implement game identifiers
 public class GameManager : MonoBehaviour
 {
     

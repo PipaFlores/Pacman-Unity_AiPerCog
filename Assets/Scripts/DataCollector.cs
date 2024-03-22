@@ -3,12 +3,17 @@ using UnityEngine.Networking;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Collections.Specialized;
 
 public class GameDataCollector : MonoBehaviour
 {
     public GameObject player;
     public GameObject[] ghosts; // Assuming you have multiple enemies
     private List<GameDataPoint> dataPointsList = new List<GameDataPoint>();
+
+    public string dataserver = "http://localhost/"; // path to the server (e.g., http://localhost/)
+
+    public string source = "local"; // or wherever the game is deployed (e.g., itch.io or ngrok)
 
     public string dataType = "json";
 
@@ -37,6 +42,7 @@ public class GameDataCollector : MonoBehaviour
 
         GameDataPoint dataPoint = new GameDataPoint
         {
+            client_source = this.source,
             playerPosition = playerPos,
             ghostsPositions = ghostsPos,
             score = currentScore,
@@ -49,7 +55,7 @@ public class GameDataCollector : MonoBehaviour
     private System.Collections.IEnumerator SendGameData(string gameData)
     {
         if (dataType == "json"){
-            string url = "http://localhost/savegamedata_json.php";
+            string url = dataserver + "savegamedata_json.php";
             UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
             yield return www.SendWebRequest();
         
@@ -64,7 +70,7 @@ public class GameDataCollector : MonoBehaviour
             }
         }
         else if (dataType == "csv"){
-            string url = "http://localhost/savegamedata_csv.php";
+            string url = dataserver + "savegamedata_csv.php";
             // Use a form to send CSV data
             WWWForm form = new WWWForm();
             form.AddField("data", gameData);
@@ -140,6 +146,7 @@ public class GameDataCollector : MonoBehaviour
     [System.Serializable]
     public class GameDataPoint
     {
+        public string client_source;
         public Vector2 playerPosition;
         public Vector2[] ghostsPositions;
         public int score;
@@ -148,7 +155,7 @@ public class GameDataCollector : MonoBehaviour
         public string ToCsvString()
         {
             // Example for formatting; adjust based on your actual fields
-            return $"{playerPosition.x};{playerPosition.y};{string.Join("|", ghostsPositions.Select(gp => gp.ToString()))};{score};{livesRemaining};{timeElapsed}";
+            return $"{client_source};{playerPosition.x};{playerPosition.y};{string.Join(";", ghostsPositions.Select(gp => gp.ToString()))};{score};{livesRemaining};{timeElapsed}";
         }
     }
 
