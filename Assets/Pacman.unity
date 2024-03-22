@@ -317,6 +317,9 @@ MonoBehaviour:
   - {fileID: 783243204}
   - {fileID: 1094763555}
   - {fileID: 1876575716}
+  dataserver: https://tapir-immune-chimp.ngrok-free.app/
+  source: itchio
+  dataType: csv
 --- !u!1 &272184283 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8402464097634651527, guid: d253ae640534bed42a483b36d6c91910, type: 3}
