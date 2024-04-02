@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
+using TMPro;
 
 public class Login : MonoBehaviour
 {
@@ -14,7 +15,9 @@ public class Login : MonoBehaviour
     public InputField passwordInput;
     public Button loginButton;
     public Button goToRegisterButton;
-    public string loginUrl = "https://tapir-immune-chimp.ngrok-free.app/";
+    public string serverUrl = "https://tapir-immune-chimp.ngrok-free.app/";
+
+    public TMP_Text errorMsg;
     ArrayList credentials;
 
     // Start is called before the first frame update
@@ -22,6 +25,7 @@ public class Login : MonoBehaviour
     {
         loginButton.onClick.AddListener(() => StartCoroutine(LoginUser()));
         goToRegisterButton.onClick.AddListener(moveToRegister);
+        errorMsg.text = "";
 
     }
 
@@ -31,7 +35,7 @@ public class Login : MonoBehaviour
         form.AddField("username", usernameInput.text);
         form.AddField("password", passwordInput.text);
 
-        using (UnityWebRequest www = UnityWebRequest.Post(loginUrl + "login.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(serverUrl + "login.php", form))
         {
             yield return www.SendWebRequest();
 
@@ -42,16 +46,26 @@ public class Login : MonoBehaviour
             else if (www.downloadHandler.text == "Login successful"){
                 // Process the response
                 Debug.Log(www.downloadHandler.text);
+                PlayerPrefs.SetString("username", usernameInput.text);
                 loadWelcomeScreen();
             }
             else if (www.downloadHandler.text == "Invalid password"){
                 Debug.Log(www.downloadHandler.text);
+                errorMsg.text = www.downloadHandler.text;
+                yield return new WaitForSeconds(2);
+                errorMsg.text = "";
             }
             else if (www.downloadHandler.text == "Username does not exist"){
                 Debug.Log(www.downloadHandler.text);
+                errorMsg.text = www.downloadHandler.text;
+                yield return new WaitForSeconds(2);
+                errorMsg.text = "";
             }
             else if (www.downloadHandler.text == "Error opening the file."){
                 Debug.Log(www.downloadHandler.text);
+                errorMsg.text = www.downloadHandler.text;
+                yield return new WaitForSeconds(2);
+                errorMsg.text = "";
             }
 
            

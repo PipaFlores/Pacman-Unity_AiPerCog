@@ -10,3 +10,10 @@
 Build/*
 credentials.txt
 /Assets/TextMesh Pro
+/Assets/Fonts
+/Assets/Physics
+/Assets/Resources
+/Assets/Sprites
+/Assets/Tiles
+/old_git
+.gitignore

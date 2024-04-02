@@ -13,23 +13,21 @@ public class Register : MonoBehaviour
 
     public InputField usernameInput;
     public InputField passwordInput;
+    public InputField emailinput;
     public Button registerButton;
     public Button goToLoginButton;
-
-    public GameObject successtext;
-    public GameObject failuretext;
-    public GameObject alreadyexiststext;
+    public TMP_Text confirmationText;
     public string registerUrl = "https://tapir-immune-chimp.ngrok-free.app/";
     ArrayList credentials;
 
     // Start is called before the first frame update
     void Start()
     {
+        //confirmationText = GetComponent<TextMeshProUGUI>();
         registerButton.onClick.AddListener(() => StartCoroutine(RegisterUser()));
         goToLoginButton.onClick.AddListener(goToLoginScene);
-        failuretext.SetActive(false);
-        successtext.SetActive(false);
-        alreadyexiststext.SetActive(false);
+        confirmationText.text = "";
+        
     }
 
     void goToLoginScene()
@@ -43,6 +41,7 @@ IEnumerator RegisterUser()
         WWWForm form = new WWWForm();
         form.AddField("username", usernameInput.text);
         form.AddField("password", passwordInput.text);
+        form.AddField("email", emailinput.text);
 
         using (UnityWebRequest www = UnityWebRequest.Post(registerUrl + "register.php", form))
         {
@@ -51,9 +50,9 @@ IEnumerator RegisterUser()
             if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(www.error);
-                failuretext.SetActive(true);
+                confirmationText.text = "Failed to connect to login server";
                 yield return new WaitForSeconds(2);
-                failuretext.SetActive(false);
+                confirmationText.text = " ";
                 
             }
             else
@@ -63,14 +62,16 @@ IEnumerator RegisterUser()
             {
                 // Trigger a special message
                 Debug.Log("Username already exists. Please choose a different username.");
-                alreadyexiststext.SetActive(true);
+                confirmationText.text = www.downloadHandler.text;
                 yield return new WaitForSeconds(2);
-                alreadyexiststext.SetActive(false);
+                confirmationText.text = "";
             }
             else
             {
                 Debug.Log("User registered successfully.");
-                successtext.SetActive(true);
+                confirmationText.text = "User registered successfully, go to log in screen";
+                yield return new WaitForSeconds(2);
+                confirmationText.text = "";
             }
         }
         }
