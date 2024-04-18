@@ -35,39 +35,30 @@ public class Login : MonoBehaviour
         form.AddField("username", usernameInput.text);
         form.AddField("password", passwordInput.text);
 
-        using (UnityWebRequest www = UnityWebRequest.Post(serverUrl + "login.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(serverUrl + "SQL/login.php", form))
         {
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(www.error);
+                errorMsg.text = www.error + www.downloadHandler.text;
+            } else {
+                Debug.Log("Response: " + www.downloadHandler.text);
+                var response = JsonUtility.FromJson<Response>(www.downloadHandler.text);
+                if (response.success == true)
+                {
+                    PlayerPrefs.SetString("username", usernameInput.text);
+                    PlayerPrefs.SetInt("user_id", response.user_id);
+                    loadWelcomeScreen();
+                }
+                else
+                {
+                    errorMsg.text = response.message;
+                    yield return new WaitForSeconds(2);
+                    errorMsg.text = "";
+                }
             }
-            else if (www.downloadHandler.text == "Login successful"){
-                // Process the response
-                Debug.Log(www.downloadHandler.text);
-                PlayerPrefs.SetString("username", usernameInput.text);
-                loadWelcomeScreen();
-            }
-            else if (www.downloadHandler.text == "Invalid password"){
-                Debug.Log(www.downloadHandler.text);
-                errorMsg.text = www.downloadHandler.text;
-                yield return new WaitForSeconds(2);
-                errorMsg.text = "";
-            }
-            else if (www.downloadHandler.text == "Username does not exist"){
-                Debug.Log(www.downloadHandler.text);
-                errorMsg.text = www.downloadHandler.text;
-                yield return new WaitForSeconds(2);
-                errorMsg.text = "";
-            }
-            else if (www.downloadHandler.text == "Error opening the file."){
-                Debug.Log(www.downloadHandler.text);
-                errorMsg.text = www.downloadHandler.text;
-                yield return new WaitForSeconds(2);
-                errorMsg.text = "";
-            }
-
            
         }
     }

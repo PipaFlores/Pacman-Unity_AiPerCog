@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Specialized;
 
-public class GameDataCollector : MonoBehaviour
+public class DataCollector : MonoBehaviour
 {
     public GameObject player;
     public GameObject[] ghosts; // Assuming you have multiple enemies
@@ -17,13 +17,16 @@ public class GameDataCollector : MonoBehaviour
 
     public string dataType = "json";
 
+    private string username; // FIXME
+
  
     // GameManager calls Startdatacollection at the beginning of each round. Datacollection stops
     // with the CancelInvoke in SaveData() at GameOver or !HasRemainingPellets
 
     public void Startdatacollection(){
         InvokeRepeating(nameof(CollectGameData), 1f, 1f); 
-        // Adjust timing as needed// }
+        // Adjust timing as needed
+        // Consider getting the session_id, username, or other one-time info here.
     }
     
     private void CollectGameData()
@@ -146,7 +149,7 @@ public class GameDataCollector : MonoBehaviour
     [System.Serializable]
     public class GameDataPoint
     {
-        public string client_source;
+        public string client_source;  // TODO: Gather this at the beginning of the game or the end of the login process
         public Vector2 playerPosition;
         public Vector2[] ghostsPositions;
         public int score;

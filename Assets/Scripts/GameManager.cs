@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     
     public Transform pellets;
 
-    public GameDataCollector gameDatacollector;
+    public DataCollector gameDatacollector;
 
     public Text Gameover;
     public Text ScoreText;
