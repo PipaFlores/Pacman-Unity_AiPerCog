@@ -43,7 +43,7 @@ IEnumerator RegisterUser()
         form.AddField("password", passwordInput.text);
         form.AddField("email", emailinput.text);
 
-        using (UnityWebRequest www = UnityWebRequest.Post(registerUrl + "register.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(registerUrl + "SQL/register.php", form))
         {
             yield return www.SendWebRequest();
 
@@ -68,7 +68,7 @@ IEnumerator RegisterUser()
             }
             else
             {
-                Debug.Log("User registered successfully.");
+                Debug.Log(www.downloadHandler.text);
                 confirmationText.text = "User registered successfully, go to log in screen";
                 yield return new WaitForSeconds(2);
                 confirmationText.text = "";
