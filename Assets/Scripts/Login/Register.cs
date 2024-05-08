@@ -50,7 +50,7 @@ IEnumerator RegisterUser()
             if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(www.error);
-                confirmationText.text = "Failed to connect to login server";
+                confirmationText.text = "Failed to connect to server";
                 yield return new WaitForSeconds(2);
                 confirmationText.text = " ";
                 
