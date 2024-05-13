@@ -17,7 +17,7 @@ public class Register : MonoBehaviour
     public Button registerButton;
     public Button goToLoginButton;
     public TMP_Text confirmationText;
-    public string registerUrl = "https://tapir-immune-chimp.ngrok-free.app/";
+    public string registerUrl = "https://aipercog-24.it.helsinki.fi/";
     ArrayList credentials;
 
     // Start is called before the first frame update

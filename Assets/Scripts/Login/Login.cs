@@ -15,7 +15,7 @@ public class Login : MonoBehaviour
     public InputField passwordInput;
     public Button loginButton;
     public Button goToRegisterButton;
-    public string serverUrl = "https://tapir-immune-chimp.ngrok-free.app/";
+    public string serverUrl = "https://aipercog-24.it.helsinki.fi/";
 
     public TMP_Text errorMsg;
     ArrayList credentials;
@@ -48,8 +48,11 @@ public class Login : MonoBehaviour
                 var response = JsonUtility.FromJson<Response>(www.downloadHandler.text);
                 if (response.success == true)
                 {
-                    PlayerPrefs.SetString("username", usernameInput.text);
-                    PlayerPrefs.SetInt("user_id", response.user_id);
+                    MainManager.Instance.username = usernameInput.text;
+                    MainManager.Instance.user_id = response.user_id;
+                    // PlayerPrefs.SetString("username", usernameInput.text);
+                    // PlayerPrefs.SetInt("user_id", response.user_id);
+                    // PlayerPrefs can help store data locally on the device, but it is neither safe nor scalable
                     loadWelcomeScreen();
                 }
                 else
@@ -70,6 +73,6 @@ public class Login : MonoBehaviour
 
     void loadWelcomeScreen()
     {
-        SceneManager.LoadScene("Pacman");
+        SceneManager.LoadScene("Welcome Screen");
     }
 }
