@@ -17,7 +17,7 @@ public class Register : MonoBehaviour
     public Button registerButton;
     public Button goToLoginButton;
     public TMP_Text confirmationText;
-    public string registerUrl = "https://aipercog-24.it.helsinki.fi/";
+    private string registerUrl;
     ArrayList credentials;
 
     // Start is called before the first frame update
@@ -27,6 +27,7 @@ public class Register : MonoBehaviour
         registerButton.onClick.AddListener(() => StartCoroutine(RegisterUser()));
         goToLoginButton.onClick.AddListener(goToLoginScene);
         confirmationText.text = "";
+        registerUrl = MainManager.Instance.dataserver;
         
     }
 

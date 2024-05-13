@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     
     public int lives {get ; private set; }
 
+
     private void Awake()
     {
         if (Instance != null) {
@@ -44,7 +45,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         if (this.lives <= 0 && Input.anyKeyDown){
-            NewGame();
+            Invoke(nameof(NewGame), 2.0f); // Start a new round after 1 second, buffer time for saving data
         }
     }
     private void NewGame()
@@ -53,11 +54,11 @@ public class GameManager : MonoBehaviour
         SetLives(3);
         NewRound();
 
-
     }
 
     private void NewRound()
     {
+        MainManager.Instance.games_in_session++; // Increase the count of games in a session
         gameDatacollector.Startdatacollection();
         Gameover.enabled = false;
         restartKey.enabled = false;
@@ -141,7 +142,7 @@ public class GameManager : MonoBehaviour
         if (!HasRemainingPellets()){
             this.pacman.gameObject.SetActive(false);
             Invoke(nameof(NewRound), 3.0f);
-            gameDatacollector.SaveData();
+            gameDatacollector.SaveData(); // TODO: change this to a game win screen
         }
     }
 
@@ -152,9 +153,7 @@ public class GameManager : MonoBehaviour
         }
         PelletEaten(pellet);
         CancelInvoke(); // If you take more than one powerpellet, cancel the first invoke timer and start it again
-        Invoke(nameof(ResetGhostMultiplier), pellet.duration);
-        // TODO : changing ghost state
-        
+        Invoke(nameof(ResetGhostMultiplier), pellet.duration);        
     }
 
     private bool HasRemainingPellets()

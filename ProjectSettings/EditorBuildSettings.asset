@@ -11,9 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Register.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 0
-    path: Assets/Scenes/WelcomeScreen.unity
-    guid: d07a0860b7347584396156358d01b0b7
+  - enabled: 1
+    path: Assets/Scenes/Welcome Screen.unity
+    guid: 5a42e9da1e64ac641b783d2505b6d794
   - enabled: 1
     path: Assets/Pacman.unity
     guid: 97e306af66634194db0b31e6315d4261
