@@ -18,7 +18,7 @@ public class Login : MonoBehaviour
     private string serverUrl;
 
     public TMP_Text errorMsg;
-    ArrayList credentials;
+
 
     // Start is called before the first frame update
     void Start()

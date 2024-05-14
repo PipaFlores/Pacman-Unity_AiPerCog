@@ -20,9 +20,9 @@ public class GhostFrightened : GhostBehavior
         this.body.enabled = false;
         this.eyes.enabled = false;
         this.blue.enabled = true;
-        this.white.enabled = true;
+        this.white.enabled = false;
 
-        Invoke(nameof(Flash), duration /2.0f);
+        Invoke(nameof(Flash), duration/2.0f);
     }
 
     private void OnEnable()
