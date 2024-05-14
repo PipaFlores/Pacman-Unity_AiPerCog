@@ -40,9 +40,11 @@ public class DataCollector : MonoBehaviour
     {
         Vector2 playerPos = player.transform.position;
         Vector2[] ghostsPos = new Vector2[ghosts.Length];
+        int[] ghostsState = new int[ghosts.Length];
         for (int i = 0; i < ghosts.Length; i++)
         {
             ghostsPos[i] = ghosts[i].transform.position;
+            ghostsState[i] = GetGhostState(ghosts[i]);
         }
 
         // Assume you have a way to access the current score and lives (e.g., through a GameManager)
@@ -54,6 +56,7 @@ public class DataCollector : MonoBehaviour
         {
             playerPosition = playerPos,
             ghostsPositions = ghostsPos,
+            ghostStates = ghostsState,
             score = currentScore,
             livesRemaining = lives,
             timeElapsed = time
@@ -63,7 +66,6 @@ public class DataCollector : MonoBehaviour
 
     private System.Collections.IEnumerator SendGameData(string gameData)
     {
-        if (dataType == "json"){
         string url = dataserver + "savegamedata_json.php";
         UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
         yield return www.SendWebRequest();
@@ -117,6 +119,25 @@ public class DataCollector : MonoBehaviour
         // "../Datacollection2/data.json" writes to d:\Datacoll....
         //"file:../Datacollection2/data.json" gets the local path but adds the "file:.."
     }
+
+    private int GetGhostState(GameObject ghost){
+        if (ghost.GetComponent<GhostHome>().enabled){
+            return 0;
+        }
+        else if (ghost.GetComponent<GhostScatter>().enabled){
+            return 1;
+        }
+        else if (ghost.GetComponent<GhostChase>().enabled){
+            return 2;
+        }
+        else if(ghost.GetComponent<GhostFrightened>().enabled){
+            return 3;
+        }
+        else{
+            return -1;
+        }
+    }
+
 
     // ------------------------------------------
     // MOVED GAMEDATAPOINT AND GAMEDATACONTAINER TO GameDataPoint.cs
