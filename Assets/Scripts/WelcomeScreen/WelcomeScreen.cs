@@ -18,7 +18,7 @@ public class WelcomeScreen : MonoBehaviour
     public TMP_Text errorMsg;
 
     public TMP_Text username;
-    public TMP_Text session_number;
+    //public TMP_Text session_number;
     public TMP_Text game_number;
     ArrayList credentials;
 
@@ -30,7 +30,7 @@ public class WelcomeScreen : MonoBehaviour
         goToSurveyButton.onClick.AddListener(moveToSurvey);
         errorMsg.text = "";
         username.text = "Username: " + MainManager.Instance.username;
-        session_number.text = "Session number: " + MainManager.Instance.session_number.ToString();
+        //session_number.text = "Session number: " + MainManager.Instance.session_number.ToString();
         game_number.text = "Games played: "+ MainManager.Instance.game_number.ToString();
 
     }
