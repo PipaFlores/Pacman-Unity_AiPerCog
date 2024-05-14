@@ -15,7 +15,7 @@ public class Login : MonoBehaviour
     public InputField passwordInput;
     public Button loginButton;
     public Button goToRegisterButton;
-    public string serverUrl = "https://aipercog-24.it.helsinki.fi/";
+    private string serverUrl;
 
     public TMP_Text errorMsg;
     ArrayList credentials;
@@ -26,6 +26,7 @@ public class Login : MonoBehaviour
         loginButton.onClick.AddListener(() => StartCoroutine(LoginUser()));
         goToRegisterButton.onClick.AddListener(moveToRegister);
         errorMsg.text = "";
+        serverUrl = MainManager.Instance.dataserver;
 
     }
 
