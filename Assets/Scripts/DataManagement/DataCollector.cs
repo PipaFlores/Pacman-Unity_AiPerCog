@@ -18,15 +18,19 @@ public class DataCollector : MonoBehaviour
 
     private int user_id; // FIXME
 
+    // Variables to store the game duration
+    private double game_duration;
+    private System.DateTime game_startTime;
+    private System.DateTime game_endTime;
  
     public void Awake(){
-        // Get the user_id from the MainManager
-        user_id = MainManager.Instance.user_id;
+        // Get the dataserver url from the MainManager
         dataserver = MainManager.Instance.dataserver;
     }
 
     public void Startdatacollection(){
-        InvokeRepeating(nameof(CollectGameData), 1f, 1f); 
+        InvokeRepeating(nameof(CollectGameData), 1f, 1f);
+        game_startTime = System.DateTime.UtcNow;
         // Adjust timing as needed
         // Consider getting the session_id, username, or other one-time info here.
     }
@@ -43,7 +47,7 @@ public class DataCollector : MonoBehaviour
         // Assume you have a way to access the current score and lives (e.g., through a GameManager)
         int currentScore = GameManager.Instance.score;
         int lives = GameManager.Instance.lives;
-        float time = Time.timeSinceLevelLoad;
+        float time = Time.timeSinceLevelLoad; // FIX THIS
 
         GameDataPoint dataPoint = new GameDataPoint
         {
@@ -59,19 +63,19 @@ public class DataCollector : MonoBehaviour
     private System.Collections.IEnumerator SendGameData(string gameData)
     {
         if (dataType == "json"){
-            string url = dataserver + "savegamedata_json.php";
-            UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
-            yield return www.SendWebRequest();
-        
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                Debug.Log("Game data uploaded successfully.");
-                this.dataPointsList.Clear();
-            }
+        string url = dataserver + "savegamedata_json.php";
+        UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
+        yield return www.SendWebRequest();
+    
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log("Game data uploaded successfully.");
+            this.dataPointsList.Clear();
+        }
         }
         else if (dataType == "csv"){
             string url = dataserver + "savegamedata_csv.php";
@@ -93,13 +97,24 @@ public class DataCollector : MonoBehaviour
         
     }
 
-        public void SaveData()
+    public void SaveData()
     {
+        game_endTime = System.DateTime.UtcNow;
+        game_duration = (game_endTime - game_startTime).TotalSeconds;
         
         if (dataType == "json"){
-            CancelInvoke();
-            GameDataContainer container = new GameDataContainer { dataPoints = dataPointsList };
-            string json = JsonUtility.ToJson(container, true);
+        CancelInvoke();
+        GameDataContainer container = new GameDataContainer 
+        { 
+            dataPoints = dataPointsList,
+            start_time = game_startTime.ToString("yyyy-MM-dd HH:mm:ss"),
+            game_duration = game_duration,
+            session_number = MainManager.Instance.session_number,
+            game_in_session = MainManager.Instance.games_in_session,
+            user_id = MainManager.Instance.user_id,
+            source = MainManager.Instance.source            
+        };
+        string json = JsonUtility.ToJson(container, true);
             StartCoroutine(SendGameData(json));
         }
         else if (dataType == "csv"){
