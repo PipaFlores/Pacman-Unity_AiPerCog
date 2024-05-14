@@ -5,23 +5,25 @@ using System.IO;
 using System.Linq;
 using System.Collections.Specialized;
 
+// GameManager calls Startdatacollection at the beginning of each round. Datacollection stops
+// with the CancelInvoke in SaveData() at GameOver or !HasRemainingPellets
 public class DataCollector : MonoBehaviour
 {
     public GameObject player;
     public GameObject[] ghosts; // Assuming you have multiple enemies
     private List<GameDataPoint> dataPointsList = new List<GameDataPoint>();
 
-    public string dataserver = "http://localhost/"; // path to the server (e.g., http://localhost/)
-
-    public string source = "local"; // or wherever the game is deployed (e.g., itch.io or ngrok)
-
+    private string dataserver;
     public string dataType = "json";
 
-    private string username; // FIXME
+    private int user_id; // FIXME
 
  
-    // GameManager calls Startdatacollection at the beginning of each round. Datacollection stops
-    // with the CancelInvoke in SaveData() at GameOver or !HasRemainingPellets
+    public void Awake(){
+        // Get the user_id from the MainManager
+        user_id = MainManager.Instance.user_id;
+        dataserver = MainManager.Instance.dataserver;
+    }
 
     public void Startdatacollection(){
         InvokeRepeating(nameof(CollectGameData), 1f, 1f); 
@@ -45,7 +47,6 @@ public class DataCollector : MonoBehaviour
 
         GameDataPoint dataPoint = new GameDataPoint
         {
-            client_source = this.source,
             playerPosition = playerPos,
             ghostsPositions = ghostsPos,
             score = currentScore,
@@ -115,56 +116,45 @@ public class DataCollector : MonoBehaviour
             Debug.Log("Select a valid data type (json or csv)");
         }        
     }
-    // public void SaveData()  // Local save data
-    // {
-    //     GameDataContainer container = new GameDataContainer { dataPoints = dataPointsList };
-    //     string json = JsonUtility.ToJson(container, true);
-
-    //     // Logic to save json to a file or send it to a server
-    //     string fileName = @"D:\PacmanUnity\Logs\Datacollection\data.json";
-    //     string directory = Path.GetDirectoryName(fileName);
-    //     if (!Directory.Exists(directory)){
-    //         Directory.CreateDirectory(directory);
-    //     }
-    //     System.IO.File.WriteAllText(fileName, json);
-    //     //@"D:\PacmanUnity\Logs\Datacollection\data.json"
-    //     // "../Datacollection2/data.json" writes to d:\Datacoll....
-    //     //"file:../Datacollection2/data.json" gets the local path but adds the "file:.."
-    // }
-
-    // void OnEnable()
-    // {
-    //     CancelInvoke();
-    //     InvokeRepeating(nameof(CollectGameData), 1f, 1f); // Adjust timing as needed
-    // }
-
-    // void OnDisable()
-    // {
-    //     CancelInvoke();
-    //     SaveData();
-    //     // Optionally clear the list if planning to reuse this instance
-    //     dataPointsList.Clear();
-    // }
-
-    [System.Serializable]
-    public class GameDataPoint
+    public void LocalSaveData()  // Local save data
     {
-        public string client_source;  // TODO: Gather this at the beginning of the game or the end of the login process
-        public Vector2 playerPosition;
-        public Vector2[] ghostsPositions;
-        public int score;
-        public int livesRemaining;
-        public float timeElapsed;
-        public string ToCsvString()
-        {
-            // Example for formatting; adjust based on your actual fields
-            return $"{client_source};{playerPosition.x};{playerPosition.y};{string.Join(";", ghostsPositions.Select(gp => gp.ToString()))};{score};{livesRemaining};{timeElapsed}";
+        GameDataContainer container = new GameDataContainer { dataPoints = dataPointsList };
+        string json = JsonUtility.ToJson(container, true);
+
+        // Logic to save json to a file or send it to a server
+        string fileName = @"C:\LocalData\pabflore\Unity_Projects\unity_pacman\Logs\gamedata.json";
+        string directory = Path.GetDirectoryName(fileName);
+        if (!Directory.Exists(directory)){
+            Directory.CreateDirectory(directory);
         }
+        System.IO.File.WriteAllText(fileName, json);
+        //@"D:\PacmanUnity\Logs\Datacollection\data.json"
+        // "../Datacollection2/data.json" writes to d:\Datacoll....
+        //"file:../Datacollection2/data.json" gets the local path but adds the "file:.."
     }
 
-    [System.Serializable]
-    public class GameDataContainer
-    {
-        public List<GameDataPoint> dataPoints;
-    }
+    // ------------------------------------------
+    // MOVED GAMEDATAPOINT AND GAMEDATACONTAINER TO GameDataPoint.cs
+    // ------------------------------------------
+    // [System.Serializable]
+    // public class GameDataPoint
+    // {
+    //     public string client_source;  // TODO: Gather this at the beginning of the game or the end of the login process
+    //     public Vector2 playerPosition;
+    //     public Vector2[] ghostsPositions;
+    //     public int score;
+    //     public int livesRemaining;
+    //     public float timeElapsed;
+    //     public string ToCsvString()
+    //     {
+    //         // Example for formatting; adjust based on your actual fields
+    //         return $"{client_source};{playerPosition.x};{playerPosition.y};{string.Join(";", ghostsPositions.Select(gp => gp.ToString()))};{score};{livesRemaining};{timeElapsed}";
+    //     }
+    // }
+
+    // [System.Serializable]
+    // public class GameDataContainer
+    // {
+    //     public List<GameDataPoint> dataPoints;
+    // }
 }
