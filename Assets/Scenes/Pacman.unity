@@ -10429,9 +10429,9 @@ MonoBehaviour:
   - {fileID: 1711457213}
   - {fileID: 761981510}
   - {fileID: 483348042}
-  dataserver: https://tapir-immune-chimp.ngrok-free.app/
-  source: local
-  dataType: csv
+  localSave: 1
+  serverSave: 1
+  localPath: C:\LocalData\pabflore\Unity_Projects\unity_pacman\Logs\gamedata.json
 --- !u!4 &2011925314
 Transform:
   m_ObjectHideFlags: 0
