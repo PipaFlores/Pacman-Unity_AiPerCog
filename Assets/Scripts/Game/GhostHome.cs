@@ -14,6 +14,9 @@ public class GhostHome : GhostBehavior
     void OnDisable(){
         if (this.gameObject.activeSelf){
             StartCoroutine(ExitTransition());
+            if (this.ghost.eaten){
+                this.ghost.eaten = false;
+            }
             this.ghost.scatter.Enable();
         }
         

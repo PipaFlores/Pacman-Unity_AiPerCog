@@ -9,6 +9,7 @@ public class Pacman : MonoBehaviour
     public AnimatedSprite deathSequence;
     public SpriteRenderer spriteRenderer;
     private new Collider2D collider;
+    public bool pacmanAttack = false;
     
     
     private void Awake(){

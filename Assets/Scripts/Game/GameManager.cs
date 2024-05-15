@@ -22,6 +22,10 @@ public class GameManager : MonoBehaviour
     public int ghostMultiplier { get; private set; } = 1;
 
     public int score {get ; private set; }
+
+    public int remainingPellets {get ; private set; }
+
+    public int remainingPills {get ; private set; }
     
     public int lives {get ; private set; }
 
@@ -52,6 +56,8 @@ public class GameManager : MonoBehaviour
     {
         SetScore(0);
         SetLives(3);
+        remainingPellets = CountRemainingPellets();
+        remainingPills = CountRemainingPowerPellets();
         NewRound();
 
     }
@@ -138,8 +144,9 @@ public class GameManager : MonoBehaviour
     {
         pellet.gameObject.SetActive(false);
         SetScore (this.score + pellet.points);
-
-        if (!HasRemainingPellets()){
+        remainingPellets = CountRemainingPellets();
+        remainingPills = CountRemainingPowerPellets();
+        if (remainingPellets == 0){
             this.pacman.gameObject.SetActive(false);
             Invoke(nameof(NewRound), 3.0f);
             gameDatacollector.SaveData(); // TODO: change this to a game win screen
@@ -151,19 +158,46 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < this.ghosts.Length; i++){
             this.ghosts[i].frightened.Enable(pellet.duration);
         }
+
         PelletEaten(pellet);
         CancelInvoke(); // If you take more than one powerpellet, cancel the first invoke timer and start it again
+        PacmanAttack();
+        Invoke(nameof(PacmanAttackEnd), pellet.duration);
         Invoke(nameof(ResetGhostMultiplier), pellet.duration);        
     }
 
-    private bool HasRemainingPellets()
+    // change pacman state to attack for the duration of the power pellet
+    public void PacmanAttack(){
+        pacman.pacmanAttack = true;
+    }
+    public void PacmanAttackEnd(){
+        this.pacman.pacmanAttack = false;
+    }
+
+    private int CountRemainingPellets()
     {
-        foreach (Transform pellet in this.pellets){
-            if (pellet.gameObject.activeSelf){
-                return true;
+        int count = 0;
+        foreach (Transform pellet in this.pellets)
+        {
+            if (pellet.gameObject.activeSelf && pellet.GetComponent<Pellet>() != null)
+            {
+                count++;
             }
         }
-        return false;
+        return count;
+    }
+
+    private int CountRemainingPowerPellets()
+    {
+        int count = 0;
+        foreach (Transform pellet in this.pellets)
+        {
+            if (pellet.gameObject.activeSelf && pellet.GetComponent<PowerPellet>() != null)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     private void ResetGhostMultiplier()
