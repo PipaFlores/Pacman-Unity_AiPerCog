@@ -10477,8 +10477,8 @@ MonoBehaviour:
   player: {fileID: 6038318315617372470}
   ghosts:
   - {fileID: 310465431}
-  - {fileID: 1711457213}
   - {fileID: 761981510}
+  - {fileID: 1711457213}
   - {fileID: 483348042}
   localSave: 1
   serverSave: 1

@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
     public int remainingPills {get ; private set; }
     
     public int lives {get ; private set; }
+    public float round_timeElapsed {get ; private set; }
+    public float round_startTime {get ; private set; }
 
 
     private void Awake()
@@ -51,6 +53,7 @@ public class GameManager : MonoBehaviour
         if (this.lives <= 0 && Input.anyKeyDown){
             Invoke(nameof(NewGame), 2.0f); // Start a new round after 1 second, buffer time for saving data
         }
+        round_timeElapsed = Time.time - round_startTime;
     }
     private void NewGame()
     {
@@ -65,6 +68,7 @@ public class GameManager : MonoBehaviour
     private void NewRound()
     {
         MainManager.Instance.games_in_session++; // Increase the count of games in a session
+        StartTimer();
         gameDatacollector.Startdatacollection();
         Gameover.enabled = false;
         restartKey.enabled = false;
@@ -204,5 +208,10 @@ public class GameManager : MonoBehaviour
     {
         this.ghostMultiplier = 1;
     }
+
+
+    public void StartTimer(){
+        round_startTime = Time.time;
+        }
 
 }
