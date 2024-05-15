@@ -13,6 +13,9 @@ public class Ghost : MonoBehaviour
     public Transform target; // who are u chasing or running away from
     public int points = 200;
 
+    public float eatenDuration = 8.0f;  // Time to be eaten before respawning
+    public bool eaten = false; // Is the ghost eaten
+
     private void Awake()
     {
         this.movement = GetComponent<Movement>();

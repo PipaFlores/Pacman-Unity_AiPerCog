@@ -60,12 +60,13 @@ public class GhostFrightened : GhostBehavior
 
     private void Eaten()  // TODO: Make it to fly to the home, instead of only teleporting.
     {
-        this.eaten = true;
+        this.eaten = true; // this is to prevent the flash from happening
+        this.ghost.eaten = true; // this is the boolean state to be collected by the datacollector
         Vector3 position = this.ghost.home.inside.position;
         position.z = this.ghost.transform.position.z;
         this.ghost.transform.position = position;
 
-        this.ghost.home.Enable(this.duration);
+        this.ghost.home.Enable(this.ghost.eatenDuration);  // sets the time the ghost is in home
         this.body.enabled = false;
         this.eyes.enabled = true;
         this.blue.enabled = false;

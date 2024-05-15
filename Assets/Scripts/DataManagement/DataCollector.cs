@@ -41,6 +41,7 @@ public class DataCollector : MonoBehaviour
         Vector2 playerPos = player.transform.position;
         Vector2[] ghostsPos = new Vector2[ghosts.Length];
         int[] ghostsState = new int[ghosts.Length];
+        bool pacmanAttack = player.GetComponent<Pacman>().pacmanAttack;
         for (int i = 0; i < ghosts.Length; i++)
         {
             ghostsPos[i] = ghosts[i].transform.position;
@@ -55,9 +56,12 @@ public class DataCollector : MonoBehaviour
         GameDataPoint dataPoint = new GameDataPoint
         {
             playerPosition = playerPos,
+            pacmanAttack = pacmanAttack, // Check if this works
             ghostsPositions = ghostsPos,
             ghostStates = ghostsState,
             score = currentScore,
+            pelletsRemaining = GameManager.Instance.remainingPellets,
+            powerPelletsRemaining = GameManager.Instance.remainingPills,
             livesRemaining = lives,
             timeElapsed = time
         };
@@ -122,19 +126,22 @@ public class DataCollector : MonoBehaviour
 
     private int GetGhostState(GameObject ghost){
         if (ghost.GetComponent<GhostHome>().enabled){
-            return 0;
-        }
-        else if (ghost.GetComponent<GhostScatter>().enabled){
-            return 1;
+            if (ghost.GetComponent<Ghost>().eaten){
+                return 4; // eaten
+            }
+            else return 0; // home (not eaten)
+            }    
+        else if (ghost.GetComponent<GhostFrightened>().enabled){  // Frightened state overlaps with scatter and chase, so check it first
+            return 3;
         }
         else if (ghost.GetComponent<GhostChase>().enabled){
             return 2;
         }
-        else if(ghost.GetComponent<GhostFrightened>().enabled){
-            return 3;
+        else if(ghost.GetComponent<GhostScatter>().enabled){
+            return 1;
         }
         else{
-            return -1;
+            return -666; // error code
         }
     }
 
