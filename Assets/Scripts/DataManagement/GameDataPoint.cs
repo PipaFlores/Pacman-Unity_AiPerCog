@@ -30,7 +30,7 @@ public class GameDataContainer  // contains all the data to be sent after finali
 {
     public List<GameDataPoint> dataPoints;
     public int user_id;
-    public string start_time;
+    public string date_played;
     public double game_duration;
     public int session_number;
     public int game_in_session;

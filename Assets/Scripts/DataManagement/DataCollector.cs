@@ -30,7 +30,7 @@ public class DataCollector : MonoBehaviour
     }
 
     public void Startdatacollection(){
-        InvokeRepeating(nameof(CollectGameData), 1f, 1f);
+        InvokeRepeating(nameof(CollectGameData), 0.5f, 0.25f);
         game_startTime = System.DateTime.UtcNow;
         // Adjust timing as needed
         // Consider getting the session_id, username, or other one-time info here.
@@ -51,12 +51,12 @@ public class DataCollector : MonoBehaviour
         // Assume you have a way to access the current score and lives (e.g., through a GameManager)
         int currentScore = GameManager.Instance.score;
         int lives = GameManager.Instance.lives;
-        float time = Time.timeSinceLevelLoad; // FIX THIS
+        float time = GameManager.Instance.round_timeElapsed;
 
         GameDataPoint dataPoint = new GameDataPoint
         {
             playerPosition = playerPos,
-            pacmanAttack = pacmanAttack, // Check if this works
+            pacmanAttack = pacmanAttack,
             ghostsPositions = ghostsPos,
             ghostStates = ghostsState,
             score = currentScore,
@@ -70,7 +70,7 @@ public class DataCollector : MonoBehaviour
 
     private System.Collections.IEnumerator SendGameData(string gameData)
     {
-        string url = dataserver + "savegamedata_json.php";
+        string url = dataserver + "SQL/savegamedata_json.php";
         UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
         yield return www.SendWebRequest();
     
@@ -96,7 +96,7 @@ public class DataCollector : MonoBehaviour
         GameDataContainer container = new GameDataContainer 
         { 
             dataPoints = dataPointsList,
-            start_time = game_startTime.ToString("yyyy-MM-dd HH:mm:ss"),
+            date_played = game_startTime.ToString("yyyy-MM-dd HH:mm:ss"),
             game_duration = game_duration,
             session_number = MainManager.Instance.session_number,
             game_in_session = MainManager.Instance.games_in_session,
