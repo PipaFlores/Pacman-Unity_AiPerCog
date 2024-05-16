@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     public int lives {get ; private set; }
     public float round_timeElapsed {get ; private set; }
     public float round_startTime {get ; private set; }
+    public bool win {get ; private set; }
 
 
     private void Awake()
@@ -51,7 +52,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         if (this.lives <= 0 && Input.anyKeyDown){
-            Invoke(nameof(NewGame), 2.0f); // Start a new round after 1 second, buffer time for saving data
+            NewGame(); 
         }
         round_timeElapsed = Time.time - round_startTime;
     }
@@ -62,12 +63,14 @@ public class GameManager : MonoBehaviour
         remainingPellets = CountRemainingPellets();
         remainingPills = CountRemainingPowerPellets();
         NewRound();
+        
 
     }
 
     private void NewRound()
     {
         MainManager.Instance.games_in_session++; // Increase the count of games in a session
+        win = false;
         StartTimer();
         gameDatacollector.Startdatacollection();
         Gameover.enabled = false;
@@ -151,9 +154,11 @@ public class GameManager : MonoBehaviour
         remainingPellets = CountRemainingPellets();
         remainingPills = CountRemainingPowerPellets();
         if (remainingPellets == 0){
+            win = true;
             this.pacman.gameObject.SetActive(false);
+            gameDatacollector.SaveData();
             Invoke(nameof(NewRound), 3.0f);
-            gameDatacollector.SaveData(); // TODO: change this to a game win screen
+             // TODO: change this to a game win screen
         }
     }
 
