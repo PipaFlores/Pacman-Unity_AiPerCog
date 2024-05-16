@@ -32,6 +32,15 @@ public class Login : MonoBehaviour
 
     IEnumerator LoginUser()
     {
+        if (string.IsNullOrWhiteSpace(usernameInput.text) ||
+            string.IsNullOrWhiteSpace(passwordInput.text))
+        {
+            errorMsg.text = "Please fill in all fields.";
+            yield return new WaitForSeconds(2); // Display the message for 2 seconds
+            errorMsg.text = "";
+            yield break; // Stop the coroutine if validation fails
+        }
+           
         WWWForm form = new WWWForm();
         form.AddField("username", usernameInput.text);
         form.AddField("password", passwordInput.text);

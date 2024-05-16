@@ -18,7 +18,7 @@ public class Register : MonoBehaviour
     public Button goToLoginButton;
     public TMP_Text confirmationText;
     private string registerUrl;
-    ArrayList credentials;
+
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +39,16 @@ public class Register : MonoBehaviour
 
 IEnumerator RegisterUser()
     {
+            // Check if any field is empty
+        if (string.IsNullOrWhiteSpace(usernameInput.text) ||
+            string.IsNullOrWhiteSpace(passwordInput.text) ||
+            string.IsNullOrWhiteSpace(emailinput.text))
+        {
+            confirmationText.text = "Please fill in all fields.";
+            yield return new WaitForSeconds(2); // Display the message for 2 seconds
+            confirmationText.text = "";
+            yield break; // Stop the coroutine if validation fails
+        }
         WWWForm form = new WWWForm();
         form.AddField("username", usernameInput.text);
         form.AddField("password", passwordInput.text);
