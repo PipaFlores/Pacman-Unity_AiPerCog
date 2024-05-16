@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Collections.Specialized;
+using UnityEngine.UIElements;
 
 // GameManager calls Startdatacollection at the beginning of each round. Datacollection stops
 // with the CancelInvoke in SaveData() at GameOver or !HasRemainingPellets
@@ -15,9 +16,11 @@ public class DataCollector : MonoBehaviour
 
     private string dataserver;
 
-    public bool localSave = true; // local save data
+    //public bool localSave = true; // local save data
     public bool serverSave = true; // server save data
-    public string localPath = @"C:\LocalData\pabflore\Unity_Projects\unity_pacman\Logs\gamedata.json"; // local path to save data
+    //public string localPath = @"C:\LocalData\pabflore\Unity_Projects\unity_pacman\Logs\gamedata.json"; // local path to save data
+
+    public float saveInterval = 0.1f; // Save data every x seconds  
 
     // Variables to store the game duration
     private double game_duration;
@@ -30,7 +33,7 @@ public class DataCollector : MonoBehaviour
     }
 
     public void Startdatacollection(){
-        InvokeRepeating(nameof(CollectGameData), 0.5f, 0.25f);
+        InvokeRepeating(nameof(CollectGameData), 0.2f, saveInterval);
         game_startTime = System.DateTime.UtcNow;
         // Adjust timing as needed
         // Consider getting the session_id, username, or other one-time info here.
@@ -101,28 +104,29 @@ public class DataCollector : MonoBehaviour
             session_number = MainManager.Instance.session_number,
             game_in_session = MainManager.Instance.games_in_session,
             user_id = MainManager.Instance.user_id,
-            source = MainManager.Instance.source            
-        };
+            source = MainManager.Instance.source,
+            win = GameManager.Instance.win
+            };
         string json = JsonUtility.ToJson(container, true);
-        if (localSave){
-            LocalSaveData(json);
-        }
+        //if (localSave){
+        //    LocalSaveData(json);
+        //}
         if (serverSave){
             StartCoroutine(SendGameData(json));
         }
           
     }
-    public void LocalSaveData(string json)  // Local save data in json format
-    {
-        string directory = Path.GetDirectoryName(localPath);
-        if (!Directory.Exists(directory)){
-            Directory.CreateDirectory(directory);
-        }
-        System.IO.File.WriteAllText(localPath, json);
-        //@"D:\PacmanUnity\Logs\Datacollection\data.json"
-        // "../Datacollection2/data.json" writes to d:\Datacoll....
-        //"file:../Datacollection2/data.json" gets the local path but adds the "file:.."
-    }
+    // public void LocalSaveData(string json)  // Local save data in json format
+    // {
+    //     string directory = Path.GetDirectoryName(localPath);
+    //     if (!Directory.Exists(directory)){
+    //         Directory.CreateDirectory(directory);
+    //     }
+    //     System.IO.File.WriteAllText(localPath, json);
+    //     //@"D:\PacmanUnity\Logs\Datacollection\data.json"
+    //     // "../Datacollection2/data.json" writes to d:\Datacoll....
+    //     //"file:../Datacollection2/data.json" gets the local path but adds the "file:.."
+    // }
 
     private int GetGhostState(GameObject ghost){
         if (ghost.GetComponent<GhostHome>().enabled){
