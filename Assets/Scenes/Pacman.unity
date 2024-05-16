@@ -10480,9 +10480,8 @@ MonoBehaviour:
   - {fileID: 761981510}
   - {fileID: 1711457213}
   - {fileID: 483348042}
-  localSave: 1
   serverSave: 1
-  localPath: C:\LocalData\pabflore\Unity_Projects\unity_pacman\Logs\gamedata.json
+  saveInterval: 0.1
 --- !u!4 &2011925314
 Transform:
   m_ObjectHideFlags: 0

@@ -849,6 +849,9 @@ MonoBehaviour:
   user_id: 0
   session_number: 0
   game_number: 0
+  games_in_session: 0
+  source: Itchio
+  dataserver: https://aipercog-24.it.helsinki.fi/
 --- !u!4 &1026728862
 Transform:
   m_ObjectHideFlags: 0
@@ -1509,7 +1512,6 @@ MonoBehaviour:
   passwordInput: {fileID: 422453556}
   loginButton: {fileID: 200952712}
   goToRegisterButton: {fileID: 86419920}
-  serverUrl: https://aipercog-24.it.helsinki.fi/
   errorMsg: {fileID: 468321024}
 --- !u!114 &1994258545
 MonoBehaviour:
