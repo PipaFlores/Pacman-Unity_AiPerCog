@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+//using System.Numerics;
 // TODO: Implement game identifiersss
 public class GameManager : MonoBehaviour
 {
@@ -26,11 +28,14 @@ public class GameManager : MonoBehaviour
     public int remainingPellets {get ; private set; }
 
     public int remainingPills {get ; private set; }
+
+    public bool[] PowerPelletStates;
     
     public int lives {get ; private set; }
     public float round_timeElapsed {get ; private set; }
     public float round_startTime {get ; private set; }
     public bool win {get ; private set; }
+    
 
 
     private void Awake()
@@ -75,9 +80,11 @@ public class GameManager : MonoBehaviour
         gameDatacollector.Startdatacollection();
         Gameover.enabled = false;
         restartKey.enabled = false;
-        foreach (Transform pellet in this.pellets) // reset all pellets
+        foreach (Transform pellet in this.pellets) // reset all pellets 
         {
             pellet.gameObject.SetActive(true);
+            // Vector2 gridPosition = new Vector2(RoundToNearestHalf(pellet.position.x),RoundToNearestHalf(pellet.position.y));
+            // pelletsPositions[gridPosition] = true;
         }
         
         for (int i = 0; i < this.ghosts.Length; i++) { // reset all ghosts
@@ -147,8 +154,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void PelletEaten(Pellet pellet)
+    public void PelletEaten(Pellet pellet) // TODO track eaten pellets in pellet position list
     {
+        // Vector2 pelletPosition = pellet.transform.position;
+        // Vector2 gridPosition = new Vector2(RoundToNearestHalf(pelletPosition.x), RoundToNearestHalf(pelletPosition.y));
+        // if (pelletsPositions.ContainsKey(gridPosition))
+        // {
+        //     pelletsPositions[gridPosition] = false; // Set to false indicating the pellet is eaten
+        // }
+        //FindObjectOfType<DataCollector>().UpdatePellets(pelletsPositions);
         pellet.gameObject.SetActive(false);
         SetScore (this.score + pellet.points);
         remainingPellets = CountRemainingPellets();
@@ -218,5 +232,10 @@ public class GameManager : MonoBehaviour
     public void StartTimer(){
         round_startTime = Time.time;
         }
+
+    float RoundToNearestHalf(float value)
+    {
+        return Mathf.Round(value * 2f) / 2f;
+    }
 
 }

@@ -26,6 +26,9 @@ public class DataCollector : MonoBehaviour
     private double game_duration;
     private System.DateTime game_startTime;
     private System.DateTime game_endTime;
+
+    // list of pellet state
+    //  List<PelletState> pellets;
  
     public void Awake(){
         // Get the dataserver url from the MainManager
@@ -66,7 +69,8 @@ public class DataCollector : MonoBehaviour
             pelletsRemaining = GameManager.Instance.remainingPellets,
             powerPelletsRemaining = GameManager.Instance.remainingPills,
             livesRemaining = lives,
-            timeElapsed = time
+            timeElapsed = time,
+            // pellets = pellets
         };
         dataPointsList.Add(dataPoint);
     }
@@ -148,7 +152,16 @@ public class DataCollector : MonoBehaviour
             return -666; // error code
         }
     }
-
+}
+//     public void UpdatePellets(Dictionary<Vector2, bool> pelletsDictionary)
+//     {
+//         pellets = new List<PelletState>();
+//         foreach (var pellet in pelletsDictionary)
+//         {
+//             pellets.Add(new PelletState(pellet.Key, pellet.Value));
+//         }
+//     }
+// }
 
     // ------------------------------------------
     // MOVED GAMEDATAPOINT AND GAMEDATACONTAINER TO GameDataPoint.cs
@@ -174,4 +187,4 @@ public class DataCollector : MonoBehaviour
     // {
     //     public List<GameDataPoint> dataPoints;
     // }
-}
+
