@@ -29,7 +29,8 @@ public class GameManager : MonoBehaviour
 
     public int remainingPills {get ; private set; }
 
-    public bool[] PowerPelletStates;
+    public bool[] PowerPelletStates;  // for elements, 1 = not eaten, 0 = eaten . This is to keep track of the powerpellets. 
+    //They are numbered cloclwise by their location in the grid first one is the one top left, second one is the one top right, third one is the one bottom right and fourth one is the one bottom left
     
     public int lives {get ; private set; }
     public float round_timeElapsed {get ; private set; }
@@ -65,8 +66,7 @@ public class GameManager : MonoBehaviour
     {
         SetScore(0);
         SetLives(3);
-        remainingPellets = CountRemainingPellets();
-        remainingPills = CountRemainingPowerPellets();
+
         NewRound();
         
 
@@ -76,8 +76,6 @@ public class GameManager : MonoBehaviour
     {
         MainManager.Instance.games_in_session++; // Increase the count of games in a session
         win = false;
-        StartTimer();
-        gameDatacollector.Startdatacollection();
         Gameover.enabled = false;
         restartKey.enabled = false;
         foreach (Transform pellet in this.pellets) // reset all pellets 
@@ -86,11 +84,15 @@ public class GameManager : MonoBehaviour
             // Vector2 gridPosition = new Vector2(RoundToNearestHalf(pellet.position.x),RoundToNearestHalf(pellet.position.y));
             // pelletsPositions[gridPosition] = true;
         }
-        
+        remainingPellets = CountRemainingPellets();
+        remainingPills = CountRemainingPowerPellets();
+        PowerPelletStatesInit();        
         for (int i = 0; i < this.ghosts.Length; i++) { // reset all ghosts
             this.ghosts[i].ResetState();
         }
         this.pacman.ResetState(); // reset pacman
+        gameDatacollector.Startdatacollection();
+        StartTimer();
     }
 
     private void ResetState()  // If pacman dies, resets ghots and pacman but not pellet
@@ -181,7 +183,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < this.ghosts.Length; i++){
             this.ghosts[i].frightened.Enable(pellet.duration);
         }
-
+        PowerPelletEaten(pellet.GetPowerPelletIndex());
         PelletEaten(pellet);
         CancelInvoke(); // If you take more than one powerpellet, cancel the first invoke timer and start it again
         PacmanAttack();
@@ -236,6 +238,20 @@ public class GameManager : MonoBehaviour
     float RoundToNearestHalf(float value)
     {
         return Mathf.Round(value * 2f) / 2f;
+    }
+
+    public void PowerPelletStatesInit()
+    {
+        PowerPelletStates = new bool[4];
+        for (int i = 0; i < 4; i++)
+        {
+            PowerPelletStates[i] = true;
+        }
+    }
+
+    public void PowerPelletEaten(int i)
+    {
+        PowerPelletStates[i] = false;
     }
 
 }
