@@ -16,9 +16,9 @@ public class DataCollector : MonoBehaviour
 
     private string dataserver;
 
-    //public bool localSave = true; // local save data
+    public bool localSave = true; // local save data
     public bool serverSave = true; // server save data
-    //public string localPath = @"C:\LocalData\pabflore\Unity_Projects\unity_pacman\Logs\gamedata.json"; // local path to save data
+    
 
     public float saveInterval = 0.1f; // Save data every x seconds  
 
@@ -48,16 +48,23 @@ public class DataCollector : MonoBehaviour
         Vector2[] ghostsPos = new Vector2[ghosts.Length];
         int[] ghostsState = new int[ghosts.Length];
         bool pacmanAttack = player.GetComponent<Pacman>().pacmanAttack;
+        int[] PowerPelletStates = new int[GameManager.Instance.PowerPelletStates.Length];
         for (int i = 0; i < ghosts.Length; i++)
         {
             ghostsPos[i] = ghosts[i].transform.position;
             ghostsState[i] = GetGhostState(ghosts[i]);
+        }
+        for (int i = 0; i < GameManager.Instance.PowerPelletStates.Length; i++)
+        {
+            PowerPelletStates[i] = GameManager.Instance.PowerPelletStates[i];
         }
 
         // Assume you have a way to access the current score and lives (e.g., through a GameManager)
         int currentScore = GameManager.Instance.score;
         int lives = GameManager.Instance.lives;
         float time = GameManager.Instance.round_timeElapsed;
+        int pelletsRemaining = GameManager.Instance.remainingPellets;
+        int powerPelletsRemaining = GameManager.Instance.remainingPills;
 
         GameDataPoint dataPoint = new GameDataPoint
         {
@@ -66,8 +73,9 @@ public class DataCollector : MonoBehaviour
             ghostsPositions = ghostsPos,
             ghostStates = ghostsState,
             score = currentScore,
-            pelletsRemaining = GameManager.Instance.remainingPellets,
-            powerPelletsRemaining = GameManager.Instance.remainingPills,
+            powerPelletStates = PowerPelletStates,
+            pelletsRemaining = pelletsRemaining,
+            powerPelletsRemaining = powerPelletsRemaining,
             livesRemaining = lives,
             timeElapsed = time,
             // pellets = pellets
@@ -112,25 +120,27 @@ public class DataCollector : MonoBehaviour
             win = GameManager.Instance.win
             };
         string json = JsonUtility.ToJson(container, true);
-        //if (localSave){
-        //    LocalSaveData(json);
-        //}
+        if (localSave){
+           LocalSaveData(json);
+        }
         if (serverSave){
             StartCoroutine(SendGameData(json));
         }
           
     }
-    // public void LocalSaveData(string json)  // Local save data in json format
-    // {
-    //     string directory = Path.GetDirectoryName(localPath);
-    //     if (!Directory.Exists(directory)){
-    //         Directory.CreateDirectory(directory);
-    //     }
-    //     System.IO.File.WriteAllText(localPath, json);
-    //     //@"D:\PacmanUnity\Logs\Datacollection\data.json"
-    //     // "../Datacollection2/data.json" writes to d:\Datacoll....
-    //     //"file:../Datacollection2/data.json" gets the local path but adds the "file:.."
-    // }
+    public void LocalSaveData(string json)  // Local save data in json format
+    {
+        string localPath = @"C:\LocalData\pabflore\Unity_Projects\unity_pacman\Logs\gamedata.json"; // local path to save data
+        string directory = Path.GetDirectoryName(localPath);
+        if (!Directory.Exists(directory)){
+            Directory.CreateDirectory(directory);
+        }
+        System.IO.File.WriteAllText(localPath, json);
+        Debug.Log("Data saved locally at " + localPath);
+        //@"D:\PacmanUnity\Logs\Datacollection\data.json"
+        // "../Datacollection2/data.json" writes to d:\Datacoll....
+        //"file:../Datacollection2/data.json" gets the local path but adds the "file:.."
+    }
 
     private int GetGhostState(GameObject ghost){
         if (ghost.GetComponent<GhostHome>().enabled){
@@ -152,39 +162,14 @@ public class DataCollector : MonoBehaviour
             return -666; // error code
         }
     }
-}
-//     public void UpdatePellets(Dictionary<Vector2, bool> pelletsDictionary)
-//     {
-//         pellets = new List<PelletState>();
-//         foreach (var pellet in pelletsDictionary)
-//         {
-//             pellets.Add(new PelletState(pellet.Key, pellet.Value));
-//         }
-//     }
-// }
 
-    // ------------------------------------------
-    // MOVED GAMEDATAPOINT AND GAMEDATACONTAINER TO GameDataPoint.cs
-    // ------------------------------------------
-    // [System.Serializable]
-    // public class GameDataPoint
+    // public void UpdatePellets(Dictionary<Vector2, bool> pelletsDictionary)
     // {
-    //     public string client_source;  // TODO: Gather this at the beginning of the game or the end of the login process
-    //     public Vector2 playerPosition;
-    //     public Vector2[] ghostsPositions;
-    //     public int score;
-    //     public int livesRemaining;
-    //     public float timeElapsed;
-    //     public string ToCsvString()
+    //     pellets = new List<PelletState>();
+    //     foreach (var pellet in pelletsDictionary)
     //     {
-    //         // Example for formatting; adjust based on your actual fields
-    //         return $"{client_source};{playerPosition.x};{playerPosition.y};{string.Join(";", ghostsPositions.Select(gp => gp.ToString()))};{score};{livesRemaining};{timeElapsed}";
+    //         pellets.Add(new PelletState(pellet.Key, pellet.Value));
     //     }
     // }
-
-    // [System.Serializable]
-    // public class GameDataContainer
-    // {
-    //     public List<GameDataPoint> dataPoints;
-    // }
+}
 
