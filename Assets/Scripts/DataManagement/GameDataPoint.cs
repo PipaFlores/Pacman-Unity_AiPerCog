@@ -20,13 +20,8 @@ public class GameDataPoint  // defines the daata to be recorded each frame/time 
     public int pelletsRemaining;
     public int livesRemaining;
     public float timeElapsed;
-
     // public List<PelletState> pellets;
-    // public string ToCsvString()
-    // {
-    //     // Example for formatting; adjust based on your actual fields
-    //     return $"{playerPosition.x};{playerPosition.y};{string.Join(";", ghostsPositions.Select(gp => gp.ToString()))};{score};{livesRemaining};{timeElapsed}";
-    // }
+
 }
 
 [System.Serializable]

@@ -162,14 +162,14 @@ public class DataCollector : MonoBehaviour
             return -666; // error code
         }
     }
+
+    // public void UpdatePellets(Dictionary<Vector2, bool> pelletsDictionary)
+    // {
+    //     pellets = new List<PelletState>();
+    //     foreach (var pellet in pelletsDictionary)
+    //     {
+    //         pellets.Add(new PelletState(pellet.Key, pellet.Value));
+    //     }
+    // }
 }
-//     public void UpdatePellets(Dictionary<Vector2, bool> pelletsDictionary)
-//     {
-//         pellets = new List<PelletState>();
-//         foreach (var pellet in pelletsDictionary)
-//         {
-//             pellets.Add(new PelletState(pellet.Key, pellet.Value));
-//         }
-//     }
-// }
 

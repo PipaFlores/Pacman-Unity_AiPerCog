@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     public float round_timeElapsed {get ; private set; }
     public float round_startTime {get ; private set; }
     public bool win {get ; private set; }
+    // public Dictionary<Vector2, bool> pelletsPositions = new Dictionary<Vector2, bool>();
     
 
 
@@ -84,6 +85,7 @@ public class GameManager : MonoBehaviour
             // Vector2 gridPosition = new Vector2(RoundToNearestHalf(pellet.position.x),RoundToNearestHalf(pellet.position.y));
             // pelletsPositions[gridPosition] = true;
         }
+        // gameDatacollector.UpdatePellets(pelletsPositions);
         remainingPellets = CountRemainingPellets();
         remainingPills = CountRemainingPowerPellets();
         PowerPelletStatesInit();        
@@ -164,7 +166,7 @@ public class GameManager : MonoBehaviour
         // {
         //     pelletsPositions[gridPosition] = false; // Set to false indicating the pellet is eaten
         // }
-        //FindObjectOfType<DataCollector>().UpdatePellets(pelletsPositions);
+        // gameDatacollector.UpdatePellets(pelletsPositions);
         pellet.gameObject.SetActive(false);
         SetScore (this.score + pellet.points);
         remainingPellets = CountRemainingPellets();
