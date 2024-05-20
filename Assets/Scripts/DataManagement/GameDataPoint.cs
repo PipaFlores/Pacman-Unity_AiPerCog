@@ -14,7 +14,7 @@ public class GameDataPoint  // defines the daata to be recorded each frame/time 
 
     public int[] ghostStates;   // 0 = home, 1 = scatter, 2 = chase, 3 = frightened , 4 = eaten
 
-    public int[] PowerPelletStates; // 1 = not eaten, 0 = eaten
+    public int[] powerPelletStates; // 1 = not eaten, 0 = eaten
     public int score;
     public int powerPelletsRemaining;
     public int pelletsRemaining;

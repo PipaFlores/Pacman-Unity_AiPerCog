@@ -73,7 +73,7 @@ public class DataCollector : MonoBehaviour
             ghostsPositions = ghostsPos,
             ghostStates = ghostsState,
             score = currentScore,
-            PowerPelletStates = PowerPelletStates,
+            powerPelletStates = PowerPelletStates,
             pelletsRemaining = pelletsRemaining,
             powerPelletsRemaining = powerPelletsRemaining,
             livesRemaining = lives,

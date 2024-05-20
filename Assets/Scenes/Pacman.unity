@@ -10481,6 +10481,7 @@ MonoBehaviour:
   - {fileID: 761981510}
   - {fileID: 1711457213}
   - {fileID: 483348042}
+  localSave: 1
   serverSave: 1
   saveInterval: 0.1
 --- !u!4 &2011925314
