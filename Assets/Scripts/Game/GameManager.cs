@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
 
     public int remainingPills {get ; private set; }
 
-    public bool[] PowerPelletStates;  // for elements, 1 = not eaten, 0 = eaten . This is to keep track of the powerpellets. 
+    public int[] PowerPelletStates;  // for elements, 1 = not eaten, 0 = eaten . This is to keep track of the powerpellets. 
     //They are numbered cloclwise by their location in the grid first one is the one top left, second one is the one top right, third one is the one bottom right and fourth one is the one bottom left
     
     public int lives {get ; private set; }
@@ -242,16 +242,16 @@ public class GameManager : MonoBehaviour
 
     public void PowerPelletStatesInit()
     {
-        PowerPelletStates = new bool[4];
+        PowerPelletStates = new int[4];
         for (int i = 0; i < 4; i++)
         {
-            PowerPelletStates[i] = true;
+            PowerPelletStates[i] = 1;
         }
     }
 
     public void PowerPelletEaten(int i)
     {
-        PowerPelletStates[i] = false;
+        PowerPelletStates[i] = 0;
     }
 
 }
