@@ -136,13 +136,14 @@ public class GameManager : MonoBehaviour
     public void GhostEaten(Ghost ghost)
     {
         int points = ghost.points * this.ghostMultiplier;
+        AudioManager.Instance.PlayGhostEatenSound();
         SetScore(this.score + points);
         this.ghostMultiplier++;
     }
 
     public void PacmanEaten()
     {
-        
+        AudioManager.Instance.PlayDeathSound();
         this.pacman.DeathSequence();
 
 
@@ -171,6 +172,7 @@ public class GameManager : MonoBehaviour
         SetScore (this.score + pellet.points);
         remainingPellets = CountRemainingPellets();
         remainingPills = CountRemainingPowerPellets();
+        AudioManager.Instance.PlayEatingSound();
         if (remainingPellets == 0){
             win = true;
             this.pacman.gameObject.SetActive(false);
@@ -189,6 +191,7 @@ public class GameManager : MonoBehaviour
         PelletEaten(pellet);
         CancelInvoke(); // If you take more than one powerpellet, cancel the first invoke timer and start it again
         PacmanAttack();
+        AudioManager.Instance.PlayIntermissionSound(pellet.duration);
         Invoke(nameof(PacmanAttackEnd), pellet.duration);
         Invoke(nameof(ResetGhostMultiplier), pellet.duration);        
     }
