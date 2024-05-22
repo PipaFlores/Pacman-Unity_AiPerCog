@@ -225,6 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef67bcaa943d85b4cbbf4968f221af52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BackgroundSound: {fileID: 483457184}
   EatingSound: {fileID: 2057150799}
   DeathSound: {fileID: 991216695}
   IntermissionSound: {fileID: 1957700972}
@@ -766,6 +767,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ghost_Inky
       objectReference: {fileID: 0}
+    - target: {fileID: 5342237251010063064, guid: af7eab71d4c89d7438d2b5026b0283af, type: 3}
+      propertyPath: patrolPath
+      value: 
+      objectReference: {fileID: 11400000, guid: 0c30182f3a4b9d145bf37ee892b568e1, type: 2}
     - target: {fileID: 5997692792459321389, guid: af7eab71d4c89d7438d2b5026b0283af, type: 3}
       propertyPath: target
       value: 
@@ -1925,6 +1930,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1089565898833902113, guid: d253ae640534bed42a483b36d6c91910, type: 3}
+      propertyPath: patrolPath
+      value: 
+      objectReference: {fileID: 11400000, guid: 18b7f6bafaed3a84abd3239fea65721c, type: 2}
     - target: {fileID: 1585706605007778004, guid: d253ae640534bed42a483b36d6c91910, type: 3}
       propertyPath: target
       value: 
@@ -2132,6 +2141,10 @@ PrefabInstance:
       propertyPath: initialBehavior
       value: 
       objectReference: {fileID: 686783133}
+    - target: {fileID: 4272767874033184802, guid: c9e6a905f1befce4babde17b756a4136, type: 3}
+      propertyPath: patrolPath
+      value: 
+      objectReference: {fileID: 11400000, guid: 9fbd242136aac5644990bacec674cfda, type: 2}
     - target: {fileID: 4669825186513667972, guid: c9e6a905f1befce4babde17b756a4136, type: 3}
       propertyPath: m_Name
       value: Ghost_Pinky
@@ -10838,7 +10851,7 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -11217,7 +11230,7 @@ Transform:
   m_GameObject: {fileID: 2096509490}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -12.6, y: -15.38, z: -10.088297}
+  m_LocalPosition: {x: 4.49, y: -6.53, z: -10.088297}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11287,6 +11300,10 @@ PrefabInstance:
       propertyPath: duration
       value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 6997216903839210365, guid: 257721046826144449b85ccd5abc365c, type: 3}
+      propertyPath: patrolPath
+      value: 
+      objectReference: {fileID: 11400000, guid: 54d7d93e7d439b648b132a3cd3418a31, type: 2}
     - target: {fileID: 8648175840960762248, guid: 257721046826144449b85ccd5abc365c, type: 3}
       propertyPath: target
       value: 
