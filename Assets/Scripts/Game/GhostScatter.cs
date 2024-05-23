@@ -36,6 +36,7 @@ public class GhostScatter : GhostBehavior
         // If patrol is empty, then ghost will move randomly
         if (currentPatrolIndex >= patrolPath.waypoints.Length ){
             this.randomPath(node);
+            // Debug.Log(this.ghost.name + "Random path");
         }
         else{
             currentTarget = new Vector3(patrolPath.waypoints[currentPatrolIndex].x, patrolPath.waypoints[currentPatrolIndex].y, 0.0f);
@@ -45,14 +46,17 @@ public class GhostScatter : GhostBehavior
                 currentPatrolIndex++;
                 if (currentPatrolIndex >= patrolPath.waypoints.Length){
                     this.randomPath(node);
+                    // Debug.Log(this.ghost.name + "Random path");
                 }
                 else{
                     currentTarget = patrolPath.waypoints[currentPatrolIndex];
                     Patrol(node, currentTarget);
+                    // Debug.Log(this.ghost.name + "Patrol path");
                 }
             }
             else{
                 Patrol(node, currentTarget);
+                // Debug.Log(this.ghost.name + "Patrol path");
             }
             
         }
@@ -83,18 +87,20 @@ public class GhostScatter : GhostBehavior
             
             Vector2 movedirection = Vector2.zero;
             float minDistance = float.MaxValue;
-            // Debug.Log("Number of Available directions=" + node.availableDirections.Count);
+            Debug.Log("Number of Available directions=" + node.availableDirections.Count);
             int i = 0;
             int finalindex = 0;
 
             foreach(Vector2 availableDirection in node.availableDirections)
             {
                 i++;
-                // Debug.Log("For available dir N°" + i);
+                Debug.Log("For available dir N°" + i);
                 Vector3 newPosition = this.transform.position + new Vector3(availableDirection.x, availableDirection.y, 0.0f);
-                // Debug.Log("Estimated new position=" + "(" + newPosition.x + "," + newPosition.y + ")");
+                // RaycastHit2D hit = Physics2D.BoxCast(this.transform.position, Vector2.one * 0.5f, 0.0f, availableDirection, 12.0f, );
+                // Vector3 newPosition = hit.point;
+                Debug.Log("Estimated new position=" + "(" + newPosition.x + "," + newPosition.y + ")");
                 float distance = (target - newPosition).sqrMagnitude; 
-                // Debug.Log("Estimated distance to target=" + distance);
+                Debug.Log("Estimated distance to target=" + distance);
                 // TOIMPROVE: If calculated distances are equal, then choose at random to avoid glitching
                 if (distance < minDistance){
                     movedirection = availableDirection;
@@ -103,7 +109,7 @@ public class GhostScatter : GhostBehavior
                 }
             }
             this.ghost.movement.SetDirection(movedirection);
-            // Debug.Log("Final index=" + finalindex);
+            Debug.Log("Final index=" + finalindex);
 
         }
     }

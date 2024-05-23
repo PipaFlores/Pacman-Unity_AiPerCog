@@ -93,3 +93,6 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 128
+  nodeLayer:
+    serializedVersion: 2
+    m_Bits: 256

@@ -5,7 +5,10 @@ using UnityEngine;
 public class Node : MonoBehaviour
 {
     public List<Vector2> availableDirections { get; private set;}
+    // public List<Transform> availableneighbors { get; private set; }
     public LayerMask obstacleLayer;
+
+    // public LayerMask nodeLayer;
 
     private void Start()
     {
@@ -14,6 +17,7 @@ public class Node : MonoBehaviour
         CheckAvailbleDirections(Vector2.down);
         CheckAvailbleDirections(Vector2.left);
         CheckAvailbleDirections(Vector2.right);
+        // CheckAvailbleNeighbors();
 
     }
 
@@ -25,4 +29,16 @@ public class Node : MonoBehaviour
             this.availableDirections.Add(direction);
         } 
     }
+
+    // private void CheckAvailbleNeighbors ()
+    // {
+    //     foreach (Vector2 dir in this.availableDirections)
+    //     {
+    //         RaycastHit2D hit = Physics2D.BoxCast(this.transform.position + new Vector3 (dir.x, dir.y, 0f), Vector2.one * 0.75f, 0.0f, dir, 12.0f, nodeLayer);
+
+    //         if (hit.collider == null){
+    //             this.availableneighbors.Add(hit.collider.GetComponent<Transform>());
+    //         }
+    //     }
+    // }
 }
