@@ -5,8 +5,11 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     public new Rigidbody2D rigidbody { get; private set; }
-    public float speed = 8.0f;
-    public float speedMultiplier = 1.0f;
+    private float speed = 9.47f;
+    public float speedMultiplier ;
+
+    public float normalSpeedMultiplier;
+    public float frightenedSpeedMultiplier;
     public Vector2 initialDirection;
     public LayerMask obstacleLayer;        // we could implement data log through a layer like this
     public Vector2 direction { get; private set; }
@@ -22,7 +25,7 @@ public class Movement : MonoBehaviour
     }
 
     public void ResetState(){
-        this.speedMultiplier = 1.0f;
+        this.speedMultiplier = this.normalSpeedMultiplier;
         this.direction = this.initialDirection;
         this.nextDirection = Vector2.zero;
         this.transform.position = this.startingPosition;

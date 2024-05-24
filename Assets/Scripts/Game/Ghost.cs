@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Ghost : MonoBehaviour
 {
-    public Movement movement {get; private set;}
+    public Movement movement;
     public GhostHome home {get; private set;}
     public GhostScatter scatter {get; private set;}
     public GhostChase chase {get; private set;}

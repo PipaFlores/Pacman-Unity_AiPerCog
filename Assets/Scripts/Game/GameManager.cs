@@ -15,9 +15,51 @@ public class GameManager : MonoBehaviour
 
     public DataCollector gameDatacollector;
 
+    // level progression. 
+    // rows = levels, columns = variables (pacmanSpeedMultiplier, ghostSpeedMultiplier, frightenedPacmanSpeedMultiplier, frightenedGhostSpeedMultiplier, frightenedDuration, ChaseTimer) 
+    private float[,] levelData = new float[,]
+     {
+        // pacmanSpeedMultiplier, ghostSpeedMultiplier, frightenedPacmanSpeedMultiplier, frightenedGhostSpeedMultiplier, frightenedDuration
+        { 0.8f, 0.75f, 0.9f, 0.5f, 6.0f },   // Level 1
+        { 0.9f, 0.85f, 0.95f, 0.55f, 5.0f }, // Level 2
+        { 0.9f, 0.85f, 0.95f, 0.55f, 4.0f }, // Level 3
+        { 0.9f, 0.85f, 0.95f, 0.55f, 3.0f }, // Level 4
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f },   // Level 5
+        { 1.0f, 0.95f, 1.0f, 0.6f, 5.0f },   // Level 6
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f },   // Level 7
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f },   // Level 8
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 9
+        { 1.0f, 0.95f, 1.0f, 0.6f, 5.0f },   // Level 10
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f },   // Level 11
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 12
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 13
+        { 1.0f, 0.95f, 1.0f, 0.6f, 3.0f },   // Level 14
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 15
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 16
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 17
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 18
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 19
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 20
+        { 0.9f, 0.95f, 1.0f, 0.6f, 1.0f }    // Level 21+
+    };
+
+
+      private Dictionary<string, int> columnIndices = new Dictionary<string, int>
+    {
+        { "pacmanSpeedMultiplier", 0 },
+        { "ghostSpeedMultiplier", 1 },
+        { "frightenedPacmanSpeedMultiplier", 2 },
+        { "frightenedGhostSpeedMultiplier", 3 },
+        { "frightenedDuration", 4},
+        { "ChaseTimer", 5 }        
+        // Add more columns as needed
+    };
+
     public Text Gameover;
     public Text ScoreText;
     public Text livesText;
+
+    public Text levelText;
 
     public Text restartKey;
 
@@ -33,6 +75,8 @@ public class GameManager : MonoBehaviour
     //They are numbered cloclwise by their location in the grid first one is the one top left, second one is the one top right, third one is the one bottom right and fourth one is the one bottom left
     
     public int lives {get ; private set; }
+    public int level {get ; private set; }
+    public int startLevel = 1 ; // For debugging purposes
     public float round_timeElapsed {get ; private set; }
     public float round_startTime {get ; private set; }
     public bool win {get ; private set; }
@@ -67,6 +111,7 @@ public class GameManager : MonoBehaviour
     {
         SetScore(0);
         SetLives(3);
+        SetLevel(startLevel);
 
         NewRound();
         
@@ -88,7 +133,8 @@ public class GameManager : MonoBehaviour
         // gameDatacollector.UpdatePellets(pelletsPositions);
         remainingPellets = CountRemainingPellets();
         remainingPills = CountRemainingPowerPellets();
-        PowerPelletStatesInit();        
+        PowerPelletStatesInit();  
+        loadLevelData();      
         for (int i = 0; i < this.ghosts.Length; i++) { // reset all ghosts
             this.ghosts[i].ResetState();
         }
@@ -131,6 +177,39 @@ public class GameManager : MonoBehaviour
     {
         this.lives = lives;
         livesText.text = "x" + lives.ToString();
+    }
+
+    private void SetLevel(int level)
+    {
+        this.level = level;
+        levelText.text = "Level " + level.ToString();
+    
+    }
+
+    private void loadLevelData()
+    {
+        float[] levelVariables = new float[5];
+        for (int i = 0; i < 5; i++)
+        {
+            levelVariables[i] = levelData[this.level - 1, i];
+        }
+        this.pacman.movement.normalSpeedMultiplier = levelVariables[columnIndices["pacmanSpeedMultiplier"]];
+        this.pacman.movement.frightenedSpeedMultiplier = levelVariables[columnIndices["frightenedPacmanSpeedMultiplier"]];
+        foreach (Transform pellet in pellets){
+            if (pellet.gameObject.GetComponent<PowerPellet>() != null){
+                pellet.gameObject.GetComponent<PowerPellet>().duration = levelVariables[columnIndices["frightenedDuration"]];
+            }
+        }
+        foreach (Ghost ghost in ghosts){
+            ghost.movement.normalSpeedMultiplier = levelVariables[columnIndices["ghostSpeedMultiplier"]];
+            ghost.movement.frightenedSpeedMultiplier = levelVariables[columnIndices["frightenedGhostSpeedMultiplier"]];
+        }
+        // for (int i = 0; i < this.ghosts.Length; i++)
+        // {
+        //     this.ghosts[i].movement.normalSpeedMultiplier = levelVariables[columnIndices["ghostSpeedMultiplier"]];
+        //     this.ghosts[i].movement.frightenedSpeedMultiplier = levelVariables[columnIndices["frightenedGhostSpeedMultiplier"]];
+        //     //this.ghosts[i].chase.timer = levelVariables[columnIndices["ChaseTimer"]];
+        // }
     }
 
     public void GhostEaten(Ghost ghost)
@@ -177,6 +256,7 @@ public class GameManager : MonoBehaviour
             win = true;
             this.pacman.gameObject.SetActive(false);
             gameDatacollector.SaveData();
+            SetLevel(this.level + 1);
             Invoke(nameof(NewRound), 3.0f);
              // TODO: change this to a game win screen
         }

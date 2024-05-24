@@ -27,13 +27,13 @@ public class GhostFrightened : GhostBehavior
 
     private void OnEnable()
     {
-        this.ghost.movement.speedMultiplier = 0.5f;
+        this.ghost.movement.speedMultiplier = this.ghost.movement.frightenedSpeedMultiplier;
         this.eaten = false;
     }
 
     private void OnDisable()
     {
-        this.ghost.movement.speedMultiplier = 1.0f;
+        this.ghost.movement.speedMultiplier = this.ghost.movement.normalSpeedMultiplier;
         this.eaten = false;
         //this.ghost.chase.Enable();
     }
