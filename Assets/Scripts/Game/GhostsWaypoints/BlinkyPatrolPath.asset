@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: BlinkyPatrolPath
   m_EditorClassIdentifier: 
   waypoints:
-  - {x: 4, y: 5.5}
+  - {x: 1.5, y: 2.5}
+  - {x: 1.5, y: 5.5}
   - {x: 7.5, y: 8.5}
   - {x: 7.5, y: 12.5}
   - {x: 12.5, y: 12.5}

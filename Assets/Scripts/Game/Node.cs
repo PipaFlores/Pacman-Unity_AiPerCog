@@ -5,14 +5,16 @@ using UnityEngine;
 public class Node : MonoBehaviour
 {
     public List<Vector2> availableDirections { get; private set;}
-    // public List<Transform> availableneighbors { get; private set; }
+    
     public LayerMask obstacleLayer;
 
     // public LayerMask nodeLayer;
+    // public List<Vector3> availableneighbors { get; private set; }
 
     private void Start()
     {
         this.availableDirections = new List<Vector2>();
+        // this.availableneighbors = new List<Vector3>();
         CheckAvailbleDirections(Vector2.up);
         CheckAvailbleDirections(Vector2.down);
         CheckAvailbleDirections(Vector2.left);
@@ -30,14 +32,16 @@ public class Node : MonoBehaviour
         } 
     }
 
-    // private void CheckAvailbleNeighbors ()
+    // private void CheckAvailbleNeighbors()
     // {
     //     foreach (Vector2 dir in this.availableDirections)
     //     {
-    //         RaycastHit2D hit = Physics2D.BoxCast(this.transform.position + new Vector3 (dir.x, dir.y, 0f), Vector2.one * 0.75f, 0.0f, dir, 12.0f, nodeLayer);
-
-    //         if (hit.collider == null){
-    //             this.availableneighbors.Add(hit.collider.GetComponent<Transform>());
+    //         RaycastHit2D hit = Physics2D.BoxCast(this.transform.position, Vector2.one * 0.75f, 0.0f, dir, 5.0f, this.nodeLayer);
+    //         Debug.Log("Checking neighbors"); // Debugging
+    //         Debug.Log("Hit collider: " + hit.collider.name);
+    //         if (hit.collider != null){
+                
+    //             this.availableneighbors.Add(hit.collider.GetComponent<Transform>().position);
     //         }
     //     }
     // }

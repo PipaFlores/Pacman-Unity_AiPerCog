@@ -12,4 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ada06252db87b5340904b2e179ca300f, type: 3}
   m_Name: ClydePatrolPath
   m_EditorClassIdentifier: 
-  waypoints: []
+  waypoints:
+  - {x: -4.37, y: -3.5}
+  - {x: -4.5, y: -6.5}
+  - {x: -7.5, y: -6.5}
+  - {x: -7.5, y: -9.5}
+  - {x: -7.5, y: -12.5}
+  - {x: -12.5, y: -12.5}
+  - {x: -12.5, y: -15.5}
+  - {x: -1.5, y: -15.5}
+  - {x: -1.5, y: -12.5}
+  - {x: -4.5, y: -12.5}
+  - {x: -4.5, y: -9.5}
