@@ -13,7 +13,7 @@ Added features include login and welcome scenes, difficulty progression, quadran
 
 ## Data Collection
 
-Data collection scripts (Assets/Scripts/DataManagement/*) gather and sends raw gameplay data to remote server. 
+Data collection scripts (Assets/Scripts/DataManagement/*) gather and sends raw gameplay data to remote server. Server address is defined in MainManager.cs scripts.
 
 
 ## Contact Information
