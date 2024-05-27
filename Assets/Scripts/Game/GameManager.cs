@@ -210,6 +210,7 @@ public class GameManager : MonoBehaviour
         foreach (Ghost ghost in ghosts){
             ghost.movement.normalSpeedMultiplier = levelVariables[columnIndices["ghostSpeedMultiplier"]];
             ghost.movement.frightenedSpeedMultiplier = levelVariables[columnIndices["frightenedGhostSpeedMultiplier"]];
+            ghost.eatenDuration = ghost.eatenDuration * levelVariables[columnIndices["homeTimerRatio"]];
             if (ghost.gameObject.name != "Blinky")
             {
                 ghost.SetGhostBehavior(levelVariables[columnIndices["homeTimerRatio"]]);

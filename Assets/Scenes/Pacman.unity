@@ -4957,7 +4957,7 @@ MonoBehaviour:
   levelText: {fileID: 1961963343}
   restartKey: {fileID: 166606304}
   PowerPelletStates: 
-  startLevel: 1
+  startLevel: 13
 --- !u!4 &1802224795
 Transform:
   m_ObjectHideFlags: 0
