@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.UIElements;
 //using System.Numerics;
 // TODO: Implement game identifiersss
 public class GameManager : MonoBehaviour
@@ -13,34 +14,36 @@ public class GameManager : MonoBehaviour
     
     public Transform pellets;
 
+    public Cherry cherry;
+
     public DataCollector gameDatacollector;
 
     // level progression. 
-    // rows = levels, columns = variables (pacmanSpeedMultiplier, ghostSpeedMultiplier, frightenedPacmanSpeedMultiplier, frightenedGhostSpeedMultiplier, frightenedDuration, ChaseTimer) 
+    // rows = levels, columns = variables (pacmanSpeedMultiplier, ghostSpeedMultiplier, frightenedPacmanSpeedMultiplier, frightenedGhostSpeedMultiplier, frightenedDuration, ChaseTimer, FruitPoints) 
     private float[,] levelData = new float[,]
      {
-        // pacmanSpeedMultiplier, ghostSpeedMultiplier, frightenedPacmanSpeedMultiplier, frightenedGhostSpeedMultiplier, frightenedDuration
-        { 0.8f, 0.75f, 0.9f, 0.5f, 6.0f },   // Level 1
-        { 0.9f, 0.85f, 0.95f, 0.55f, 5.0f }, // Level 2
-        { 0.9f, 0.85f, 0.95f, 0.55f, 4.0f }, // Level 3
-        { 0.9f, 0.85f, 0.95f, 0.55f, 3.0f }, // Level 4
-        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f },   // Level 5
-        { 1.0f, 0.95f, 1.0f, 0.6f, 5.0f },   // Level 6
-        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f },   // Level 7
-        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f },   // Level 8
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 9
-        { 1.0f, 0.95f, 1.0f, 0.6f, 5.0f },   // Level 10
-        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f },   // Level 11
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 12
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 13
-        { 1.0f, 0.95f, 1.0f, 0.6f, 3.0f },   // Level 14
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 15
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 16
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 17
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 18
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 19
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f },   // Level 20
-        { 0.9f, 0.95f, 1.0f, 0.6f, 1.0f }    // Level 21+
+        // pacmanSpeedMultiplier, ghostSpeedMultiplier, frightenedPacmanSpeedMultiplier, frightenedGhostSpeedMultiplier, frightenedDuration, FruitPoints, FruitSymbol
+        { 0.8f, 0.75f, 0.9f, 0.5f, 6.0f , 100.0f, 0},   // Level 1
+        { 0.9f, 0.85f, 0.95f, 0.55f, 5.0f, 300.0f, 1 }, // Level 2
+        { 0.9f, 0.85f, 0.95f, 0.55f, 4.0f, 500.0f, 2}, // Level 3
+        { 0.9f, 0.85f, 0.95f, 0.55f, 3.0f, 500.0f, 2}, // Level 4
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 700.0f, 3 },   // Level 5
+        { 1.0f, 0.95f, 1.0f, 0.6f, 5.0f, 700.0f, 3 },   // Level 6
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 1000.0f, 4 },   // Level 7
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 1000.0f, 4 },   // Level 8
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 2000.0f, 5 },   // Level 9
+        { 1.0f, 0.95f, 1.0f, 0.6f, 5.0f, 2000.0f, 5 },   // Level 10
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 3000.0f, 6 },   // Level 11
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 3000.0f, 6 },   // Level 12
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 13
+        { 1.0f, 0.95f, 1.0f, 0.6f, 3.0f, 5000.0f, 7 },   // Level 14
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 15
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 16
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 17
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 18
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 19
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 20
+        { 0.9f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 }    // Level 21+
     };
 
 
@@ -51,7 +54,8 @@ public class GameManager : MonoBehaviour
         { "frightenedPacmanSpeedMultiplier", 2 },
         { "frightenedGhostSpeedMultiplier", 3 },
         { "frightenedDuration", 4},
-        { "ChaseTimer", 5 }        
+        { "fruitPoints", 5 },
+        { "FruitSymbol", 6 }        
         // Add more columns as needed
     };
 
@@ -188,13 +192,15 @@ public class GameManager : MonoBehaviour
 
     private void loadLevelData()
     {
-        float[] levelVariables = new float[5];
-        for (int i = 0; i < 5; i++)
+        float[] levelVariables = new float[levelData.GetLength(1)];
+        for (int i = 0; i < levelData.GetLength(1); i++)
         {
             levelVariables[i] = levelData[this.level - 1, i];
         }
         this.pacman.movement.normalSpeedMultiplier = levelVariables[columnIndices["pacmanSpeedMultiplier"]];
         this.pacman.movement.frightenedSpeedMultiplier = levelVariables[columnIndices["frightenedPacmanSpeedMultiplier"]];
+        this.cherry.points = (int)levelVariables[columnIndices["fruitPoints"]];
+        this.cherry.SetSprite((int)levelVariables[columnIndices["FruitSymbol"]]);
         foreach (Transform pellet in pellets){
             if (pellet.gameObject.GetComponent<PowerPellet>() != null){
                 pellet.gameObject.GetComponent<PowerPellet>().duration = levelVariables[columnIndices["frightenedDuration"]];
@@ -217,6 +223,7 @@ public class GameManager : MonoBehaviour
         int points = ghost.points * this.ghostMultiplier;
         AudioManager.Instance.PlayGhostEatenSound();
         SetScore(this.score + points);
+        ghost.InstantiateFloatingPoint(points);
         this.ghostMultiplier++;
     }
 
@@ -238,6 +245,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void CherryEaten (Cherry cherry)
+    {
+        SetScore(this.score + cherry.points);
+        cherry.gameObject.SetActive(false);
+        cherry.InstantiateFloatingPoint(cherry.points);
+    }
+
     public void PelletEaten(Pellet pellet) // TODO track eaten pellets in pellet position list
     {
         // Vector2 pelletPosition = pellet.transform.position;
@@ -251,6 +265,14 @@ public class GameManager : MonoBehaviour
         SetScore (this.score + pellet.points);
         remainingPellets = CountRemainingPellets();
         remainingPills = CountRemainingPowerPellets();
+        if (remainingPellets == 174){
+            this.cherry.gameObject.SetActive(true);
+        }
+
+        if (remainingPellets == 74 && this.cherry.gameObject.activeSelf == false){
+            this.cherry.gameObject.SetActive(true);
+        }
+
         AudioManager.Instance.PlayEatingSound();
         if (remainingPellets == 0){
             win = true;

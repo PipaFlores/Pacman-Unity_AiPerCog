@@ -1,5 +1,6 @@
 // Purpose: This script is used to control the ghost's movement and behavior.
 using System.Security.Cryptography.X509Certificates;
+using TMPro;
 using UnityEngine;
 
 public class Ghost : MonoBehaviour
@@ -11,6 +12,8 @@ public class Ghost : MonoBehaviour
     public GhostFrightened frightened {get; private set;}
     public GhostBehavior initialBehavior;
     public Transform target; // who are u chasing or running away from
+
+    public GameObject FloatingPoint; // Score prefab
     public int points = 200;
 
     public float eatenDuration = 8.0f;  // Time to be eaten before respawning
@@ -51,6 +54,13 @@ public class Ghost : MonoBehaviour
         if (this.initialBehavior != null){
             this.initialBehavior.Enable();
         }
+    }
+
+    public void InstantiateFloatingPoint(int points)
+    {
+        GameObject floatingPoint = Instantiate(FloatingPoint, transform.position, Quaternion.identity);
+        floatingPoint.GetComponentInChildren<TMP_Text>().text = points.ToString();
+        Destroy(floatingPoint, 1.5f);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

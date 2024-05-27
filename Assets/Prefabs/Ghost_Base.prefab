@@ -222,8 +222,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 033239205b715fe49a6a07b39eaa458d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7
   speedMultiplier: 1
+  normalSpeedMultiplier: 0
+  frightenedSpeedMultiplier: 0
   initialDirection: {x: 0, y: 0}
   obstacleLayer:
     serializedVersion: 2
@@ -240,9 +241,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 788f7bedb94fca346918286784dec1e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movement: {fileID: 0}
   initialBehavior: {fileID: 0}
   target: {fileID: 0}
+  FloatingPoint: {fileID: 1332470341506329063, guid: bfef3dd87dc21e84ca030e95d515ab2f, type: 3}
   points: 200
+  eatenDuration: 8
+  eaten: 0
 --- !u!114 &5996954389303006366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,6 +261,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 7
+  patrolPath: {fileID: 0}
 --- !u!114 &1082519639284314403
 MonoBehaviour:
   m_ObjectHideFlags: 0
