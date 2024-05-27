@@ -56,6 +56,10 @@ public class Ghost : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Instantiates the floating score indicator prefab, attached in editor
+    /// </summary>
+    /// <param name="points"></param>
     public void InstantiateFloatingPoint(int points)
     {
         GameObject floatingPoint = Instantiate(FloatingPoint, transform.position, Quaternion.identity);
@@ -63,6 +67,13 @@ public class Ghost : MonoBehaviour
         Destroy(floatingPoint, 1.5f);
     }
 
+    /// <summary>
+    /// Sets the ghost's behavior
+    /// </summary>
+    /// <param name="homeTimerRatio">Ratio between the level appereance time and the first level departure (Between 0 and 1)</param>
+    public void SetGhostBehavior(float homeTimerRatio){
+        this.home.duration = this.home.duration * homeTimerRatio;
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Pacman")){

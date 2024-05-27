@@ -19,35 +19,35 @@ public class GameManager : MonoBehaviour
     public DataCollector gameDatacollector;
 
     // level progression. 
-    // rows = levels, columns = variables (pacmanSpeedMultiplier, ghostSpeedMultiplier, frightenedPacmanSpeedMultiplier, frightenedGhostSpeedMultiplier, frightenedDuration, ChaseTimer, FruitPoints) 
+    // rows = levels, columns = variables (pacmanSpeedMultiplier, ghostSpeedMultiplier, frightenedPacmanSpeedMultiplier, frightenedGhostSpeedMultiplier, frightenedDuration, fruitPoints, homeTimerRatio) 
     private float[,] levelData = new float[,]
      {
-        // pacmanSpeedMultiplier, ghostSpeedMultiplier, frightenedPacmanSpeedMultiplier, frightenedGhostSpeedMultiplier, frightenedDuration, FruitPoints, FruitSymbol
-        { 0.8f, 0.75f, 0.9f, 0.5f, 6.0f , 100.0f, 0},   // Level 1
-        { 0.9f, 0.85f, 0.95f, 0.55f, 5.0f, 300.0f, 1 }, // Level 2
-        { 0.9f, 0.85f, 0.95f, 0.55f, 4.0f, 500.0f, 2}, // Level 3
-        { 0.9f, 0.85f, 0.95f, 0.55f, 3.0f, 500.0f, 2}, // Level 4
-        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 700.0f, 3 },   // Level 5
-        { 1.0f, 0.95f, 1.0f, 0.6f, 5.0f, 700.0f, 3 },   // Level 6
-        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 1000.0f, 4 },   // Level 7
-        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 1000.0f, 4 },   // Level 8
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 2000.0f, 5 },   // Level 9
-        { 1.0f, 0.95f, 1.0f, 0.6f, 5.0f, 2000.0f, 5 },   // Level 10
-        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 3000.0f, 6 },   // Level 11
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 3000.0f, 6 },   // Level 12
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 13
-        { 1.0f, 0.95f, 1.0f, 0.6f, 3.0f, 5000.0f, 7 },   // Level 14
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 15
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 16
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 17
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 18
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 19
-        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 },   // Level 20
-        { 0.9f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7 }    // Level 21+
+        // pacmanSpeedMultiplier, ghostSpeedMultiplier, frightenedPacmanSpeedMultiplier, frightenedGhostSpeedMultiplier, frightenedDuration, FruitPoints, FruitSymbol, homeTimerRatio
+        { 0.8f, 0.75f, 0.9f, 0.5f, 6.0f , 100.0f, 0, 1},   // Level 1
+        { 0.9f, 0.85f, 0.95f, 0.55f, 5.0f, 300.0f, 1, 1 }, // Level 2
+        { 0.9f, 0.85f, 0.95f, 0.55f, 4.0f, 500.0f, 2, 0.9f}, // Level 3
+        { 0.9f, 0.85f, 0.95f, 0.55f, 3.0f, 500.0f, 2, 0.9f}, // Level 4
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 700.0f, 3, 0.8f},   // Level 5
+        { 1.0f, 0.95f, 1.0f, 0.6f, 5.0f, 700.0f, 3, 0.8f},   // Level 6
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 1000.0f, 4, 0.7f},   // Level 7
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 1000.0f, 4, 0.6f },   // Level 8
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 2000.0f, 5, 0.5f },   // Level 9
+        { 1.0f, 0.95f, 1.0f, 0.6f, 5.0f, 2000.0f, 5, 0.4f },   // Level 10
+        { 1.0f, 0.95f, 1.0f, 0.6f, 2.0f, 3000.0f, 6, 0.3f },   // Level 11
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 3000.0f, 6, 0.2f },   // Level 12
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7, 0.1f },   // Level 13
+        { 1.0f, 0.95f, 1.0f, 0.6f, 3.0f, 5000.0f, 7, 0.1f },   // Level 14
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7, 0.1f },   // Level 15
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7, 0.1f },   // Level 16
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7, 0.1f },   // Level 17
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7, 0.1f },   // Level 18
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7, 0.1f },   // Level 19
+        { 1.0f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7, 0.1f },   // Level 20
+        { 0.9f, 0.95f, 1.0f, 0.6f, 1.0f, 5000.0f, 7, 0.1f }    // Level 21+
     };
 
 
-      private Dictionary<string, int> columnIndices = new Dictionary<string, int>
+      private readonly Dictionary<string, int> columnIndices = new Dictionary<string, int>
     {
         { "pacmanSpeedMultiplier", 0 },
         { "ghostSpeedMultiplier", 1 },
@@ -55,7 +55,8 @@ public class GameManager : MonoBehaviour
         { "frightenedGhostSpeedMultiplier", 3 },
         { "frightenedDuration", 4},
         { "fruitPoints", 5 },
-        { "FruitSymbol", 6 }        
+        { "fruitSymbol", 6 },  
+        { "homeTimerRatio", 7}      
         // Add more columns as needed
     };
 
@@ -200,7 +201,7 @@ public class GameManager : MonoBehaviour
         this.pacman.movement.normalSpeedMultiplier = levelVariables[columnIndices["pacmanSpeedMultiplier"]];
         this.pacman.movement.frightenedSpeedMultiplier = levelVariables[columnIndices["frightenedPacmanSpeedMultiplier"]];
         this.cherry.points = (int)levelVariables[columnIndices["fruitPoints"]];
-        this.cherry.SetSprite((int)levelVariables[columnIndices["FruitSymbol"]]);
+        this.cherry.SetSprite((int)levelVariables[columnIndices["fruitSymbol"]]);
         foreach (Transform pellet in pellets){
             if (pellet.gameObject.GetComponent<PowerPellet>() != null){
                 pellet.gameObject.GetComponent<PowerPellet>().duration = levelVariables[columnIndices["frightenedDuration"]];
@@ -209,6 +210,11 @@ public class GameManager : MonoBehaviour
         foreach (Ghost ghost in ghosts){
             ghost.movement.normalSpeedMultiplier = levelVariables[columnIndices["ghostSpeedMultiplier"]];
             ghost.movement.frightenedSpeedMultiplier = levelVariables[columnIndices["frightenedGhostSpeedMultiplier"]];
+            ghost.eatenDuration = ghost.eatenDuration * levelVariables[columnIndices["homeTimerRatio"]];
+            if (ghost.gameObject.name != "Blinky")
+            {
+                ghost.SetGhostBehavior(levelVariables[columnIndices["homeTimerRatio"]]);
+            }
         }
         // for (int i = 0; i < this.ghosts.Length; i++)
         // {
