@@ -301,10 +301,13 @@ public class GameManager : MonoBehaviour
         if (remainingPellets == 0){
             win = true;
             this.pacman.gameObject.SetActive(false);
+            foreach (Ghost ghost in ghosts){
+                ghost.gameObject.SetActive(false);
+            }
             gameDatacollector.SaveData();
             SetLevel(this.level + 1);
             Invoke(nameof(NewRound), 3.0f);
-             // TODO: change this to a game win screen
+
         }
     }
 
@@ -312,7 +315,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < this.ghosts.Length; i++){
             this.ghosts[i].frightened.Enable(pellet.duration);
-        }
+            }
         PowerPelletEaten(pellet.GetPowerPelletIndex());
         PelletEaten(pellet);
         CancelInvoke(); // If you take more than one powerpellet, cancel the first invoke timer and start it again

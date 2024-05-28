@@ -8,7 +8,8 @@ public class GhostFrightened : GhostBehavior
     public SpriteRenderer eyes;
     public SpriteRenderer blue;
     public SpriteRenderer white;
-
+    public float flashduration; // flashduration is the time the ghost will flicker before it stops
+    public int flickerCount = 3; // flickerCount is the number of times the ghost will flicker before it stops
     public bool eaten { get; private set; }
 
 // this is done instead of Onenable() in case
@@ -21,7 +22,7 @@ public class GhostFrightened : GhostBehavior
         this.eyes.enabled = false;
         this.blue.enabled = true;
         this.white.enabled = false;
-
+        this.flashduration = duration/2.0f;
         Invoke(nameof(Flash), duration/2.0f);
     }
 
@@ -50,12 +51,26 @@ public class GhostFrightened : GhostBehavior
 
     private void Flash()
     {
-        if (!this.eaten){
+        if (!this.eaten)
+        {
+            StartCoroutine(Flicker(flashduration));
+        }
+    }
+
+    private IEnumerator Flicker(float duration)
+    {
+
+        float flickerDuration = duration / (flickerCount * 2);
+        for (int i = 0; i < flickerCount; i++)
+        {
             this.blue.enabled = false;
             this.white.enabled = true;
-            this.white.GetComponent<AnimatedSprite>().Restart();
+            yield return new WaitForSeconds(flickerDuration);
+
+            this.blue.enabled = true;
+            this.white.enabled = false;
+            yield return new WaitForSeconds(flickerDuration);
         }
-        
     }
 
     private void Eaten()  // TODO: Make it to fly to the home, instead of only teleporting.
