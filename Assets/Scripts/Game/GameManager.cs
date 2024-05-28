@@ -78,6 +78,9 @@ public class GameManager : MonoBehaviour
 
     public int remainingPills {get ; private set; }
 
+    public int fruitState_1; // 0 = unactive, 1 = active, 2 = eaten
+    public int fruitState_2;  // 0 = unactive, 1 = active, 2 = eaten
+
     public int[] PowerPelletStates;  // for elements, 1 = not eaten, 0 = eaten . This is to keep track of the powerpellets. 
     //They are numbered cloclwise by their location in the grid first one is the one top left, second one is the one top right, third one is the one bottom right and fourth one is the one bottom left
     
@@ -272,6 +275,12 @@ public class GameManager : MonoBehaviour
     public void CherryEaten (Cherry cherry)
     {
         SetScore(this.score + cherry.points);
+        if (cherry.cherryIndex == 1){
+            fruitState_1 = 2;
+        }
+        if (cherry.cherryIndex == 2){
+            fruitState_2 = 2;
+        }
         cherry.gameObject.SetActive(false);
         cherry.InstantiateFloatingPoint(cherry.points);
     }
@@ -291,10 +300,14 @@ public class GameManager : MonoBehaviour
         remainingPills = CountRemainingPowerPellets();
         if (remainingPellets == 174){
             this.cherry.gameObject.SetActive(true);
+            this.cherry.cherryIndex = 1;
+            fruitState_1 = 1;
         }
 
         if (remainingPellets == 74 && this.cherry.gameObject.activeSelf == false){
             this.cherry.gameObject.SetActive(true);
+            this.cherry.cherryIndex = 2;
+            fruitState_2 = 1;
         }
 
         AudioManager.Instance.PlayEatingSound();

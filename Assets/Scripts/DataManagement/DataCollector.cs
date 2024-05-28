@@ -65,6 +65,8 @@ public class DataCollector : MonoBehaviour
         float time = GameManager.Instance.round_timeElapsed;
         int pelletsRemaining = GameManager.Instance.remainingPellets;
         int powerPelletsRemaining = GameManager.Instance.remainingPills;
+        int fruitState_1 = GameManager.Instance.fruitState_1;
+        int fruitState_2 = GameManager.Instance.fruitState_2;
 
         GameDataPoint dataPoint = new GameDataPoint
         {
@@ -78,6 +80,8 @@ public class DataCollector : MonoBehaviour
             powerPelletsRemaining = powerPelletsRemaining,
             livesRemaining = lives,
             timeElapsed = time,
+            fruitState_1 = fruitState_1,
+            fruitState_2 = fruitState_2
             // pellets = pellets
         };
         dataPointsList.Add(dataPoint);
