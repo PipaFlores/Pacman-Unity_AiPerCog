@@ -607,7 +607,7 @@ MonoBehaviour:
   session_number: 0
   game_number: 0
   games_in_session: 0
-  source: Unity-Test
+  source: Build-Test
   dataserver: https://aipercog-24.it.helsinki.fi/
 --- !u!4 &657005236
 Transform:
@@ -4924,6 +4924,8 @@ MonoBehaviour:
   levelText: {fileID: 1961963343}
   restartKey: {fileID: 166606304}
   readyText: {fileID: 1621683077}
+  fruitState_1: 0
+  fruitState_2: 0
   PowerPelletStates: 
   startLevel: 1
 --- !u!4 &1802224795
@@ -11060,7 +11062,7 @@ MonoBehaviour:
   - {fileID: 761981510}
   - {fileID: 1711457213}
   - {fileID: 483348042}
-  localSave: 1
+  localSave: 0
   serverSave: 1
   saveInterval: 0.1
 --- !u!4 &2011925314
@@ -11231,7 +11233,7 @@ Transform:
   m_GameObject: {fileID: 2096509490}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.51, y: -0.31, z: -10.088297}
+  m_LocalPosition: {x: -12.59, y: -15.42, z: -10.088297}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
