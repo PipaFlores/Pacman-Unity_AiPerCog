@@ -15,6 +15,8 @@ public class GameDataPoint  // defines the daata to be recorded each frame/time 
     public int[] ghostStates;   // 0 = home, 1 = scatter, 2 = chase, 3 = frightened , 4 = eaten
 
     public int[] powerPelletStates; // 1 = not eaten, 0 = eaten
+    public int fruitState_1; // 0 = unactive, 1 = active, 2 = eaten
+    public int fruitState_2; // 0 = unactive, 1 = active, 2 = eaten
     public int score;
     public int powerPelletsRemaining;
     public int pelletsRemaining;
@@ -31,6 +33,7 @@ public class GameDataContainer  // contains all the data to be sent after finali
     public int user_id;
     public string date_played;
     public double game_duration;
+    public int level;
     public int session_number;
     public int game_in_session;
     public string source;

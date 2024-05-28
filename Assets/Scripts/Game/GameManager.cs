@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
+using System.Collections;
 //using System.Numerics;
 // TODO: Implement game identifiersss
 public class GameManager : MonoBehaviour
@@ -67,6 +68,7 @@ public class GameManager : MonoBehaviour
     public Text levelText;
 
     public Text restartKey;
+    public Text readyText;
 
     public int ghostMultiplier { get; private set; } = 1;
 
@@ -112,7 +114,7 @@ public class GameManager : MonoBehaviour
         }
         round_timeElapsed = Time.time - round_startTime;
     }
-    private void NewGame()
+    private void NewGame() // Starts a new game from the starting level
     {
         SetScore(0);
         SetLives(3);
@@ -123,7 +125,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void NewRound()
+    private void NewRound() // Starts a new level
     {
         MainManager.Instance.games_in_session++; // Increase the count of games in a session
         win = false;
@@ -144,8 +146,24 @@ public class GameManager : MonoBehaviour
             this.ghosts[i].ResetState();
         }
         this.pacman.ResetState(); // reset pacman
+        //  freeze the game for 3 seconds before each level start
+        StartCoroutine(GetReady(3.0f));
+        
+    }
+
+    private IEnumerator GetReady(float time)
+    {
+        this.readyText.enabled = true;
+        Time.timeScale = 0;
+        float pauseEndTime = Time.realtimeSinceStartup + time;
+        while (Time.realtimeSinceStartup < pauseEndTime)
+        {
+            yield return 0;
+        }
+        this.readyText.enabled = false;
         gameDatacollector.Startdatacollection();
         StartTimer();
+        Time.timeScale = 1;
     }
 
     private void ResetState()  // If pacman dies, resets ghots and pacman but not pellet

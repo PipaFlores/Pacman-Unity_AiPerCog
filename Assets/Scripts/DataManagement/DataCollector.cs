@@ -117,7 +117,8 @@ public class DataCollector : MonoBehaviour
             game_in_session = MainManager.Instance.games_in_session,
             user_id = MainManager.Instance.user_id,
             source = MainManager.Instance.source,
-            win = GameManager.Instance.win
+            win = GameManager.Instance.win,
+            level = GameManager.Instance.level
             };
         string json = JsonUtility.ToJson(container, true);
         if (localSave){
