@@ -27,6 +27,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayBackgroundSound()
     {
+        BackgroundSound.mute = false;
         if (!BackgroundSound.isPlaying)
         {
             BackgroundSound.Play();
@@ -51,13 +52,11 @@ public class AudioManager : MonoBehaviour
 
     public void PlayIntermissionSound(float duration)
     {
-        if (!IntermissionSound.isPlaying)
-        {
-            IntermissionSound.Play();
-            StartCoroutine(StopIntermissionSound(duration));
-            BackgroundSound.Stop();
-            Invoke(nameof(PlayBackgroundSound), duration);
-        }
+        IntermissionSound.Play();
+        StartCoroutine(StopIntermissionSound(duration));
+        BackgroundSound.mute = true;
+        Invoke(nameof(PlayBackgroundSound), duration);
+        
     }
 
     private IEnumerator StopIntermissionSound(float duration)
