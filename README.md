@@ -43,6 +43,34 @@ Ghost behavior:
 
 Data collection scripts (Assets/Scripts/DataManagement/*) gather and sends raw gameplay data to remote server. Server address is defined in MainManager.cs scripts.
 
+Data collected is divided in two tables, "game" and "gamestate":
+
+### "Game" Table:
+
+Contains higher level data of a single game/round/level of Pacman played. A game ends when player loses all lives or wins and moves to a higher level:
+
+- user_id: represents player's unique identifier. retrieved on log-in
+- session_number: represents the session number in which the game was played (increments each time the user logs in and plays a game)
+- game_in_session: represents the position of the game within the current session
+- source: represents the source from where the client is playing the game (e.g., itch.io, University's server, etc.)
+- date played
+- game duration
+- win: 0 for lost game , 1 for a win
+- level: Difficulty level of the game
+
+### "Gamestate" Table:
+
+- game_id
+- time elapsed: since the start of the round (timer starts as soon as the movement is enabled)
+- score
+- lives
+- positions of Pacman and Ghosts. Positions are sent in (x,y) structure. Values range from -12.5 < x < 12.5 ; -15.5 < y > 12.5
+- pacman attack state: represents the state when pacman is eating a ghost. 0 for normal, 1 for eating a ghost
+- ghost states: represents the ghost active behavior/state. 0 for home, 1 for scattering, 2 for chasing, 3 for frightened, 4 for eaten
+- pellets: number of remaining pellets and powerpellets
+- Powerpellets: number of remaining powerpellets. 
+- PowerPellet states: the state of each individual pellet (1 for not eaten/active, 0 for eaten/unactive), numbered from 1 to 4 according to their position in the map ( see PowerPellet.cs)
+- Fruit states: state of the fruits. 0 for not spawned, 1 for spawned, 2 for eaten. Two fruits are spawned when remaining pellet count reaches 174 and 74.
 
 ## Contact Information
 

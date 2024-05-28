@@ -10,6 +10,8 @@ public class Cherry : MonoBehaviour
     public Sprite[] sprites;
 
     public GameObject FloatingPoint;
+
+    public int cherryIndex; // 1 first and 2 second cherry
     
     void OnEnable()
     {
@@ -19,6 +21,14 @@ public class Cherry : MonoBehaviour
     void Disable()
     {
         gameObject.SetActive(false);
+        if (cherryIndex == 1)
+        {
+            FindObjectOfType<GameManager>().fruitState_1 = 0;
+        }
+        else
+        {
+            FindObjectOfType<GameManager>().fruitState_2 = 0;
+        }
     }
 
     public void SetSprite(int index)
@@ -28,6 +38,7 @@ public class Cherry : MonoBehaviour
     
     public void Eat()
     {
+        CancelInvoke();
         FindObjectOfType<GameManager>().CherryEaten(this);
     }
 
