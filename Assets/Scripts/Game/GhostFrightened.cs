@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GhostFrightened : GhostBehavior
@@ -49,7 +50,7 @@ public class GhostFrightened : GhostBehavior
 
     }
 
-    private void Flash()
+    public void Flash()
     {
         if (!this.eaten)
         {
@@ -65,6 +66,7 @@ public class GhostFrightened : GhostBehavior
         {
             this.blue.enabled = false;
             this.white.enabled = true;
+            this.white.GetComponent<AnimatedSprite>().Restart();
             yield return new WaitForSeconds(flickerDuration);
 
             this.blue.enabled = true;
