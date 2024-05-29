@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (this.lives <= 0 && Input.anyKeyDown){
+        if (this.lives <= 0 && Input.anyKeyDown && restartKey.enabled == true){
             NewGame(); 
         }
         round_timeElapsed = Time.time - round_startTime;
@@ -154,7 +154,7 @@ public class GameManager : MonoBehaviour
         
     }
 
-    private IEnumerator GetReady(float time)
+    private IEnumerator GetReady(float time, bool startDataCollection = true)
     {
         this.readyText.enabled = true;
         Time.timeScale = 0;
@@ -164,8 +164,11 @@ public class GameManager : MonoBehaviour
             yield return 0;
         }
         this.readyText.enabled = false;
-        gameDatacollector.Startdatacollection();
-        StartTimer();
+        if (startDataCollection)
+        {
+            gameDatacollector.Startdatacollection();
+            StartTimer();
+        }
         Time.timeScale = 1;
     }
 
@@ -176,8 +179,8 @@ public class GameManager : MonoBehaviour
        for (int i = 0; i < this.ghosts.Length; i++) {
             this.ghosts[i].ResetState();
         }
-
-        this.pacman.ResetState(); 
+        this.pacman.ResetState();
+        StartCoroutine(GetReady(3.0f, false));
     }
 
     private void GameOver()
@@ -189,8 +192,13 @@ public class GameManager : MonoBehaviour
         this.pacman.gameObject.SetActive(false); 
         // Game over screen
         Gameover.enabled = true;
+        Invoke(nameof(PromptRestart), 1.5f);
+        
+        
+    }
+    private void PromptRestart()
+    {
         restartKey.enabled = true;
-        gameDatacollector.SaveData();
     }
 
     private void SetScore(int score)
@@ -256,18 +264,20 @@ public class GameManager : MonoBehaviour
 
     public void PacmanEaten()
     {
-        AudioManager.Instance.PlayDeathSound();
-        this.pacman.DeathSequence();
-
-
+        
         SetLives(this.lives - 1);
 
         if (this.lives > 0)
         {
-            Invoke(nameof(ResetState), 3.0f); // If pacman dies, resets ghots and pacman but not pellet (3 seconds delay)
+            ResetState(); // If pacman dies, resets ghots and pacman but not pellet (3 seconds delay)
+            AudioManager.Instance.PlayDeathSound();
+            //this.pacman.DeathSequence();   Removed because it adds noise in the data Moved the animation to the lives indicator image
         }
         else
         {
+            gameDatacollector.SaveData();
+            AudioManager.Instance.PlayDeathSound();
+            //this.pacman.DeathSequence(); Removed because it adds noise in the data
             GameOver();
         }
     }
