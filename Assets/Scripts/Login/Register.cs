@@ -36,7 +36,24 @@ public class Register : MonoBehaviour
         SceneManager.LoadScene("Login");
     }
 
-
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (usernameInput.isFocused)
+            {
+                passwordInput.Select();
+            }
+            else if (passwordInput.isFocused)
+            {
+                emailinput.Select();
+            }
+            else if (emailinput.isFocused)
+            {
+                usernameInput.Select();
+            }
+        }
+    }
 IEnumerator RegisterUser()
     {
             // Check if any field is empty
