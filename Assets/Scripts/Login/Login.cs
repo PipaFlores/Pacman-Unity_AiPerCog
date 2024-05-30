@@ -30,6 +30,21 @@ public class Login : MonoBehaviour
 
     }
 
+    void Update()
+{
+    if (Input.GetKeyDown(KeyCode.Tab))
+    {
+        if (usernameInput.isFocused)
+        {
+            passwordInput.Select();
+        }
+        else if (passwordInput.isFocused)
+        {
+            usernameInput.Select();
+        }
+    }
+}
+
     IEnumerator LoginUser()
     {
         if (string.IsNullOrWhiteSpace(usernameInput.text) ||
