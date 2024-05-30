@@ -65,6 +65,8 @@ public class GameManager : MonoBehaviour
     public Text ScoreText;
     public Text livesText;
 
+    public GameObject livesIndicator;
+
     public Text levelText;
 
     public Text restartKey;
@@ -159,9 +161,12 @@ public class GameManager : MonoBehaviour
         this.readyText.enabled = true;
         Time.timeScale = 0;
         float pauseEndTime = Time.realtimeSinceStartup + time;
+        int countdown = (int)time;
         while (Time.realtimeSinceStartup < pauseEndTime)
         {
-            yield return 0;
+            this.readyText.text = "READY! " + countdown.ToString();
+            countdown--;
+            yield return new WaitForSecondsRealtime(1);
         }
         this.readyText.enabled = false;
         if (startDataCollection)
@@ -271,16 +276,20 @@ public class GameManager : MonoBehaviour
         {
             ResetState(); // If pacman dies, resets ghots and pacman but not pellet (3 seconds delay)
             AudioManager.Instance.PlayDeathSound();
+            this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
             //this.pacman.DeathSequence();   Removed because it adds noise in the data Moved the animation to the lives indicator image
         }
         else
         {
             gameDatacollector.SaveData();
             AudioManager.Instance.PlayDeathSound();
+            this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
             //this.pacman.DeathSequence(); Removed because it adds noise in the data
             GameOver();
         }
     }
+
+    
 
     public void CherryEaten (Cherry cherry)
     {

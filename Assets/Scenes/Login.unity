@@ -850,7 +850,7 @@ MonoBehaviour:
   session_number: 0
   game_number: 0
   games_in_session: 0
-  source: Itchio
+  source: Build-Test-HelsinkiServer-101
   dataserver: https://aipercog-24.it.helsinki.fi/
 --- !u!4 &1026728862
 Transform:
