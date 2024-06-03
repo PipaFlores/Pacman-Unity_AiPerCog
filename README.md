@@ -6,6 +6,41 @@ This repository contains the Unity (version 2022.3.20f1) project of our Pacman i
 
 Relevant code is in Assets/Scripts
 
+## Table of differences between [Original game](https://pacman.holenet.info/), this implementation (Unity Pacman) and [previous research](https://version.helsinki.fi/hipercog/behavlets/DXPacMan)(DX Pacman) (see below for detailed description)
+
+| Feature | Original | Unity Pacman | DX Pacman |
+| ----------- | ----------- | ----------- | ----------- |
+| Goal of the game | Eat 244 pellets, while avoiding ghosts | Similar | ------- |
+| Map space | 26x29 movable tiles | Similar | ------- |
+| Power pellets | 4 power pellets that allow Pacman to eat ghosts for a brief period | Similar | ------- |
+| Fruits | 2 fruits that appear at different times | Similar | ------- |
+| Ghost behavior | 4 ghosts with different targeting behavior | 4 ghosts with same targeting behavior | ------- |
+| Targeting heuristic | Based on a simple vector distance heuristic | Similar | ------- |
+| Collision determination | On the entrance of the tile | Physics 2D circular colliders, with a radius of 0.5 units | ------- |
+| Ghost movement decision | Determined on every intersection | Same | ------- |
+| Exploitable areas | Map contains areas to exploit (see Dossier) | No areas to exploit | ------- |
+| Red ghost behavior | Increases speed twice during the game (Cruise Elroy) and has a more aggressive behavior | All ghosts have the same speed (No Cruise Elroy) and similar behavior | ------- |
+| Ghost speed in tunnels | Reduced speed | Same speed | ------- |
+| Game speed | 100% speed is 75.76 pixels/second or (9.47 tiles/sec) | Same (100% = 9.47 unity's units/sec) | ------- |
+| Pacman speed | 5% higher than ghosts, except when eating power pellets | Similar, but from level 21+ the speed of the ghosts is 5% faster than Pacman | ------- |
+| Fright time | Starts at 6 seconds and decreases each level | Starts at 6 seconds and decreases each level | ------- |
+| Cutscenes | After level 5 and 9, followed by longer frightened times for the following level (5 seconds) | No cutscenes, but frightened time increases at level 6 and 10 | ------- |
+| Ghost behavior switching | Between chase/scatter based on level and pill-dependent functions | Heuristically, scatter during 6 secs, chase for 20 secs, and iterate | ------- |
+| Ghost scatter behavior | Each ghost has an assigned quadrant to patrol | Same | ------- |
+| Ghost departure timing | Based on counters, dependent on time and pellets eaten | Based on a timer, decreasing with level progression | ------- |
+| Ghost flashing | Varies on levels before turning normal from frightened state | Always flash 3 times before changing | ------- |
+| Game freezing on ghost eating | Freezes when Pacman eats a ghost | Game continues while Pacman eats a ghost | ------- |
+| Game freezing on Pacman death | Freezes when Pacman dies | Similar | ------- |
+| Level progression | Increases challenges by changing several variables of the game | Simplified progression, as shown in table below | ------- |
+
+
+## Level Progression Comparison between Original and Unity Pacman (Red columns were removed, except for # of flashes, which is fixed to 3)
+![](LevelProgComparison.jpg)
+
+
+
+# Detailed description
+
 ## Game Design
 
 This is a non-standard implementation of Pacman, designed for research in gamer behavior. The game is built upon the educational example developed by [Zigurous](https://github.com/zigurous/unity-pacman-tutorial) with tweaked and new elements based on the [Pacman Dossier by Jamey Pittman](https://pacman.holenet.info/). However, simplifying for our research purposes, it is not an exact replica of the original game.
@@ -34,8 +69,8 @@ Ghost behavior:
 - After departure, each ghost scatters to patrol an assigned quadrant, following the original game's behavior.
 - During the game they alternate between chase/scatter behavior. As difficulty increases, the sooner and longer they are in chasing behavior.
 - Movement is guided by a grid of nodes positioned at each intersection. Ghost wont change path in the middle of a passage/tunnel
-- When chasing Pacman, the targetting system is similar for every ghost. They chase pacman directly using a heuristic distance metric.
-- Blinky is not faster than the other ghosts and there is no ["Cruise Elroy" speed boost](https://pacman.holenet.info/#CH4_Blinky) speed changes.
+- When chasing Pacman, the targetting system is Same for every ghost. They chase pacman directly using a heuristic distance metric, Same to Blinky in the original game. This is a simplification of the original game, where each ghost has a different targetting behavior. As a consequence, the game is more challenging, as every ghost behaves as the most agressive one in the original game.
+- In the original game, Blinky increases its speed twice during the game when a certain amount of pellets are eaten. In this version, Blinky is not faster than the other ghosts and there is no ["Cruise Elroy" speed boost](https://pacman.holenet.info/#CH4_Blinky) speed changes. This reduces challenge significantly, as Blinky is the most aggressive ghost in the original game. However, this is somewhat countered by the Same targetting behavior of all ghosts.
 
 
 
