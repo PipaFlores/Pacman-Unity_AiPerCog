@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 // with the CancelInvoke in SaveData() at GameOver or !HasRemainingPellets
 public class DataCollector : MonoBehaviour
 {
-    public GameObject player;
+    public GameObject player;  // Pacman
     public GameObject[] ghosts; // Assuming you have multiple enemies
     private List<GameDataPoint> dataPointsList = new List<GameDataPoint>();
 
@@ -44,22 +44,30 @@ public class DataCollector : MonoBehaviour
     
     private void CollectGameData()
     {
+        // Get game data from game manager
+        // Get player position, attack state and input direction
         Vector2 playerPos = player.transform.position;
+        bool pacmanAttack = player.GetComponent<Pacman>().pacmanAttack;
+        string inputDirection = player.GetComponent<Pacman>().inputDirection;
+        player.GetComponent<Pacman>().inputDirection = "none";
+        string movementDirection = dir_to_string(player.GetComponent<Movement>().direction);
+
+        // Get ghosts position and state
         Vector2[] ghostsPos = new Vector2[ghosts.Length];
         int[] ghostsState = new int[ghosts.Length];
-        bool pacmanAttack = player.GetComponent<Pacman>().pacmanAttack;
-        int[] PowerPelletStates = new int[GameManager.Instance.PowerPelletStates.Length];
         for (int i = 0; i < ghosts.Length; i++)
         {
             ghostsPos[i] = ghosts[i].transform.position;
             ghostsState[i] = GetGhostState(ghosts[i]);
-        }
+        } 
+        // Get power pellet states from game manager
+        int[] PowerPelletStates = new int[GameManager.Instance.PowerPelletStates.Length];
         for (int i = 0; i < GameManager.Instance.PowerPelletStates.Length; i++)
         {
             PowerPelletStates[i] = GameManager.Instance.PowerPelletStates[i];
         }
 
-        // Assume you have a way to access the current score and lives (e.g., through a GameManager)
+        // Get game data from game manager
         int currentScore = GameManager.Instance.score;
         int lives = GameManager.Instance.lives;
         float time = GameManager.Instance.round_timeElapsed;
@@ -81,8 +89,9 @@ public class DataCollector : MonoBehaviour
             livesRemaining = lives,
             timeElapsed = time,
             fruitState_1 = fruitState_1,
-            fruitState_2 = fruitState_2
-            // pellets = pellets
+            fruitState_2 = fruitState_2,
+            inputDirection = inputDirection,
+            movementDirection = movementDirection
         };
         dataPointsList.Add(dataPoint);
     }
@@ -176,5 +185,23 @@ public class DataCollector : MonoBehaviour
     //         pellets.Add(new PelletState(pellet.Key, pellet.Value));
     //     }
     // }
+
+    private string dir_to_string(Vector2 dir){
+        if (dir == Vector2.up){
+            return "up";
+        }
+        else if (dir == Vector2.down){
+            return "down";
+        }
+        else if (dir == Vector2.left){
+            return "left";
+        }
+        else if (dir == Vector2.right){
+            return "right";
+        }
+        else{
+            return "none";
+        }   
+    }
 }
 
