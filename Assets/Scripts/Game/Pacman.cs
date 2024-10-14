@@ -10,6 +10,8 @@ public class Pacman : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     private new Collider2D collider;
     public bool pacmanAttack = false;
+
+    public string inputDirection; // This is used to store the input direction of the player
     
     
     private void Awake(){
@@ -22,15 +24,19 @@ public class Pacman : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.UpArrow)){
             this.movement.SetDirection(Vector2.up);
+            this.inputDirection = "up";
         }
         if (Input.GetKeyDown(KeyCode.DownArrow)){
             this.movement.SetDirection(Vector2.down);
+            this.inputDirection = "down";
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow)){
             this.movement.SetDirection(Vector2.left);
+            this.inputDirection = "left";
         }
         if (Input.GetKeyDown(KeyCode.RightArrow)){
             this.movement.SetDirection(Vector2.right);
+            this.inputDirection = "right";
         }
         float angle = Mathf.Atan2(this.movement.direction.y, this.movement.direction.x); // Gets the angle of dir
         this.transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward); // Sets rot to the angle

@@ -22,6 +22,9 @@ public class GameDataPoint  // defines the daata to be recorded each frame/time 
     public int pelletsRemaining;
     public int livesRemaining;
     public float timeElapsed;
+    public string inputDirection;
+
+    public string movementDirection;
     // public List<PelletState> pellets;
 
 }
