@@ -3,12 +3,19 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
 using System.Collections;
-//using System.Numerics;
-// TODO: Implement game identifiersss
+
+// The GameManager class is responsible for managing the overall game state and logic.
+// It handles the initialization and control of various game elements such as Pacman, ghosts, pellets, and cherries.
+// The class also manages the level progression, including speed multipliers and other parameters for each level.
+// Additionally, it interacts with the DataCollector class to gather and manage game data during each round.
+// The collected data includes player and ghost positions, game state, scores, and other relevant information.
+// This data can be saved locally or sent to a remote server for analysis.
+// The GameManager class ensures that the game runs smoothly and provides a framework for game progression and data collection.
+
 public class GameManager : MonoBehaviour
 {
     
-    public static GameManager Instance { get; private set; } // I dont understand this one and the Awake start
+    public static GameManager Instance { get; private set; }
     public Ghost[] ghosts;
     
     public Pacman pacman;
@@ -72,6 +79,7 @@ public class GameManager : MonoBehaviour
     public Text restartKey;
     public Text readyText;
 
+    public Text UserNotification;
     public int ghostMultiplier { get; private set; } = 1;
 
     public int score {get ; private set; }
@@ -84,7 +92,7 @@ public class GameManager : MonoBehaviour
     public int fruitState_2;  // 0 = unactive, 1 = active, 2 = eaten
 
     public int[] PowerPelletStates;  // for elements, 1 = not eaten, 0 = eaten . This is to keep track of the powerpellets. 
-    //They are numbered cloclwise by their location in the grid first one is the one top left, second one is the one top right, third one is the one bottom right and fourth one is the one bottom left
+    //They are numbered clocklwise by their location in the grid first one is the one top left, second one is the one top right, third one is the one bottom right and fourth one is the one bottom left
     
     public int lives {get ; private set; }
     public int level {get ; private set; }
@@ -92,7 +100,6 @@ public class GameManager : MonoBehaviour
     public float round_timeElapsed {get ; private set; }
     public float round_startTime {get ; private set; }
     public bool win {get ; private set; }
-    // public Dictionary<Vector2, bool> pelletsPositions = new Dictionary<Vector2, bool>();
     
 
 
@@ -139,10 +146,7 @@ public class GameManager : MonoBehaviour
         foreach (Transform pellet in this.pellets) // reset all pellets 
         {
             pellet.gameObject.SetActive(true);
-            // Vector2 gridPosition = new Vector2(RoundToNearestHalf(pellet.position.x),RoundToNearestHalf(pellet.position.y));
-            // pelletsPositions[gridPosition] = true;
         }
-        // gameDatacollector.UpdatePellets(pelletsPositions);
         remainingPellets = CountRemainingPellets();
         remainingPills = CountRemainingPowerPellets();
         PowerPelletStatesInit();  
@@ -156,6 +160,9 @@ public class GameManager : MonoBehaviour
         
     }
 
+    // Freeze the game for 3 seconds before each level start
+    // Start the data collection and timer if startDataCollection is true
+    // Set the time scale to 1 to resume the game (the time freeze keeps the data collection from being too noisy)
     private IEnumerator GetReady(float time, bool startDataCollection = true)
     {
         this.readyText.enabled = true;
@@ -177,7 +184,8 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    private void ResetState()  // If pacman dies, resets ghots and pacman but not pellet
+    // If pacman dies, resets ghots and pacman but not pellet
+    private void ResetState()  
     {
        ResetGhostMultiplier();
 
@@ -188,6 +196,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(GetReady(3.0f, false));
     }
 
+    // Game over screen
     private void GameOver()
     {
         for (int i = 0; i < this.ghosts.Length; i++) {
@@ -206,18 +215,21 @@ public class GameManager : MonoBehaviour
         restartKey.enabled = true;
     }
 
+    // Set the score and update the score text
     private void SetScore(int score)
     {
         this.score = score;
         ScoreText.text = score.ToString().PadLeft(2, '0');
     }
 
+    // Set the lives and update the lives text
     private void SetLives(int lives)
     {
         this.lives = lives;
         livesText.text = "x" + lives.ToString();
     }
 
+    // Set the level and update the level text
     private void SetLevel(int level)
     {
         this.level = level;
@@ -225,6 +237,7 @@ public class GameManager : MonoBehaviour
     
     }
 
+    // Load the level data from the levelData array
     private void loadLevelData()
     {
         float[] levelVariables = new float[levelData.GetLength(1)];
@@ -250,12 +263,6 @@ public class GameManager : MonoBehaviour
                 ghost.SetGhostBehavior(levelVariables[columnIndices["homeTimerRatio"]]);
             }
         }
-        // for (int i = 0; i < this.ghosts.Length; i++)
-        // {
-        //     this.ghosts[i].movement.normalSpeedMultiplier = levelVariables[columnIndices["ghostSpeedMultiplier"]];
-        //     this.ghosts[i].movement.frightenedSpeedMultiplier = levelVariables[columnIndices["frightenedGhostSpeedMultiplier"]];
-        //     //this.ghosts[i].chase.timer = levelVariables[columnIndices["ChaseTimer"]];
-        // }
     }
 
     public void GhostEaten(Ghost ghost)
@@ -304,15 +311,8 @@ public class GameManager : MonoBehaviour
         cherry.InstantiateFloatingPoint(cherry.points);
     }
 
-    public void PelletEaten(Pellet pellet) // TODO track eaten pellets in pellet position list
+    public void PelletEaten(Pellet pellet) 
     {
-        // Vector2 pelletPosition = pellet.transform.position;
-        // Vector2 gridPosition = new Vector2(RoundToNearestHalf(pelletPosition.x), RoundToNearestHalf(pelletPosition.y));
-        // if (pelletsPositions.ContainsKey(gridPosition))
-        // {
-        //     pelletsPositions[gridPosition] = false; // Set to false indicating the pellet is eaten
-        // }
-        // gameDatacollector.UpdatePellets(pelletsPositions);
         pellet.gameObject.SetActive(false);
         SetScore (this.score + pellet.points);
         remainingPellets = CountRemainingPellets();
@@ -365,6 +365,7 @@ public class GameManager : MonoBehaviour
         this.pacman.pacmanAttack = false;
     }
 
+    // Count the remaining pellets in the game
     private int CountRemainingPellets()
     {
         int count = 0;
@@ -378,6 +379,7 @@ public class GameManager : MonoBehaviour
         return count;
     }
 
+    // Count the remaining power pellets in the game
     private int CountRemainingPowerPellets()
     {
         int count = 0;
@@ -396,7 +398,7 @@ public class GameManager : MonoBehaviour
         this.ghostMultiplier = 1;
     }
 
-
+    // Start the timer for the round
     public void StartTimer(){
         round_startTime = Time.time;
         }
@@ -406,6 +408,7 @@ public class GameManager : MonoBehaviour
         return Mathf.Round(value * 2f) / 2f;
     }
 
+    // Initialize the power pellet states
     public void PowerPelletStatesInit()
     {
         PowerPelletStates = new int[4];
@@ -415,6 +418,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Set the power pellet state to eaten
     public void PowerPelletEaten(int i)
     {
         PowerPelletStates[i] = 0;

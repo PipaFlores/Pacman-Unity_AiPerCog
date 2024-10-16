@@ -31,9 +31,9 @@ public class Login : MonoBehaviour
     }
 
     void Update()
-{
-    if (Input.GetKeyDown(KeyCode.Tab))
     {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
         if (usernameInput.isFocused)
         {
             passwordInput.Select();
@@ -43,7 +43,11 @@ public class Login : MonoBehaviour
             usernameInput.Select();
         }
     }
-}
+    if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+    {
+            StartCoroutine(LoginUser());
+        }
+    }
 
     IEnumerator LoginUser()
     {

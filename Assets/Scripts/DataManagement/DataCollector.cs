@@ -5,78 +5,77 @@ using System.IO;
 using System.Linq;
 using System.Collections.Specialized;
 using UnityEngine.UIElements;
+using System.Collections;
 
-// GameManager calls Startdatacollection at the beginning of each round. Datacollection stops
-// with the CancelInvoke in SaveData() at GameOver or !HasRemainingPellets
+// The DataCollector class is responsible for gathering and managing game data during each round.
+// It collects data at regular intervals, including player and ghost positions, game state, and scores.
+// The collected data can be saved locally or sent to a remote server for analysis.
+// Data collection starts at the beginning of each round and stops when the game ends or specific conditions are met.
 public class DataCollector : MonoBehaviour
 {
-    public GameObject player;  // Pacman
-    public GameObject[] ghosts; // Assuming you have multiple enemies
-    private List<GameDataPoint> dataPointsList = new List<GameDataPoint>();
+    public GameObject player;  // Reference to the player (Pacman)
+    public GameObject[] ghosts; // Array of ghost enemies in the game
+    private List<GameDataPoint> dataPointsList = new List<GameDataPoint>(); // List to store collected game data points
 
-    private string dataserver;
+    private string dataserver; // URL of the data server for remote saving
 
-    public bool localSave = true; // local save data
-    public bool serverSave = true; // server save data
-    
+    public bool localSave = true; // Flag to determine if data should be saved locally
+    public bool serverSave = true; // Flag to determine if data should be saved to the server
+
     private float saveInterval = 0.050f; // Interval in seconds for data collection
 
-    public float saveInterval = 0.1f; // Save data every x seconds  
-
-    // Variables to store the game duration
+    // Variables to track the duration of the game
     private double game_duration;
     private System.DateTime game_startTime;
     private System.DateTime game_endTime;
 
-    // list of pellet state
-    //  List<PelletState> pellets;
- 
-    public void Awake(){
-        // Get the dataserver url from the MainManager
+    public void Awake()
+    {
+        // Retrieve the data server URL from the MainManager instance
         dataserver = MainManager.Instance.dataserver;
     }
 
-    public void Startdatacollection(){
+    public void Startdatacollection()
+    {
+        // Start collecting game data at regular intervals
         InvokeRepeating(nameof(CollectGameData), 0.2f, saveInterval);
-        game_startTime = System.DateTime.UtcNow;
-        // Adjust timing as needed
-        // Consider getting the session_id, username, or other one-time info here.
+        game_startTime = System.DateTime.UtcNow; // Record the start time of the game
     }
-    
+
     private void CollectGameData()
     {
-        // Get game data from game manager
-        // Get player position, attack state and input direction
-        Vector2 playerPos = player.transform.position;
-        bool pacmanAttack = player.GetComponent<Pacman>().pacmanAttack;
-        string inputDirection = player.GetComponent<Pacman>().inputDirection;
-        player.GetComponent<Pacman>().inputDirection = "none";
-        string movementDirection = dir_to_string(player.GetComponent<Movement>().direction);
+        // Collect player data
+        Vector2 playerPos = player.transform.position; // Player's current position
+        bool pacmanAttack = player.GetComponent<Pacman>().pacmanAttack; // Player's attack state
+        string inputDirection = player.GetComponent<Pacman>().inputDirection; // Player's input direction
+        player.GetComponent<Pacman>().inputDirection = "none"; // Reset input direction after reading
+        string movementDirection = dir_to_string(player.GetComponent<Movement>().direction); // Player's movement direction
 
-        // Get ghosts position and state
-        Vector2[] ghostsPos = new Vector2[ghosts.Length];
-        int[] ghostsState = new int[ghosts.Length];
+        // Collect ghosts' data
+        Vector2[] ghostsPos = new Vector2[ghosts.Length]; // Array to store positions of all ghosts
+        int[] ghostsState = new int[ghosts.Length]; // Array to store states of all ghosts
         for (int i = 0; i < ghosts.Length; i++)
         {
-            ghostsPos[i] = ghosts[i].transform.position;
-            ghostsState[i] = GetGhostState(ghosts[i]);
-        } 
-        // Get power pellet states from game manager
+            ghostsPos[i] = ghosts[i].transform.position; // Get each ghost's position
+            ghostsState[i] = GetGhostState(ghosts[i]); // Get each ghost's state
+        }
+
+        // Collect game manager data
         int[] PowerPelletStates = new int[GameManager.Instance.PowerPelletStates.Length];
         for (int i = 0; i < GameManager.Instance.PowerPelletStates.Length; i++)
         {
-            PowerPelletStates[i] = GameManager.Instance.PowerPelletStates[i];
+            PowerPelletStates[i] = GameManager.Instance.PowerPelletStates[i]; // Get power pellet states
         }
 
-        // Get game data from game manager
-        int currentScore = GameManager.Instance.score;
-        int lives = GameManager.Instance.lives;
-        float time = GameManager.Instance.round_timeElapsed;
-        int pelletsRemaining = GameManager.Instance.remainingPellets;
-        int powerPelletsRemaining = GameManager.Instance.remainingPills;
-        int fruitState_1 = GameManager.Instance.fruitState_1;
-        int fruitState_2 = GameManager.Instance.fruitState_2;
+        int currentScore = GameManager.Instance.score; // Current score
+        int lives = GameManager.Instance.lives; // Remaining lives
+        float time = Mathf.Floor(GameManager.Instance.round_timeElapsed * 100) / 100f; // Elapsed time rounded to two decimal places
+        int pelletsRemaining = GameManager.Instance.remainingPellets; // Remaining pellets
+        int powerPelletsRemaining = GameManager.Instance.remainingPills; // Remaining power pellets
+        int fruitState_1 = GameManager.Instance.fruitState_1; // State of the first fruit
+        int fruitState_2 = GameManager.Instance.fruitState_2; // State of the second fruit
 
+        // Create a new data point with the collected data
         GameDataPoint dataPoint = new GameDataPoint
         {
             playerPosition = playerPos,
@@ -94,36 +93,59 @@ public class DataCollector : MonoBehaviour
             inputDirection = inputDirection,
             movementDirection = movementDirection
         };
-        dataPointsList.Add(dataPoint);
+        dataPointsList.Add(dataPoint); // Add the data point to the list
     }
 
-    private System.Collections.IEnumerator SendGameData(string gameData)
+ private IEnumerator SendGameData(string gameData)
+{
+    string url = dataserver + "SQL/savegamedata_json.php";
+    int maxRetries = 3; // Maximum number of retries
+    int retryDelay = 2; // Delay between retries in seconds
+    int attempt = 0; // Current attempt counter
+
+    while (attempt < maxRetries)
     {
-        string url = dataserver + "SQL/savegamedata_json.php";
         UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
         yield return www.SendWebRequest();
-    
-        if (www.result != UnityWebRequest.Result.Success)
+
+        if (www.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log(www.error);
+            Debug.Log("Game data uploaded successfully."); // Log success message
+            this.dataPointsList.Clear(); // Clear the data points list after successful upload
+            yield break; // Exit the coroutine successfully
         }
         else
         {
-            Debug.Log("Game data uploaded successfully.");
-            this.dataPointsList.Clear();
+            Debug.Log($"Attempt {attempt + 1} failed: {www.error}"); // Log the error
+            attempt++;
+            if (attempt < maxRetries)
+            {
+                yield return new WaitForSeconds(retryDelay); // Wait before retrying
+            }
         }
-    
-        
     }
 
+     // If all attempts fail, notify the user
+    StartCoroutine(ShowUploadFailureMessage());
+    Debug.Log("Failed to upload game data after multiple attempts.");
+}
+private IEnumerator ShowUploadFailureMessage()
+{
+    GameManager.Instance.UserNotification.text = "Failed to upload game data";
+    yield return new WaitForSecondsRealtime(2);
+    GameManager.Instance.UserNotification.text = "";
+}
+
+    // SaveData sends the data to the server, or locally. Is called at the end of the game (either when lives run out, or when a level is completed).
     public void SaveData()
     {
+        // Calculate game duration and save data
         game_endTime = System.DateTime.UtcNow;
         game_duration = (game_endTime - game_startTime).TotalSeconds;
-        
-        CancelInvoke();
-        GameDataContainer container = new GameDataContainer 
-        { 
+
+        CancelInvoke(); // Stop data collection
+        GameDataContainer container = new GameDataContainer
+        {
             dataPoints = dataPointsList,
             date_played = game_startTime.ToString("yyyy-MM-dd HH:mm:ss"),
             game_duration = game_duration,
@@ -133,76 +155,83 @@ public class DataCollector : MonoBehaviour
             source = MainManager.Instance.source,
             win = GameManager.Instance.win,
             level = GameManager.Instance.level
-            };
-        string json = JsonUtility.ToJson(container, true);
-        if (localSave){
-           LocalSaveData(json);
+        };
+        string json = JsonUtility.ToJson(container, true); // Convert data to JSON format
+        if (localSave)
+        {
+            LocalSaveData(json); // Save data locally if enabled
         }
-        if (serverSave){
-            StartCoroutine(SendGameData(json));
+        if (serverSave)
+        {
+            StartCoroutine(SendGameData(json)); // Send data to server if enabled
         }
-          
     }
-    public void LocalSaveData(string json)  // Local save data in json format
+
+    public void LocalSaveData(string json)
     {
-        string localPath = @"C:\LocalData\pabflore\Unity_Projects\unity_pacman\Logs\gamedata.json"; // local path to save data
+        // Save data locally in JSON format
+        string localPath = @"C:\LocalData\pabflore\Unity_Projects\unity_pacman\Logs\gamedata.json"; // Local path for saving data
         string directory = Path.GetDirectoryName(localPath);
-        if (!Directory.Exists(directory)){
-            Directory.CreateDirectory(directory);
+        if (!Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory); // Create directory if it doesn't exist
         }
-        System.IO.File.WriteAllText(localPath, json);
-        Debug.Log("Data saved locally at " + localPath);
-        //@"D:\PacmanUnity\Logs\Datacollection\data.json"
-        // "../Datacollection2/data.json" writes to d:\Datacoll....
-        //"file:../Datacollection2/data.json" gets the local path but adds the "file:.."
+        System.IO.File.WriteAllText(localPath, json); // Write JSON data to file
+        Debug.Log("Data saved locally at " + localPath); // Log success message
     }
 
-    private int GetGhostState(GameObject ghost){
-        if (ghost.GetComponent<GhostHome>().enabled){
-            if (ghost.GetComponent<Ghost>().eaten){
-                return 4; // eaten
+    private int GetGhostState(GameObject ghost)
+    {
+        // Determine the state of a ghost
+        if (ghost.GetComponent<GhostHome>().enabled)
+        {
+            if (ghost.GetComponent<Ghost>().eaten)
+            {
+                return 4; // Ghost is eaten
             }
-            else return 0; // home (not eaten)
-            }    
-        else if (ghost.GetComponent<GhostFrightened>().enabled){  // Frightened state overlaps with scatter and chase, so check it first
-            return 3;
+            else return 0; // Ghost is at home (not eaten)
         }
-        else if (ghost.GetComponent<GhostChase>().enabled){
-            return 2;
+        else if (ghost.GetComponent<GhostFrightened>().enabled)
+        {
+            return 3; // Ghost is frightened
         }
-        else if(ghost.GetComponent<GhostScatter>().enabled){
-            return 1;
+        else if (ghost.GetComponent<GhostChase>().enabled)
+        {
+            return 2; // Ghost is chasing
         }
-        else{
-            return -666; // error code
+        else if (ghost.GetComponent<GhostScatter>().enabled)
+        {
+            return 1; // Ghost is scattering
+        }
+        else
+        {
+            return -666; // Error state
         }
     }
 
-    // public void UpdatePellets(Dictionary<Vector2, bool> pelletsDictionary)
-    // {
-    //     pellets = new List<PelletState>();
-    //     foreach (var pellet in pelletsDictionary)
-    //     {
-    //         pellets.Add(new PelletState(pellet.Key, pellet.Value));
-    //     }
-    // }
-
-    private string dir_to_string(Vector2 dir){
-        if (dir == Vector2.up){
+    private string dir_to_string(Vector2 dir)
+    {
+        // Convert a Vector2 direction to a string representation
+        if (dir == Vector2.up)
+        {
             return "up";
         }
-        else if (dir == Vector2.down){
+        else if (dir == Vector2.down)
+        {
             return "down";
         }
-        else if (dir == Vector2.left){
+        else if (dir == Vector2.left)
+        {
             return "left";
         }
-        else if (dir == Vector2.right){
+        else if (dir == Vector2.right)
+        {
             return "right";
         }
-        else{
-            return "none";
-        }   
+        else
+        {
+            return "none"; // No direction
+        }
     }
 }
 

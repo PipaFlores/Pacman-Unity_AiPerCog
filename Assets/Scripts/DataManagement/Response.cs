@@ -1,5 +1,5 @@
 using System;
-
+// This class is used to define the structure of the response from the server at login
 [System.Serializable]
 public class Response {
     public bool success;

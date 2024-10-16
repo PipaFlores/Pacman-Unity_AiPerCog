@@ -53,6 +53,10 @@ public class Register : MonoBehaviour
                 usernameInput.Select();
             }
         }
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            StartCoroutine(RegisterUser());
+        }
     }
 IEnumerator RegisterUser()
     {
