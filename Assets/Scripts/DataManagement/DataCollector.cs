@@ -19,6 +19,7 @@ public class DataCollector : MonoBehaviour
     public bool localSave = true; // local save data
     public bool serverSave = true; // server save data
     
+    private float saveInterval = 0.050f; // Interval in seconds for data collection
 
     public float saveInterval = 0.1f; // Save data every x seconds  
 
