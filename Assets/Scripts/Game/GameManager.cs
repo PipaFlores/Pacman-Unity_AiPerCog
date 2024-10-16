@@ -72,6 +72,7 @@ public class GameManager : MonoBehaviour
     public Text restartKey;
     public Text readyText;
 
+    public Text UserNotification;
     public int ghostMultiplier { get; private set; } = 1;
 
     public int score {get ; private set; }

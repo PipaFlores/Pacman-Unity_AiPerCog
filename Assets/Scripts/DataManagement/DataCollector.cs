@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Specialized;
 using UnityEngine.UIElements;
+using System.Collections;
 
 // GameManager calls Startdatacollection at the beginning of each round. Datacollection stops
 // with the CancelInvoke in SaveData() at GameOver or !HasRemainingPellets
@@ -97,24 +98,45 @@ public class DataCollector : MonoBehaviour
         dataPointsList.Add(dataPoint);
     }
 
-    private System.Collections.IEnumerator SendGameData(string gameData)
+ private IEnumerator SendGameData(string gameData)
+{
+    string url = dataserver + "SQL/savegamedata_json.php";
+    int maxRetries = 3; // Maximum number of retries
+    int retryDelay = 2; // Delay between retries in seconds
+    int attempt = 0; // Current attempt counter
+
+    while (attempt < maxRetries)
     {
-        string url = dataserver + "SQL/savegamedata_json.php";
         UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
         yield return www.SendWebRequest();
-    
-        if (www.result != UnityWebRequest.Result.Success)
+
+        if (www.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log(www.error);
+            Debug.Log("Game data uploaded successfully."); // Log success message
+            this.dataPointsList.Clear(); // Clear the data points list after successful upload
+            yield break; // Exit the coroutine successfully
         }
         else
         {
-            Debug.Log("Game data uploaded successfully.");
-            this.dataPointsList.Clear();
+            Debug.Log($"Attempt {attempt + 1} failed: {www.error}"); // Log the error
+            attempt++;
+            if (attempt < maxRetries)
+            {
+                yield return new WaitForSeconds(retryDelay); // Wait before retrying
+            }
         }
-    
-        
     }
+
+     // If all attempts fail, notify the user
+    StartCoroutine(ShowUploadFailureMessage());
+    Debug.Log("Failed to upload game data after multiple attempts.");
+}
+private IEnumerator ShowUploadFailureMessage()
+{
+    GameManager.Instance.UserNotification.text = "Failed to upload game data";
+    yield return new WaitForSecondsRealtime(2);
+    GameManager.Instance.UserNotification.text = "";
+}
 
     public void SaveData()
     {
