@@ -22,35 +22,46 @@ public class Pacman : MonoBehaviour
     
     private void Update(){
 
-        if (Input.GetKeyDown(KeyCode.UpArrow)){
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)){
             this.movement.SetDirection(Vector2.up);
-            this.inputDirection = "up";
+            if (Input.GetKeyDown(KeyCode.UpArrow)){
+                this.inputDirection = "up";
+            } 
+            else{
+                this.inputDirection = "w";
+            }
         }
-        if (Input.GetKeyDown(KeyCode.DownArrow)){
+        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)){
             this.movement.SetDirection(Vector2.down);
-            this.inputDirection = "down";
+            if (Input.GetKeyDown(KeyCode.DownArrow)){
+                this.inputDirection = "down";
+            } 
+            else{
+                this.inputDirection = "s";
+            }
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow)){
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)){
             this.movement.SetDirection(Vector2.left);
-            this.inputDirection = "left";
+            if (Input.GetKeyDown(KeyCode.LeftArrow)){
+                this.inputDirection = "left";
+            } 
+            else{
+                this.inputDirection = "a";
+            }
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow)){
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)){
             this.movement.SetDirection(Vector2.right);
-            this.inputDirection = "right";
+            if (Input.GetKeyDown(KeyCode.RightArrow)){
+                this.inputDirection = "right";
+            } 
+            else{
+                this.inputDirection = "d";
+            }
         }
         float angle = Mathf.Atan2(this.movement.direction.y, this.movement.direction.x); // Gets the angle of dir
         this.transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward); // Sets rot to the angle
     }
 
-    // public void DeathSequence()
-    // {
-    //     enabled = false;
-    //     spriteRenderer.enabled = false;
-    //     collider.enabled = false;
-    //     movement.enabled = false;
-    //     deathSequence.enabled = true;
-    //     deathSequence.Restart();
-    // }
     public void ResetState()
     {
         enabled = true;
