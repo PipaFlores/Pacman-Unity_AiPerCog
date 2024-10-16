@@ -6,6 +6,12 @@ using UnityEngine.Networking;
 using TMPro;
 using Unity.VisualScripting;
 
+// This script manages the welcome screen of the game. It initializes UI elements and handles user interactions
+// such as starting the game, navigating to consent and survey forms, and updating game data. The script retrieves
+// user-specific game data from a server using the user's ID and displays relevant information like username, session
+// number, and game number. It also manages the state of consent and survey forms, ensuring that the user completes
+// necessary steps before proceeding. The script uses Unity's UI system and networking capabilities to achieve these tasks.
+
 public class WelcomeScreen : MonoBehaviour
 {
 
@@ -105,7 +111,6 @@ public class WelcomeScreen : MonoBehaviour
         }
     }
 
-    // FIXME modify the consent and survey functions to move to the correct information
     void moveToConsent()
     {
         Application.OpenURL(consentUrl);

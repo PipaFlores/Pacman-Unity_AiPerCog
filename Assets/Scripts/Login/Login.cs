@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -31,9 +31,9 @@ public class Login : MonoBehaviour
     }
 
     void Update()
-{
-    if (Input.GetKeyDown(KeyCode.Tab))
     {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
         if (usernameInput.isFocused)
         {
             passwordInput.Select();
@@ -47,7 +47,7 @@ public class Login : MonoBehaviour
     {
             StartCoroutine(LoginUser());
         }
-}
+    }
 
     IEnumerator LoginUser()
     {

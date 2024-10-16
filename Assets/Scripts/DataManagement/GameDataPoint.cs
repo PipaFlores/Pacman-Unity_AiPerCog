@@ -22,10 +22,9 @@ public class GameDataPoint  // defines the daata to be recorded each frame/time 
     public int pelletsRemaining;
     public int livesRemaining;
     public float timeElapsed;
-    public string inputDirection;
+    public string inputDirection; // the input direction of the player
 
-    public string movementDirection;
-    // public List<PelletState> pellets;
+    public string movementDirection; // the movement direction of the player
 
 }
 
@@ -42,16 +41,3 @@ public class GameDataContainer  // contains all the data to be sent after finali
     public string source;
     public bool win;
 }
-
-// [System.Serializable]
-// public struct PelletState
-// {
-//     public Vector2 position;
-//     public bool isPresent;
-
-//     public PelletState(Vector2 pos, bool state)
-//     {
-//         position = pos;
-//         isPresent = state;
-//     }
-// }
