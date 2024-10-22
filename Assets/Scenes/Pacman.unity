@@ -682,12 +682,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   username: 
-  user_id: 8
+  user_id: 40
   session_number: 0
-  game_number: 0
+  total_games: 0
   games_in_session: 0
-  source: Unity-Test
+  source: PacmanSceneTest
   dataserver: https://aipercog-24.it.helsinki.fi/
+  already_played: 1
 --- !u!4 &657005236
 Transform:
   m_ObjectHideFlags: 0
@@ -5143,6 +5144,7 @@ MonoBehaviour:
   fruitState_2: 0
   PowerPelletStates: 
   startLevel: 1
+  n_games: 1
 --- !u!4 &1802224795
 Transform:
   m_ObjectHideFlags: 0

@@ -6,6 +6,9 @@ using System.Linq;
 using System.Collections.Specialized;
 using UnityEngine.UIElements;
 using System.Collections;
+using System.Threading.Tasks;
+using JetBrains.Annotations;
+using UnityEngine.Purchasing;
 
 // The DataCollector class is responsible for gathering and managing game data during each round.
 // It collects data at regular intervals, including player and ghost positions, game state, and scores.
@@ -22,12 +25,15 @@ public class DataCollector : MonoBehaviour
     public bool localSave = true; // Flag to determine if data should be saved locally
     public bool serverSave = true; // Flag to determine if data should be saved to the server
 
+    public bool data_upload_success {get ; private set; } // Flag to check if the data has been uploaded successfully
+
     private float saveInterval = 0.050f; // Interval in seconds for data collection
 
     // Variables to track the duration of the game
     private double game_duration;
     private System.DateTime game_startTime;
     private System.DateTime game_endTime;
+
 
     public void Awake()
     {
@@ -39,6 +45,7 @@ public class DataCollector : MonoBehaviour
     {
         // Start collecting game data at regular intervals
         InvokeRepeating(nameof(CollectGameData), 0.2f, saveInterval);
+        data_upload_success = false;
         game_startTime = System.DateTime.UtcNow; // Record the start time of the game
     }
 
@@ -102,17 +109,30 @@ public class DataCollector : MonoBehaviour
         int maxRetries = 3; // Maximum number of retries
         int retryDelay = 2; // Delay between retries in seconds
         int attempt = 0; // Current attempt counter
+        GameManager.Instance.UserNotification.text = "Uploading game data...";
 
         while (attempt < maxRetries)
         {
             UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
             yield return www.SendWebRequest();
-
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                Debug.Log("Game data uploaded successfully."); // Log success message
-                this.dataPointsList.Clear(); // Clear the data points list after successful upload
-                yield break; // Exit the coroutine successfully
+            if (www.result == UnityWebRequest.Result.Success){
+                ServerResponse response = JsonUtility.FromJson<ServerResponse>(www.downloadHandler.text);
+                if (response.success)
+                {
+                    Debug.Log("Game data uploaded successfully."); // Log success message
+                    this.dataPointsList.Clear(); // Clear the data points list after successful upload
+                    data_upload_success = true;
+                    yield return StartCoroutine(GameManager.Instance.ErrorMsg("Data uploaded successfully."));
+                    yield break; // Exit the coroutine successfully
+                } 
+                else {
+                    Debug.Log($"Attempt {attempt + 1} failed: {response.message}"); // Log the error
+                    attempt++;
+                    if (attempt < maxRetries)
+                    {
+                        yield return new WaitForSeconds(retryDelay); // Wait before retrying
+                    }
+                }
             }
             else
             {
@@ -124,20 +144,14 @@ public class DataCollector : MonoBehaviour
                 }
             }
         }
-
         // If all attempts fail, notify the user
-        StartCoroutine(ShowUploadFailureMessage());
+        yield return StartCoroutine(GameManager.Instance.ErrorMsg("Failed to upload game data."));
         Debug.Log("Failed to upload game data after multiple attempts.");
     }
-    private IEnumerator ShowUploadFailureMessage()
-    {
-        GameManager.Instance.UserNotification.text = "Failed to upload game data";
-        yield return new WaitForSecondsRealtime(2);
-        GameManager.Instance.UserNotification.text = "";
-    }
+ 
 
     // SaveData sends the data to the server, or locally. Is called at the end of the game (either when lives run out, or when a level is completed).
-    public void SaveData()
+    public IEnumerator SaveData()
     {
         // Calculate game duration and save data
         game_endTime = System.DateTime.UtcNow;
@@ -157,16 +171,20 @@ public class DataCollector : MonoBehaviour
             win = GameManager.Instance.win,
             level = GameManager.Instance.level
         };
-        string json = JsonUtility.ToJson(container, true); // Convert data to JSON format
+        string json = JsonUtility.ToJson(container, true);
+        
         if (localSave)
         {
-            LocalSaveData(json); // Save data locally if enabled
+            LocalSaveData(json);
         }
+        
         if (serverSave)
         {
-            StartCoroutine(SendGameData(json)); // Send data to server if enabled
+            data_upload_success = false; // Reset the flag
+            yield return StartCoroutine(SendGameData(json));
         }
     }
+
 
     public void LocalSaveData(string json)
     {

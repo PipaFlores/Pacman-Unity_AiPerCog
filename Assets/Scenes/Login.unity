@@ -848,9 +848,9 @@ MonoBehaviour:
   username: 
   user_id: 0
   session_number: 0
-  game_number: 0
+  total_games: 0
   games_in_session: 0
-  source: Build-Test-HelsinkiServer-101
+  source: Pilot-build-remote
   dataserver: https://aipercog-24.it.helsinki.fi/
 --- !u!4 &1026728862
 Transform:
@@ -1542,7 +1542,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}

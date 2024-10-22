@@ -74,7 +74,7 @@ public class Login : MonoBehaviour
                 errorMsg.text = www.error + www.downloadHandler.text;
             } else {
                 Debug.Log("Response: " + www.downloadHandler.text);
-                var response = JsonUtility.FromJson<Response>(www.downloadHandler.text);
+                var response = JsonUtility.FromJson<LoginResponse>(www.downloadHandler.text);
                 if (response.success == true)
                 {
                     MainManager.Instance.username = usernameInput.text;

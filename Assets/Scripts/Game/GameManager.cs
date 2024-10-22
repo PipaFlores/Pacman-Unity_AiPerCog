@@ -3,7 +3,9 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
 using System.Collections;
-
+using UnityEngine.SceneManagement;
+using System.Data.Common;
+using Unity.VisualScripting;
 // The GameManager class is responsible for managing the overall game state and logic.
 // It handles the initialization and control of various game elements such as Pacman, ghosts, pellets, and cherries.
 // The class also manages the level progression, including speed multipliers and other parameters for each level.
@@ -100,23 +102,34 @@ public class GameManager : MonoBehaviour
     public float round_timeElapsed {get ; private set; }
     public float round_startTime {get ; private set; }
     public bool win {get ; private set; }
+
+    // Survey controll variable
+    public int n_games = 1; // Number of games to play before survey is shown
+
     
 
+    //// Singleton pattern to ensure only one instance of GameManager exists (not used, as loading the survey and restarting the game corrups gamemanager references to other objects)
+    // private void Awake()
+    // {
+    //     if (Instance != null) {
+    //         DestroyImmediate(gameObject);
+    //     } else {
+    //         Instance = this;
+    //         DontDestroyOnLoad(gameObject);
+    //     }
+    // }
 
     private void Awake()
     {
-        if (Instance != null) {
-            DestroyImmediate(gameObject);
-        } else {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+        Instance = this;
     }
-
-    
     private void Start()
     {
+        if (MainManager.Instance.already_played == false){
+            MainManager.Instance.already_played = true;
+        }
         NewGame();
+
     }
 
     private void Update()
@@ -124,6 +137,14 @@ public class GameManager : MonoBehaviour
         if (this.lives <= 0 && Input.anyKeyDown && restartKey.enabled == true){
             NewGame(); 
         }
+
+        // Debugging
+        if (Input.GetKeyDown(KeyCode.Space)){
+            StartCoroutine(AllLivesLost());
+        }
+
+
+        // Update timer for data gathering
         round_timeElapsed = Time.time - round_startTime;
     }
     private void NewGame() // Starts a new game from the starting level
@@ -197,20 +218,12 @@ public class GameManager : MonoBehaviour
         StartCoroutine(GetReady(3.0f, false));
     }
 
-    // Game over screen
-    private void GameOver()
+    private void LoadSurvey()
     {
-        for (int i = 0; i < this.ghosts.Length; i++) {
-            this.ghosts[i].gameObject.SetActive(false);
-        }
-
-        this.pacman.gameObject.SetActive(false); 
-        // Game over screen
-        Gameover.enabled = true;
-        Invoke(nameof(PromptRestart), 1.5f);
-        
-        
+        // Load the survey scene
+        SceneManager.LoadScene("PsychState");
     }
+
     private void PromptRestart()
     {
         restartKey.enabled = true;
@@ -277,7 +290,6 @@ public class GameManager : MonoBehaviour
 
     public void PacmanEaten()
     {
-        
         SetLives(this.lives - 1);
 
         if (this.lives > 0)
@@ -285,15 +297,17 @@ public class GameManager : MonoBehaviour
             ResetState(); // If pacman dies, resets ghots and pacman but not pellet (3 seconds delay)
             AudioManager.Instance.PlayDeathSound();
             this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
-            //this.pacman.DeathSequence();   Removed because it adds noise in the data Moved the animation to the lives indicator image
         }
         else
         {
-            gameDatacollector.SaveData();
             AudioManager.Instance.PlayDeathSound();
             this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
-            //this.pacman.DeathSequence(); Removed because it adds noise in the data
-            GameOver();
+            for (int i = 0; i < this.ghosts.Length; i++) {
+                this.ghosts[i].gameObject.SetActive(false);
+            }
+            this.pacman.gameObject.SetActive(false);
+            Gameover.enabled = true; // Game over screen;
+            StartCoroutine(AllLivesLost()); // Save data and wait for it to upload, then load survey or restart
         }
     }
 
@@ -337,9 +351,8 @@ public class GameManager : MonoBehaviour
             foreach (Ghost ghost in ghosts){
                 ghost.gameObject.SetActive(false);
             }
-            gameDatacollector.SaveData();
-            SetLevel(this.level + 1);
-            Invoke(nameof(NewRound), 3.0f);
+            StartCoroutine(LevelComplete()); // Save data and wait for it to upload, then load next level
+            
 
         }
     }
@@ -424,5 +437,43 @@ public class GameManager : MonoBehaviour
     {
         PowerPelletStates[i] = 0;
     }
+
+    public IEnumerator ErrorMsg(string msg){
+        UserNotification.text = msg;
+        yield return new WaitForSeconds(1.5f);
+        UserNotification.text = "";
+    }
+
+    private IEnumerator LevelComplete()
+    {
+        yield return StartCoroutine(gameDatacollector.SaveData());
+        SetLevel(this.level + 1);
+        UserNotification.text = "Loading next level...";
+        yield return new WaitForSeconds(1.5f);
+        UserNotification.text = "";
+        NewRound();
+    }
+
+    private IEnumerator AllLivesLost()
+    {
+        yield return StartCoroutine(gameDatacollector.SaveData());
+        if (gameDatacollector.data_upload_success){
+            if (MainManager.Instance.games_in_session % n_games == 0){
+                UserNotification.text = "Loading survey...";
+                yield return new WaitForSeconds(1.5f);
+                UserNotification.text = "";
+                LoadSurvey();
+            } else {
+                yield return new WaitForSeconds(1.5f);
+                PromptRestart();
+            }
+        } else {
+            UserNotification.text = "Returning to main menu...";
+            yield return new WaitForSeconds(1.5f);
+            UserNotification.text = "";
+            SceneManager.LoadScene("WelcomeScreen");
+        }
+    }
+
 
 }

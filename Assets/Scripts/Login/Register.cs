@@ -74,40 +74,51 @@ IEnumerator RegisterUser()
         form.AddField("username", usernameInput.text);
         form.AddField("password", passwordInput.text);
         form.AddField("email", emailinput.text);
+        int maxRetries = 3; // Maximum number of retries
+        int retryDelay = 1; // Delay between retries in seconds
+        int attempt = 0; // Current attempt counter
 
-        using (UnityWebRequest www = UnityWebRequest.Post(registerUrl + "SQL/register.php", form))
+        while (attempt < maxRetries)
         {
-            yield return www.SendWebRequest();
-
+            UnityWebRequest www = UnityWebRequest.Post(registerUrl + "SQL/register.php", form);
+            yield return www.SendWebRequest();  
+            Debug.Log(www.downloadHandler.text);
             if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(www.error);
-                confirmationText.text = "Failed to connect to server";
-                yield return new WaitForSeconds(2);
+                confirmationText.text = "Failed to connect to server - attempt " + attempt + " of " + maxRetries;
+                yield return new WaitForSeconds(retryDelay);
                 confirmationText.text = " ";
-                
+                attempt++;
             }
-            else
-        {
-            // Check the response from the server
-            if (www.downloadHandler.text == "Username already exists")
-            {
-                // Trigger a special message
-                Debug.Log("Username already exists. Please choose a different username.");
-                confirmationText.text = www.downloadHandler.text;
-                yield return new WaitForSeconds(2);
-                confirmationText.text = "";
+            else 
+            {  
+                ServerResponse response = JsonUtility.FromJson<ServerResponse>(www.downloadHandler.text);
+                if (response.success == true)
+                {
+                    Debug.Log("User registered successfully");
+                    confirmationText.text = "User registered successfully, go to log in screen";
+                    yield return new WaitForSeconds(2);
+                    confirmationText.text = "";
+                    yield break;
+                }
+                else if (response.success == false)
+                {
+                    Debug.Log($"Failed to register user: {response.message}");
+                    if (response.message == "Username already exists")
+                    {
+                        confirmationText.text = "Username already exists. Please choose a different username.";
+                    }
+                    else
+                    {
+                        confirmationText.text = "Internal server error";
+                    }
+                    yield return new WaitForSeconds(2);
+                    confirmationText.text = "";
+                    yield break;
+                }
             }
-            else
-            {
-                Debug.Log(www.downloadHandler.text);
-                confirmationText.text = "User registered successfully, go to log in screen";
-                yield return new WaitForSeconds(2);
-                confirmationText.text = "";
-            }
-        }
         }
     }
-
 
 }

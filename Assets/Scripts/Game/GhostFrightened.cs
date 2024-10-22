@@ -75,7 +75,7 @@ public class GhostFrightened : GhostBehavior
         }
     }
 
-    private void Eaten()  // TODO: Make it to fly to the home, instead of only teleporting.
+    private void Eaten()
     {
         this.eaten = true; // this is to prevent the flash from happening
         this.ghost.eaten = true; // this is the boolean state to be collected by the datacollector
