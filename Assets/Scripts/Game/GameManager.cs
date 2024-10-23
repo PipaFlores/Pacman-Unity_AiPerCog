@@ -140,6 +140,7 @@ public class GameManager : MonoBehaviour
     private void NewRound() // Starts a new level
     {
         MainManager.Instance.games_in_session++; // Increase the count of games in a session
+        MainManager.Instance.total_games++; // Increase the count of total games played
         win = false;
         Gameover.enabled = false;
         restartKey.enabled = false;

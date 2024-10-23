@@ -54,6 +54,7 @@ public class WelcomeScreen : MonoBehaviour
         if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("Error: " + request.error);
+            StartCoroutine(ShowError("Error" + request.error));
         }
         else
         {
@@ -62,10 +63,10 @@ public class WelcomeScreen : MonoBehaviour
         }
     }
 
-    void ProcessGameData(string jsonData, bool newsession) // TODO implement this
+    void ProcessGameData(string jsonData, bool newsession) 
     {
         var data = JsonUtility.FromJson<GameData>(jsonData);
-        MainManager.Instance.game_number = data.total_games;
+        MainManager.Instance.total_games = data.total_games;
         MainManager.Instance.session_number = data.last_session;
         consent = data.consent_done;
         survey = data.survey_done;
@@ -76,7 +77,7 @@ public class WelcomeScreen : MonoBehaviour
             MainManager.Instance.session_number += 1;
         }
         session_number.text = "Session number: " + MainManager.Instance.session_number.ToString();
-        game_number.text = "Games played: "+ MainManager.Instance.game_number.ToString();
+        game_number.text = "Games played: "+ MainManager.Instance.total_games.ToString();
         SetButtons();
     }
 

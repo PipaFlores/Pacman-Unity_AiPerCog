@@ -38,6 +38,7 @@ public class GameDataContainer  // contains all the data to be sent after finali
     public int level;
     public int session_number;
     public int game_in_session;
+    public int total_games;
     public string source;
     public bool win;
 }

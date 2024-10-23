@@ -21,7 +21,7 @@ public class MainManager : MonoBehaviour
     public string username;
     public int user_id;
     public int session_number; // Number of current session, retrieved from the server on welcome screen. A new session is recorder only when a first gamestate data is sent to the server. this avoids empty sessions being recorded.
-    public int game_number;  // Number of overall games played, retrieved from the server on welcome screen. A new game is recorded only when gamestate data is sent to the server. this avoids empty games being recorded.
+    public int total_games;  // Number of overall games played, retrieved from the server on welcome screen. A new game is recorded only when gamestate data is sent to the server. this avoids empty games being recorded. Updated after every game is played.
 
     public int games_in_session = 0; // Number of games in a session, a counter increased by the GameManager script on Newround()
 
