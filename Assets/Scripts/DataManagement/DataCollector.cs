@@ -96,45 +96,45 @@ public class DataCollector : MonoBehaviour
         dataPointsList.Add(dataPoint); // Add the data point to the list
     }
 
- private IEnumerator SendGameData(string gameData)
-{
-    string url = dataserver + "SQL/savegamedata_json.php";
-    int maxRetries = 3; // Maximum number of retries
-    int retryDelay = 2; // Delay between retries in seconds
-    int attempt = 0; // Current attempt counter
-
-    while (attempt < maxRetries)
+    private IEnumerator SendGameData(string gameData)
     {
-        UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
-        yield return www.SendWebRequest();
+        string url = dataserver + "SQL/savegamedata_json.php";
+        int maxRetries = 3; // Maximum number of retries
+        int retryDelay = 2; // Delay between retries in seconds
+        int attempt = 0; // Current attempt counter
 
-        if (www.result == UnityWebRequest.Result.Success)
+        while (attempt < maxRetries)
         {
-            Debug.Log("Game data uploaded successfully."); // Log success message
-            this.dataPointsList.Clear(); // Clear the data points list after successful upload
-            yield break; // Exit the coroutine successfully
-        }
-        else
-        {
-            Debug.Log($"Attempt {attempt + 1} failed: {www.error}"); // Log the error
-            attempt++;
-            if (attempt < maxRetries)
+            UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
             {
-                yield return new WaitForSeconds(retryDelay); // Wait before retrying
+                Debug.Log("Game data uploaded successfully."); // Log success message
+                this.dataPointsList.Clear(); // Clear the data points list after successful upload
+                yield break; // Exit the coroutine successfully
+            }
+            else
+            {
+                Debug.Log($"Attempt {attempt + 1} failed: {www.error}"); // Log the error
+                attempt++;
+                if (attempt < maxRetries)
+                {
+                    yield return new WaitForSeconds(retryDelay); // Wait before retrying
+                }
             }
         }
-    }
 
-     // If all attempts fail, notify the user
-    StartCoroutine(ShowUploadFailureMessage());
-    Debug.Log("Failed to upload game data after multiple attempts.");
-}
-private IEnumerator ShowUploadFailureMessage()
-{
-    GameManager.Instance.UserNotification.text = "Failed to upload game data";
-    yield return new WaitForSecondsRealtime(2);
-    GameManager.Instance.UserNotification.text = "";
-}
+        // If all attempts fail, notify the user
+        StartCoroutine(ShowUploadFailureMessage());
+        Debug.Log("Failed to upload game data after multiple attempts.");
+    }
+    private IEnumerator ShowUploadFailureMessage()
+    {
+        GameManager.Instance.UserNotification.text = "Failed to upload game data";
+        yield return new WaitForSecondsRealtime(2);
+        GameManager.Instance.UserNotification.text = "";
+    }
 
     // SaveData sends the data to the server, or locally. Is called at the end of the game (either when lives run out, or when a level is completed).
     public void SaveData()
@@ -151,6 +151,7 @@ private IEnumerator ShowUploadFailureMessage()
             game_duration = game_duration,
             session_number = MainManager.Instance.session_number,
             game_in_session = MainManager.Instance.games_in_session,
+            total_games = MainManager.Instance.total_games,
             user_id = MainManager.Instance.user_id,
             source = MainManager.Instance.source,
             win = GameManager.Instance.win,
