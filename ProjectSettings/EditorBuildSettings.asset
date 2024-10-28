@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Pacman.unity
     guid: db2475973d2fcb94ea6597baaf816b1b
+  - enabled: 1
+    path: Assets/Scenes/PsychState.unity
+    guid: ba46a643f2f54ec48831c17bd41d880d
   m_configObjects: {}

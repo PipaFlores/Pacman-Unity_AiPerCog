@@ -43,5 +43,12 @@ public class MainManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
+
+        // Set debugger if on editor or development build
+        #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.unityLogger.logEnabled = true;
+        #else
+            Debug.unityLogger.logEnabled = false;
+        #endif
     }
 }

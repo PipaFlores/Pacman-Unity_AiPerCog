@@ -16,13 +16,7 @@ public class AudioManager : MonoBehaviour
 
     void Awake()
     {
-        // Singleton pattern
-        if (Instance != null) {
-            DestroyImmediate(gameObject);
-        } else {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+        Instance = this;
     }
 
     public void PlayBackgroundSound()

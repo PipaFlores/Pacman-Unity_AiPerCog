@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
 using System.Collections;
-
+using UnityEngine.SceneManagement;
 // The GameManager class is responsible for managing the overall game state and logic.
 // It handles the initialization and control of various game elements such as Pacman, ghosts, pellets, and cherries.
 // The class also manages the level progression, including speed multipliers and other parameters for each level.
@@ -100,20 +100,27 @@ public class GameManager : MonoBehaviour
     public float round_timeElapsed {get ; private set; }
     public float round_startTime {get ; private set; }
     public bool win {get ; private set; }
+
+    // Survey controll variable
+    public int n_games = 1; // Number of games to play before survey is shown
+
     
 
+    //// Singleton pattern to ensure only one instance of GameManager exists (not used, as loading the survey and restarting the game corrups gamemanager references to other objects)
+    // private void Awake()
+    // {
+    //     if (Instance != null) {
+    //         DestroyImmediate(gameObject);
+    //     } else {
+    //         Instance = this;
+    //         DontDestroyOnLoad(gameObject);
+    //     }
+    // }
 
     private void Awake()
     {
-        if (Instance != null) {
-            DestroyImmediate(gameObject);
-        } else {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+        Instance = this;
     }
-
-    
     private void Start()
     {
         NewGame();
@@ -124,6 +131,15 @@ public class GameManager : MonoBehaviour
         if (this.lives <= 0 && Input.anyKeyDown && restartKey.enabled == true){
             NewGame(); 
         }
+
+        // Debugging
+        if (Input.GetKeyDown(KeyCode.Space)){
+            gameDatacollector.SaveData();
+            LoadSurvey();
+        }
+
+
+        // Update timer for data gathering
         round_timeElapsed = Time.time - round_startTime;
     }
     private void NewGame() // Starts a new game from the starting level
@@ -205,12 +221,23 @@ public class GameManager : MonoBehaviour
         }
 
         this.pacman.gameObject.SetActive(false); 
-        // Game over screen
+        // Game over screen, load survey if n_games is reached
         Gameover.enabled = true;
-        Invoke(nameof(PromptRestart), 1.5f);
+        if (MainManager.Instance.games_in_session % n_games == 0){
+            Invoke(nameof(LoadSurvey), 1.5f);
+        } else {
+            Invoke(nameof(PromptRestart), 1.5f);
+        }
         
         
     }
+
+    private void LoadSurvey()
+    {
+        // Load the survey scene
+        SceneManager.LoadScene("PsychState");
+    }
+
     private void PromptRestart()
     {
         restartKey.enabled = true;
