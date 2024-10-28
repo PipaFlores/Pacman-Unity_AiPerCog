@@ -39,6 +39,8 @@ public class SAM : MonoBehaviour
     private Button previousArousalButton;
     private Button previousDominanceButton;
 
+    private bool submitted = false; // Whether the survey has been submitted
+
     // Start is called before the first frame update
     void Start()
     {
@@ -79,7 +81,7 @@ public class SAM : MonoBehaviour
 
     void Update()
     {
-        if (valenceValue != 0 && arousalValue != 0 && dominanceValue != 0)
+        if (valenceValue != 0 && arousalValue != 0 && dominanceValue != 0 && !submitted)
         {
             submitButton.interactable = true;
         }
@@ -203,7 +205,7 @@ public class SAM : MonoBehaviour
             UnityWebRequest www = UnityWebRequest.Post(SERVERSCRIPT, form);
             yield return www.SendWebRequest();
             Debug.Log(www.downloadHandler.text);
-            PsychResponse response = JsonUtility.FromJson<PsychResponse>(www.downloadHandler.text);
+            ServerResponse response = JsonUtility.FromJson<ServerResponse>(www.downloadHandler.text);
             if (www.result == UnityWebRequest.Result.Success && response.success == true)
             {
                 Debug.Log("Data sent successfully");
@@ -212,6 +214,7 @@ public class SAM : MonoBehaviour
                 submitButton.GetComponentInChildren<Text>().text = "Data Sent";
                 submitButton.GetComponent<Image>().color = new Color(0.5f, 1f, 0.5f);
                 gameButton.interactable = true;
+                submitted = true;
                 yield break; // Exit the coroutine successfully
             }
             else if (www.result == UnityWebRequest.Result.Success && response.success == false)
