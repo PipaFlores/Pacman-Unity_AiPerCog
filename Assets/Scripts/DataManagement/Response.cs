@@ -7,7 +7,7 @@ public class LoginResponse {
     public int user_id;  // Assuming user_id is an integer
 }
 
-public class PsychResponse {
+public class ServerResponse {
     public bool success;
     public string message;
 }
