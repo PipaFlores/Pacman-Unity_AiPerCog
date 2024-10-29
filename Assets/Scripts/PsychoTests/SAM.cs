@@ -205,23 +205,26 @@ public class SAM : MonoBehaviour
             UnityWebRequest www = UnityWebRequest.Post(SERVERSCRIPT, form);
             yield return www.SendWebRequest();
             Debug.Log(www.downloadHandler.text);
-            ServerResponse response = JsonUtility.FromJson<ServerResponse>(www.downloadHandler.text);
-            if (www.result == UnityWebRequest.Result.Success && response.success == true)
+            if (www.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log("Data sent successfully");
-                // Enable the game button after data is sent successfully
-                submitButton.interactable = false;
-                submitButton.GetComponentInChildren<Text>().text = "Data Sent";
-                submitButton.GetComponent<Image>().color = new Color(0.5f, 1f, 0.5f);
-                gameButton.interactable = true;
-                submitted = true;
-                yield break; // Exit the coroutine successfully
-            }
-            else if (www.result == UnityWebRequest.Result.Success && response.success == false)
-            {
-                Debug.Log($"Failed to send data: {response.message}"); // Log the error message
-                StartCoroutine(ShowError(response.message)); // Show the error message
-                yield break; // Exit the coroutine
+                ServerResponse response = JsonUtility.FromJson<ServerResponse>(www.downloadHandler.text);
+                if (response.success)
+                {
+                    Debug.Log("Data sent successfully");
+                    // Enable the game button after data is sent successfully
+                    submitButton.interactable = false;
+                    submitButton.GetComponentInChildren<Text>().text = "Data Sent";
+                    submitButton.GetComponent<Image>().color = new Color(0.5f, 1f, 0.5f);
+                    gameButton.interactable = true;
+                    submitted = true;
+                    yield break; // Exit the coroutine successfully
+                }
+                else
+                {
+                    Debug.Log($"Failed to send data: {response.message}"); // Log the error message
+                    StartCoroutine(ShowError(response.message)); // Show the error message
+                    yield break; // Exit the coroutine
+                }
             }
             else
             {

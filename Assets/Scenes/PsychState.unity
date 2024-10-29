@@ -3988,7 +3988,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 9.784912, y: -9.6604}
-  m_SizeDelta: {x: -625.07, y: -206.2101}
+  m_SizeDelta: {x: -625.07, y: -163.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1289970027
 MonoBehaviour:
@@ -5542,6 +5542,7 @@ MonoBehaviour:
   games_in_session: 0
   source: Unity-Test
   dataserver: https://aipercog-24.it.helsinki.fi/
+  already_played: 0
 --- !u!4 &1985948428
 Transform:
   m_ObjectHideFlags: 0

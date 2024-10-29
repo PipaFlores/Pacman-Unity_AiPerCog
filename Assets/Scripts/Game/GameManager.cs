@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.UIElements;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System.Data.Common;
+using Unity.VisualScripting;
 // The GameManager class is responsible for managing the overall game state and logic.
 // It handles the initialization and control of various game elements such as Pacman, ghosts, pellets, and cherries.
 // The class also manages the level progression, including speed multipliers and other parameters for each level.
@@ -123,7 +125,11 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
+        if (MainManager.Instance.already_played == false){
+            MainManager.Instance.already_played = true;
+        }
         NewGame();
+
     }
 
     private void Update()
@@ -134,8 +140,7 @@ public class GameManager : MonoBehaviour
 
         // Debugging
         if (Input.GetKeyDown(KeyCode.Space)){
-            gameDatacollector.SaveData();
-            LoadSurvey();
+            StartCoroutine(AllLivesLost());
         }
 
 
@@ -213,25 +218,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(GetReady(3.0f, false));
     }
 
-    // Game over screen
-    private void GameOver()
-    {
-        for (int i = 0; i < this.ghosts.Length; i++) {
-            this.ghosts[i].gameObject.SetActive(false);
-        }
-
-        this.pacman.gameObject.SetActive(false); 
-        // Game over screen, load survey if n_games is reached
-        Gameover.enabled = true;
-        if (MainManager.Instance.games_in_session % n_games == 0){
-            Invoke(nameof(LoadSurvey), 1.5f);
-        } else {
-            Invoke(nameof(PromptRestart), 1.5f);
-        }
-        
-        
-    }
-
     private void LoadSurvey()
     {
         // Load the survey scene
@@ -304,7 +290,6 @@ public class GameManager : MonoBehaviour
 
     public void PacmanEaten()
     {
-        
         SetLives(this.lives - 1);
 
         if (this.lives > 0)
@@ -312,15 +297,17 @@ public class GameManager : MonoBehaviour
             ResetState(); // If pacman dies, resets ghots and pacman but not pellet (3 seconds delay)
             AudioManager.Instance.PlayDeathSound();
             this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
-            //this.pacman.DeathSequence();   Removed because it adds noise in the data Moved the animation to the lives indicator image
         }
         else
         {
-            gameDatacollector.SaveData();
             AudioManager.Instance.PlayDeathSound();
             this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
-            //this.pacman.DeathSequence(); Removed because it adds noise in the data
-            GameOver();
+            for (int i = 0; i < this.ghosts.Length; i++) {
+                this.ghosts[i].gameObject.SetActive(false);
+            }
+            this.pacman.gameObject.SetActive(false);
+            Gameover.enabled = true; // Game over screen;
+            StartCoroutine(AllLivesLost()); // Save data and wait for it to upload, then load survey or restart
         }
     }
 
@@ -364,9 +351,8 @@ public class GameManager : MonoBehaviour
             foreach (Ghost ghost in ghosts){
                 ghost.gameObject.SetActive(false);
             }
-            gameDatacollector.SaveData();
-            SetLevel(this.level + 1);
-            Invoke(nameof(NewRound), 3.0f);
+            StartCoroutine(LevelComplete()); // Save data and wait for it to upload, then load next level
+            
 
         }
     }
@@ -451,5 +437,43 @@ public class GameManager : MonoBehaviour
     {
         PowerPelletStates[i] = 0;
     }
+
+    public IEnumerator ErrorMsg(string msg){
+        UserNotification.text = msg;
+        yield return new WaitForSeconds(1.5f);
+        UserNotification.text = "";
+    }
+
+    private IEnumerator LevelComplete()
+    {
+        yield return StartCoroutine(gameDatacollector.SaveData());
+        SetLevel(this.level + 1);
+        UserNotification.text = "Loading next level...";
+        yield return new WaitForSeconds(1.5f);
+        UserNotification.text = "";
+        NewRound();
+    }
+
+    private IEnumerator AllLivesLost()
+    {
+        yield return StartCoroutine(gameDatacollector.SaveData());
+        if (gameDatacollector.data_upload_success){
+            if (MainManager.Instance.games_in_session % n_games == 0){
+                UserNotification.text = "Loading survey...";
+                yield return new WaitForSeconds(1.5f);
+                UserNotification.text = "";
+                LoadSurvey();
+            } else {
+                yield return new WaitForSeconds(1.5f);
+                PromptRestart();
+            }
+        } else {
+            UserNotification.text = "Returning to main menu...";
+            yield return new WaitForSeconds(1.5f);
+            UserNotification.text = "";
+            SceneManager.LoadScene("WelcomeScreen");
+        }
+    }
+
 
 }
