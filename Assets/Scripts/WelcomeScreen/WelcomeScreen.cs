@@ -31,11 +31,9 @@ public class WelcomeScreen : MonoBehaviour
     public TMP_Text session_number;
     public TMP_Text game_number;
     
-
-    // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(GetGameData(MainManager.Instance.user_id.ToString()));
+        StartCoroutine(GetGameData(MainManager.Instance.user_id.ToString(), newsession: !MainManager.Instance.already_played)); // Get game data from the server, do not increment session number if the user has already played a game in the current session
         GameButton.onClick.AddListener(LoadGame);
         goToConsentButton.onClick.AddListener(moveToConsent);
         goToSurveyButton.onClick.AddListener(moveToSurvey);
