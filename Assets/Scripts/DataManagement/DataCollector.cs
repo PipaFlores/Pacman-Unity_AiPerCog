@@ -116,6 +116,7 @@ public class DataCollector : MonoBehaviour
             UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
             yield return www.SendWebRequest();
             if (www.result == UnityWebRequest.Result.Success){
+                Debug.Log("Received: " + www.downloadHandler.text);
                 ServerResponse response = JsonUtility.FromJson<ServerResponse>(www.downloadHandler.text);
                 if (response.success)
                 {

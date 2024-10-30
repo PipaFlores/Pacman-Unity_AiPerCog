@@ -79,6 +79,7 @@ public class GameManager : MonoBehaviour
     public Text levelText;
 
     public Text restartKey;
+    public Text escapeKey;
     public Text readyText;
 
     public Text UserNotification;
@@ -134,14 +135,31 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (this.lives <= 0 && Input.anyKeyDown && restartKey.enabled == true){
+        if (this.lives <= 0 && Input.GetKeyDown(KeyCode.Space) && restartKey.enabled == true){
             NewGame(); 
         }
-
-        // Debugging
-        if (Input.GetKeyDown(KeyCode.Space)){
-            StartCoroutine(AllLivesLost());
+        if (this.lives <= 0 && Input.GetKeyDown(KeyCode.Escape) && escapeKey.enabled == true){
+            SceneManager.LoadScene("Welcome Screen");
         }
+        // Debugging
+        if (MainManager.Instance.debugging){
+            if (Input.GetKeyDown(KeyCode.Space)){
+                StartCoroutine(AllLivesLost());
+            }
+            // Debugging death
+            if (Input.GetKeyDown(KeyCode.F1)){
+                this.lives = 1;
+                PacmanEaten();
+            }
+            // Debugging win
+            if (Input.GetKeyDown(KeyCode.F2)){
+                foreach (Transform pellet in this.pellets){
+                    PelletEaten(pellet.GetComponent<Pellet>());
+                }
+            }
+        }
+
+
 
 
         // Update timer for data gathering
@@ -165,6 +183,7 @@ public class GameManager : MonoBehaviour
         win = false;
         Gameover.enabled = false;
         restartKey.enabled = false;
+        escapeKey.enabled = false;
         foreach (Transform pellet in this.pellets) // reset all pellets 
         {
             pellet.gameObject.SetActive(true);
@@ -227,6 +246,7 @@ public class GameManager : MonoBehaviour
     private void PromptRestart()
     {
         restartKey.enabled = true;
+        escapeKey.enabled = true;
     }
 
     // Set the score and update the score text

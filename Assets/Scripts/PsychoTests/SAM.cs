@@ -11,7 +11,8 @@ using Unity.VisualScripting;
 public class SAM : MonoBehaviour
 {
 
-    public Button gameButton; // Button to end survey and go back to game
+    public Button gameButton; // Button to go back to game
+    public Button exitButton; // Button to go back to welcome screen
     public Button submitButton; // Button to submit the survey
     public Button infoButton; // Button to display info
 
@@ -48,6 +49,8 @@ public class SAM : MonoBehaviour
         submitButton.interactable = false;
         gameButton.onClick.AddListener(BackToGame);
         gameButton.interactable = false;
+        exitButton.onClick.AddListener(BackToWelcome);
+        exitButton.interactable = false;
         infoButton.onClick.AddListener(ShowInfo);
         SERVERSCRIPT = MainManager.Instance.dataserver + SERVERSCRIPT;
         infoMsg.text = "Rate your emotional response to the last game";
@@ -164,6 +167,11 @@ public class SAM : MonoBehaviour
         SceneManager.LoadScene("Pacman");
     }
 
+    void BackToWelcome()
+    {
+        SceneManager.LoadScene("Welcome Screen");
+    }
+
     // Show or hide the info panel
     void ShowInfo()
     {
@@ -213,9 +221,22 @@ public class SAM : MonoBehaviour
                     Debug.Log("Data sent successfully");
                     // Enable the game button after data is sent successfully
                     submitButton.interactable = false;
+                    foreach (Button button in valenceButtons)
+                    {
+                        button.interactable = false;
+                    }
+                    foreach (Button button in arousalButtons)
+                    {
+                        button.interactable = false;
+                    }
+                    foreach (Button button in dominanceButtons)
+                    {
+                        button.interactable = false;
+                    }
                     submitButton.GetComponentInChildren<Text>().text = "Data Sent";
                     submitButton.GetComponent<Image>().color = new Color(0.5f, 1f, 0.5f);
                     gameButton.interactable = true;
+                    exitButton.interactable = true;
                     submitted = true;
                     yield break; // Exit the coroutine successfully
                 }

@@ -29,6 +29,9 @@ public class MainManager : MonoBehaviour
 
     public string dataserver = "https://aipercog-24.it.helsinki.fi/"; // path to the server (e.g., http://localhost/) paths to the PHP files are appended to this in the Register, Login, and DataCollector scripts
 
+    public bool already_played = false; // Flag to check if the user has already played a game in the current sessionds
+    public bool debugging = false; // Flag to check if debugging is enabled
+
 
 
     // Awake is called in login scene and a singleton pattern is used to ensure only one instance of the MainManager exists
@@ -47,8 +50,16 @@ public class MainManager : MonoBehaviour
         // Set debugger if on editor or development build
         #if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.unityLogger.logEnabled = true;
+            debugging = true;
         #else
             Debug.unityLogger.logEnabled = false;
         #endif
+        
+        // Additional runtime check for PilotTest
+        if (source == "PilotTest")
+        {
+            Debug.unityLogger.logEnabled = true;
+            debugging = true;
+        }
     }
 }
