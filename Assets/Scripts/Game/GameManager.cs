@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour
     public bool win {get ; private set; }
 
     // Survey controll variable
-    public int n_games = 1; // Number of games to play before survey is shown
+    public int n_games {get ; private set; } = 100; // Number of games to play before survey is shown
 
     
 

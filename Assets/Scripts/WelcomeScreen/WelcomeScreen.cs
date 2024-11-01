@@ -35,9 +35,12 @@ public class WelcomeScreen : MonoBehaviour
     {
         StartCoroutine(GetGameData(MainManager.Instance.user_id.ToString(), newsession: !MainManager.Instance.already_played)); // Get game data from the server, do not increment session number if the user has already played a game in the current session
         GameButton.onClick.AddListener(LoadGame);
-        goToConsentButton.onClick.AddListener(moveToConsent);
-        goToSurveyButton.onClick.AddListener(moveToSurvey);
-        updateButton.onClick.AddListener(UpdateGameData);
+        // goToConsentButton.onClick.AddListener(moveToConsent);
+        // goToSurveyButton.onClick.AddListener(moveToSurvey);
+        // updateButton.onClick.AddListener(UpdateGameData);
+        goToConsentButton.gameObject.SetActive(false);
+        goToSurveyButton.gameObject.SetActive(false);
+        updateButton.gameObject.SetActive(false);
         errorMsg.text = "";
         username.text = "Username: " + MainManager.Instance.username;
         
@@ -76,7 +79,7 @@ public class WelcomeScreen : MonoBehaviour
         }
         session_number.text = "Session number: " + MainManager.Instance.session_number.ToString();
         game_number.text = "Games played: "+ MainManager.Instance.total_games.ToString();
-        SetButtons();
+        // SetButtons();
     }
 
     void UpdateGameData()
