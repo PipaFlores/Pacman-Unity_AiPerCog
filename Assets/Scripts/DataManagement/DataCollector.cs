@@ -46,7 +46,7 @@ public class DataCollector : MonoBehaviour
         // Start collecting game data at regular intervals
         InvokeRepeating(nameof(CollectGameData), 0.2f, saveInterval);
         data_upload_success = false;
-        game_startTime = System.DateTime.UtcNow; // Record the start time of the game
+        game_startTime = System.DateTime.UtcNow.AddHours(2); // Record the start time of the game
     }
 
     private void CollectGameData()
@@ -155,7 +155,7 @@ public class DataCollector : MonoBehaviour
     public IEnumerator SaveData()
     {
         // Calculate game duration and save data
-        game_endTime = System.DateTime.UtcNow;
+        game_endTime = System.DateTime.UtcNow.AddHours(2);
         game_duration = (game_endTime - game_startTime).TotalSeconds;
 
         CancelInvoke(); // Stop data collection

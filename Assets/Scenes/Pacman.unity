@@ -1887,7 +1887,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Press escape key to restart
+  m_Text: Press escape key to go back to menu
 --- !u!222 &1059346312
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5244,6 +5244,7 @@ MonoBehaviour:
   fruitState_2: 0
   PowerPelletStates: 
   startLevel: 1
+  n_games: 1
 --- !u!4 &1802224795
 Transform:
   m_ObjectHideFlags: 0
