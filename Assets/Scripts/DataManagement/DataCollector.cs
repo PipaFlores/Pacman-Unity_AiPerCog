@@ -27,7 +27,7 @@ public class DataCollector : MonoBehaviour
 
     public bool data_upload_success {get ; private set; } // Flag to check if the data has been uploaded successfully
 
-    private float saveInterval = 0.050f; // Interval in seconds for data collection
+    private float saveInterval = 0.050f; // Interval in seconds for data collection (50ms)
 
     // Variables to track the duration of the game
     private double game_duration;
