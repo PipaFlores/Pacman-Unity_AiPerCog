@@ -2145,6 +2145,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: choiceButtons
       objectReference: {fileID: 0}
+    - target: {fileID: 6389768373478798187, guid: 42297941cd1ac8d4c8fd16bf9b18857e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 267.9232
+      objectReference: {fileID: 0}
+    - target: {fileID: 6389768373478798187, guid: 42297941cd1ac8d4c8fd16bf9b18857e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -237.38718
+      objectReference: {fileID: 0}
     - target: {fileID: 6951903402264288905, guid: 42297941cd1ac8d4c8fd16bf9b18857e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

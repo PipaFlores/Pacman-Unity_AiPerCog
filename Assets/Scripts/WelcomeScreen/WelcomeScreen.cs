@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using TMPro;
 using Unity.VisualScripting;
+using JetBrains.Annotations;
 
 // This script manages the welcome screen of the game. It initializes UI elements and handles user interactions
 // such as starting the game, navigating to consent and survey forms, and updating game data. The script retrieves
@@ -17,30 +18,30 @@ public class WelcomeScreen : MonoBehaviour
 
     public Button GameButton;
     public Button goToConsentButton;
-    public Button goToSurveyButton;
-    public Button updateButton;
 
     public int consent; // State of consent form 0 = not done, 1 = unverified, 2 = verified
     public int survey; // State of survey form 0 = not done, 1 = unverified, 2 = verified
     public string consentUrl;
     public string surveyUrl;
     
-    public TMP_Text errorMsg;
+    public Text errorMsg;
 
-    public TMP_Text username;
-    public TMP_Text session_number;
-    public TMP_Text game_number;
+    public Text username;
+    public Text session_number;
+    public Text game_number;
     
     void Start()
     {
         StartCoroutine(GetGameData(MainManager.Instance.user_id.ToString(), newsession: !MainManager.Instance.already_played)); // Get game data from the server, do not increment session number if the user has already played a game in the current session
         GameButton.onClick.AddListener(LoadGame);
         goToConsentButton.onClick.AddListener(moveToConsent);
-        goToSurveyButton.onClick.AddListener(moveToSurvey);
-        updateButton.onClick.AddListener(UpdateGameData);
         errorMsg.text = "";
         username.text = "Username: " + MainManager.Instance.username;
-        
+
+        if (consent != 2)
+        {
+            InvokeRepeating(nameof(UpdateGameData), 0, 5);
+        }
     }
 
     IEnumerator GetGameData(string userId, bool newsession = true)
@@ -81,50 +82,34 @@ public class WelcomeScreen : MonoBehaviour
 
     void UpdateGameData()
     {
-        StartCoroutine(GetGameData(MainManager.Instance.user_id.ToString(), newsession:true));
+        Debug.Log("Updating user data");
+        StartCoroutine(GetGameData(MainManager.Instance.user_id.ToString(), newsession:false));
+        if (consent == 2)
+        {
+            CancelInvoke(nameof(UpdateGameData));
+        }
     }
 
     public void SetButtons()
     {
         if (consent == 2)
         {
+            GameButton.gameObject.SetActive(true);
             GameButton.interactable = true;
             GameButton.GetComponentInChildren<Text>().text = "Play Game";
-            goToSurveyButton.interactable = true;
-            goToSurveyButton.GetComponentInChildren<Text>().text = "Take Survey";
-            goToConsentButton.interactable = false;
-            updateButton.gameObject.SetActive(false);
-            goToConsentButton.GetComponentInChildren<Text>().text = "Consent form completed";
-        }
-        if (survey == 2)
-        {
-            goToSurveyButton.interactable = false;
-            goToSurveyButton.GetComponentInChildren<Text>().text = "Survey completed";
+            goToConsentButton.gameObject.SetActive(false);
         }
         if (consent != 2){
             GameButton.interactable = false;
-            GameButton.GetComponentInChildren<Text>().text = "Complete consent to Play";
-            goToSurveyButton.interactable = false;
-            goToSurveyButton.GetComponentInChildren<Text>().text = "Complete consent to take survey";
-            updateButton.enabled = true;
+            GameButton.gameObject.SetActive(false);
         }
     }
 
     void moveToConsent()
     {
+        StartCoroutine(ShowError("Opening external form, check pop-up window", 10));
         Application.OpenURL(consentUrl);
         // SceneManager.LoadScene("Consent");
-    }
-    void moveToSurvey()
-    {
-        if (consent != 2)
-        {
-            StartCoroutine(ShowError("Please complete the consent form first."));
-            return;
-        }
-        
-        Application.OpenURL(surveyUrl);
-        // SceneManager.LoadScene("Survey");
     }
 
     void LoadGame()
@@ -133,10 +118,10 @@ public class WelcomeScreen : MonoBehaviour
     }
 
     // Show error message for 3 seconds
-    IEnumerator ShowError(string message)
+    IEnumerator ShowError(string message, int time = 3)
     {
         errorMsg.text = message;
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(time);
         errorMsg.text = "";
     }
 

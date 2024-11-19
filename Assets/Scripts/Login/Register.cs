@@ -93,13 +93,16 @@ IEnumerator RegisterUser()
             }
             else 
             {  
-                ServerResponse response = JsonUtility.FromJson<ServerResponse>(www.downloadHandler.text);
+                LoginResponse response = JsonUtility.FromJson<LoginResponse>(www.downloadHandler.text);
                 if (response.success == true)
                 {
                     Debug.Log("User registered successfully");
-                    confirmationText.text = "User registered successfully, go to log in screen";
+                    confirmationText.text = "User registered successfully, returning to login screen";
                     yield return new WaitForSeconds(2);
                     confirmationText.text = "";
+                    MainManager.Instance.user_id = response.user_id;
+                    MainManager.Instance.username = usernameInput.text;
+                    SceneManager.LoadScene("Welcome Screen");
                     yield break;
                 }
                 else if (response.success == false)
