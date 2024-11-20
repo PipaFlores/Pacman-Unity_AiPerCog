@@ -12,6 +12,7 @@ public class AudioManager : MonoBehaviour
     //public AudioSource WinSound;
     public AudioSource IntermissionSound;
     public AudioSource GhostEatenSound;
+    public AudioSource ExtraLifeSound;
     
 
     void Awake()
@@ -42,6 +43,11 @@ public class AudioManager : MonoBehaviour
         {
             DeathSound.Play();
         }
+    }
+
+    public void PlayExtraLifeSound()
+    {
+        ExtraLifeSound.Play();
     }
 
     public void PlayIntermissionSound(float duration)

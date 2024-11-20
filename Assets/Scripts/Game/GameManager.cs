@@ -87,6 +87,8 @@ public class GameManager : MonoBehaviour
 
     public int score {get ; private set; }
 
+    private int previous_score = 0;
+
     public int remainingPellets {get ; private set; }
 
     public int remainingPills {get ; private set; }
@@ -156,6 +158,9 @@ public class GameManager : MonoBehaviour
                 foreach (Transform pellet in this.pellets){
                     PelletEaten(pellet.GetComponent<Pellet>());
                 }
+            }
+            if (Input.GetKeyDown(KeyCode.F3)){
+                this.SetScore(this.score + 1400);
             }
         }
 
@@ -254,6 +259,12 @@ public class GameManager : MonoBehaviour
     {
         this.score = score;
         ScoreText.text = score.ToString().PadLeft(2, '0');
+        if (previous_score / 10000 != score / 10000){
+            this.SetLives(this.lives + 1);
+            AudioManager.Instance.PlayExtraLifeSound();
+            StartCoroutine(ErrorMsg("Extra life!"));
+        }
+        previous_score = score;
     }
 
     // Set the lives and update the lives text
