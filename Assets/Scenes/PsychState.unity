@@ -389,8 +389,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -121.6, y: 211.87}
-  m_SizeDelta: {x: 623.1834, y: 47.9456}
+  m_AnchoredPosition: {x: -24.8597, y: 206.99548}
+  m_SizeDelta: {x: 886.4762, y: 61.2123}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &468321024
 MonoBehaviour:
@@ -405,7 +405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8440717, g: 0.9716981, b: 0.03208439, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -413,7 +413,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 9f919fc50b2c1b447972a08466b5e19c, type: 3}
     m_FontSize: 23
     m_FontStyle: 0
     m_BestFit: 0
@@ -425,7 +425,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Answer the following questions
+  m_Text: Rate how much the following statements describe your gaming experience
 --- !u!222 &468321025
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1080,7 +1080,7 @@ GameObject:
   - component: {fileID: 1001181682}
   - component: {fileID: 1001181683}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Not_at_all
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1102,7 +1102,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -38.2, y: 177.2}
+  m_AnchoredPosition: {x: 50, y: 177.2}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1001181682
@@ -1260,7 +1260,7 @@ GameObject:
   - component: {fileID: 1062790793}
   - component: {fileID: 1062790794}
   m_Layer: 5
-  m_Name: Text(1)
+  m_Name: Very_much
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1282,7 +1282,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 379.4, y: 176.3}
+  m_AnchoredPosition: {x: 338, y: 176.3}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1062790793
@@ -2147,11 +2147,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6389768373478798187, guid: 42297941cd1ac8d4c8fd16bf9b18857e, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 267.9232
+      value: 375.7968
       objectReference: {fileID: 0}
     - target: {fileID: 6389768373478798187, guid: 42297941cd1ac8d4c8fd16bf9b18857e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -237.38718
+      value: -321
       objectReference: {fileID: 0}
     - target: {fileID: 6951903402264288905, guid: 42297941cd1ac8d4c8fd16bf9b18857e, type: 3}
       propertyPath: m_Pivot.x

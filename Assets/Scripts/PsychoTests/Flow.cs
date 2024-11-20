@@ -37,7 +37,6 @@ public class Flow : MonoBehaviour
         exitButton.onClick.AddListener(BackToWelcome);
         exitButton.interactable = false;
         SERVERSCRIPT = MainManager.Instance.dataserver + SERVERSCRIPT;
-        infoMsg.text = "Answer the following questions.";
         // Initialize the 2D array with the correct dimensions
         fss_ButtonsArray = new Button[fss_ButtonsParents.Length][];
         fss_Values = new int[fss_ButtonsParents.Length];
@@ -105,12 +104,13 @@ public class Flow : MonoBehaviour
         if (previousFSS_Buttons[arrayIndex] != null)
         {
             previousFSS_Buttons[arrayIndex].GetComponent<Image>().color = Color.white;
+            previousFSS_Buttons[arrayIndex].GetComponent<AnimatedButton>().enabled = false;
         }
 
         // Set the color of the current button to green
         Button currentButton = fss_ButtonsArray[arrayIndex][value - 1];
         currentButton.GetComponent<Image>().color = new Color(0.5f, 1f, 0.5f);
-
+        currentButton.GetComponent<AnimatedButton>().enabled = true;
         // Update the previous button
         previousFSS_Buttons[arrayIndex] = currentButton;
     }

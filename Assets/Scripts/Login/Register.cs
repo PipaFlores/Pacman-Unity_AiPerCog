@@ -58,7 +58,7 @@ public class Register : MonoBehaviour
             StartCoroutine(RegisterUser());
         }
     }
-IEnumerator RegisterUser()
+    IEnumerator RegisterUser()
     {
             // Check if any field is empty
         if (string.IsNullOrWhiteSpace(usernameInput.text) ||
@@ -97,7 +97,7 @@ IEnumerator RegisterUser()
                 if (response.success == true)
                 {
                     Debug.Log("User registered successfully");
-                    confirmationText.text = "User registered successfully, returning to login screen";
+                    confirmationText.text = "User registered successfully, heading to welcome screen";
                     yield return new WaitForSeconds(2);
                     confirmationText.text = "";
                     MainManager.Instance.user_id = response.user_id;
