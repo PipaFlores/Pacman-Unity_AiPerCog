@@ -16,7 +16,7 @@ public class Register : MonoBehaviour
     public InputField emailinput;
     public Button registerButton;
     public Button goToLoginButton;
-    public TMP_Text confirmationText;
+    public Text confirmationText;
     private string registerUrl;
 
 
@@ -26,7 +26,6 @@ public class Register : MonoBehaviour
         //confirmationText = GetComponent<TextMeshProUGUI>();
         registerButton.onClick.AddListener(() => StartCoroutine(RegisterUser()));
         goToLoginButton.onClick.AddListener(goToLoginScene);
-        confirmationText.text = "";
         registerUrl = MainManager.Instance.dataserver;
         
     }

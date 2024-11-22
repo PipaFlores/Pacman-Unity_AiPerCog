@@ -23,6 +23,9 @@ public class WelcomeScreen : MonoBehaviour
     public int survey; // State of survey form 0 = not done, 1 = unverified, 2 = verified
     public string consentUrl;
     public string surveyUrl;
+
+    public GameObject StudyIntro;
+    public GameObject Instructions;
     
     public Text errorMsg;
 
@@ -40,7 +43,7 @@ public class WelcomeScreen : MonoBehaviour
 
         if (consent != 2)
         {
-            InvokeRepeating(nameof(UpdateGameData), 0, 5);
+            InvokeRepeating(nameof(UpdateGameData), 2, 5);
         }
     }
 
@@ -68,6 +71,10 @@ public class WelcomeScreen : MonoBehaviour
         MainManager.Instance.total_games = data.total_games;
         MainManager.Instance.session_number = data.last_session;
         consent = data.consent_done;
+        if (consent == 2)
+        {
+            CancelInvoke(nameof(UpdateGameData));
+        }
         survey = data.survey_done;
         consentUrl = data.consent_link;
         surveyUrl = data.survey_link;
@@ -83,7 +90,7 @@ public class WelcomeScreen : MonoBehaviour
     void UpdateGameData()
     {
         Debug.Log("Updating user data");
-        StartCoroutine(GetGameData(MainManager.Instance.user_id.ToString(), newsession:false));
+        StartCoroutine(GetGameData(MainManager.Instance.user_id.ToString()));
         if (consent == 2)
         {
             CancelInvoke(nameof(UpdateGameData));
@@ -96,12 +103,18 @@ public class WelcomeScreen : MonoBehaviour
         {
             GameButton.gameObject.SetActive(true);
             GameButton.interactable = true;
-            GameButton.GetComponentInChildren<Text>().text = "Play Game";
+            GameButton.GetComponentInChildren<Text>().text = "Click here to play";
             goToConsentButton.gameObject.SetActive(false);
+            StudyIntro.SetActive(false);
+            Instructions.SetActive(true);
         }
         if (consent != 2){
             GameButton.interactable = false;
             GameButton.gameObject.SetActive(false);
+            goToConsentButton.gameObject.SetActive(true);
+            goToConsentButton.interactable = true;
+            StudyIntro.SetActive(true);
+            Instructions.SetActive(false);
         }
     }
 
