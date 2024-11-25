@@ -2413,6 +2413,30 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1502176952119489493, guid: 16bb058298e595841a9ca541ed81d356, type: 3}
+      propertyPath: m_Text
+      value: 00
+      objectReference: {fileID: 0}
+    - target: {fileID: 1502176952119489493, guid: 16bb058298e595841a9ca541ed81d356, type: 3}
+      propertyPath: m_FontData.m_Alignment
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1502176952119489498, guid: 16bb058298e595841a9ca541ed81d356, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 267.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 1502176952119489498, guid: 16bb058298e595841a9ca541ed81d356, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 66.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 1502176952119489498, guid: 16bb058298e595841a9ca541ed81d356, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -570.94
+      objectReference: {fileID: 0}
+    - target: {fileID: 1502176952119489498, guid: 16bb058298e595841a9ca541ed81d356, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 612.77
+      objectReference: {fileID: 0}
     - target: {fileID: 1502176952221694426, guid: 16bb058298e595841a9ca541ed81d356, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 538
@@ -5374,6 +5398,7 @@ MonoBehaviour:
   fruitState_2: 0
   PowerPelletStates: 
   startLevel: 1
+  games_threshold: 2
   n_games: 1
 --- !u!4 &1802224795
 Transform:

@@ -107,7 +107,9 @@ public class GameManager : MonoBehaviour
     public bool win {get ; private set; }
 
     // Survey controll variable
-    public int n_games = 1; // Number of games to play before survey is shown
+    public int games_threshold = 2; // Number of games to play before starting survey iterations
+    public int n_games = 1; // Number of games to play between surveys
+
 
     
 
@@ -145,7 +147,7 @@ public class GameManager : MonoBehaviour
         }
         // Debugging
         if (MainManager.Instance.debugging){
-            if (Input.GetKeyDown(KeyCode.Space)){
+            if (Input.GetKeyDown(KeyCode.F4)){
                 StartCoroutine(AllLivesLost());
             }
             // Debugging death
@@ -489,7 +491,7 @@ public class GameManager : MonoBehaviour
     {
         yield return StartCoroutine(gameDatacollector.SaveData());
         if (gameDatacollector.data_upload_success){
-            if (MainManager.Instance.games_in_session % n_games == 0){
+            if (MainManager.Instance.games_in_session % n_games == 0 && MainManager.Instance.total_games >= games_threshold){
                 UserNotification.text = "Loading survey...";
                 yield return new WaitForSeconds(1.5f);
                 UserNotification.text = "";

@@ -21,6 +21,7 @@ public class AnimatedButton : MonoBehaviour
     private void OnEnable()
     {
         this.image.enabled = true;
+        InvokeRepeating(nameof(Advance), 0f , this.animationTime);
     }
 
     private void OnDisable()
@@ -28,11 +29,7 @@ public class AnimatedButton : MonoBehaviour
         this.image.sprite = sprites[0];
         CancelInvoke(nameof(Advance));
     }
-    private void Start()
-    {
-        InvokeRepeating(nameof(Advance), this.animationTime, this.animationTime);
-    }
-
+    
     private void Advance()
     {
         if (!this.image.enabled) {
