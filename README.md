@@ -1,8 +1,14 @@
 # Experimental Pacman - AI Personality and Cognition (AiPerCog) Research Project
 
+The AiPerCog project studies human gaming behavior and artificial intelligence modelling. This modified version of pacman maintains core gameplay elements while incorporating specialized data collection mechanisms to study player decision-making, strategy development, and behavioral patterns.
+
+This project is part of ongoing research at the University of Helsinki, combining game mechanics analysis with psychological assessment to better understand the relationship between gaming behavior and cognitive processes.
+
 ## Content
 
-This repository contains the Unity (version 2022.3.20f1) project of our Pacman implementation. It is designed to work along with a [remote server with MySQL database](https://version.helsinki.fi/hipercog/behavlets/Web-Pacman) to collect gameplay data. The resulting data will be encoded and analyzed with [Pacman Behavlets Encoding System](https://version.helsinki.fi/hipercog/behavlets/encoder-pacman)
+This repository contains the Unity (version 2022.3.20f1) project of our Experimental Pacman implementation. It is designed to work along with a [remote server with MySQL database](https://version.helsinki.fi/hipercog/behavlets/Web-Pacman) to collect gameplay data. The resulting data will be encoded and analyzed with [Pacman Behavlets Encoding System](https://version.helsinki.fi/hipercog/behavlets/encoder-pacman)
+
+**Disclaimer:** This is inspired by a classic arcade game but is part of a research project as a tool to study gamer behavior and AI cognition. It is not intended for commercial use. The code is provided with the purpose of transparency and replicability of the research, in line with open science principles.
 
 Relevant code is in Assets/Scripts
 
@@ -32,9 +38,13 @@ Relevant code is in Assets/Scripts
 | Game freezing on ghost eating | Freezes when Pacman eats a ghost | Game continues while Pacman eats a ghost | ------- |
 | Game freezing on Pacman death | Freezes when Pacman dies | Similar | ------- |
 | Level progression | Increases challenges by changing several variables of the game | Simplified progression, as shown in table below | ------- |
+| Pacman lives | 3 lives and 1 extra every 10000 points | 3 lives and 1 extra every 10000 points | ------- |
 
 
-## Level Progression Comparison between Original and Unity Pacman (Red columns were removed, except for # of flashes, which is fixed to 3)
+## Level Progression Comparison between Original and Unity Pacman 
+
+The following table shows the level progression of the original game and Unity Pacman. Red columns are part of the original game mechanics but removed for simplification purposes.
+
 ![](LevelProgComparison.jpg)
 
 
@@ -55,7 +65,7 @@ Difficulty increases by modifying the speed, the frightened duration, and ghosts
 
 Speed:
 
-- Pacman speed is 5% higher than the ghosts except when eating a powerpill, where the difference in speeds is of 40% Progression in speed follows closely the original game's values, as described in the Pacman Dossier. Maximum speed, both for Pacman and Ghosts, is reached at level 5. However, at level 21+ ghosts' speed become 5% higher than Pacman
+- Pacman speed is 5% higher than the ghosts except when eating a powerpill, where the difference in speeds is of 40%. Progression in movement speed follows closely the original game's values, as described in the Pacman Dossier. Maximum speed, both for Pacman and Ghosts, is reached at level 5. However, at level 21+ ghosts' speed become 5% higher than Pacman.
 
 Fright time:
 - Fright time starts at 6 seconds and it becomes shorter each level. However, it does not follow a logical progression. For example, in level 9 the fright time is 1 second, in level 10 is of 5 seconds, and in level 11 returns to 1 second. This brings unpredictability on assessing the risk of hunting ghosts.
@@ -69,20 +79,20 @@ Ghost behavior:
 - After departure, each ghost scatters to patrol an assigned quadrant, following the original game's behavior.
 - During the game they alternate between chase/scatter behavior. As difficulty increases, the sooner and longer they are in chasing behavior.
 - Movement is guided by a grid of nodes positioned at each intersection. Ghost wont change path in the middle of a passage/tunnel
-- When chasing Pacman, the targetting system is Same for every ghost. They chase pacman directly using a heuristic distance metric, Same to Blinky in the original game. This is a simplification of the original game, where each ghost has a different targetting behavior. As a consequence, the game is more challenging, as every ghost behaves as the most agressive one in the original game.
-- In the original game, Blinky increases its speed twice during the game when a certain amount of pellets are eaten. In this version, Blinky is not faster than the other ghosts and there is no ["Cruise Elroy" speed boost](https://pacman.holenet.info/#CH4_Blinky) speed changes. This reduces challenge significantly, as Blinky is the most aggressive ghost in the original game. However, this is somewhat countered by the Same targetting behavior of all ghosts.
+- When chasing Pacman, the targetting system is same for every ghost. They chase pacman directly using a heuristic distance metric, same to the red ghost (Blinky) in the original game. This is a simplification of the original game, where each ghost has a different targetting behavior. As a consequence, the game is more challenging, as every ghost behaves as the most agressive one in the original game.
+- In the original game, Blinky increases its speed twice during the game when a certain amount of pellets are eaten. In this version, Blinky is not faster than the other ghosts and there is no ["Cruise Elroy" speed boost](https://pacman.holenet.info/#CH4_Blinky) speed changes. This reduces challenge significantly, as Blinky is the most aggressive ghost in the original game. However, this is somewhat countered by the same targetting behavior of all ghosts.
 
 
 
 ## Data Collection
 
-Data collection scripts (Assets/Scripts/DataManagement/*) gather and sends raw gameplay data to remote server. Server address is defined in MainManager.cs scripts.
+Data collection scripts (Assets/Scripts/DataManagement/*) gather and sends raw gameplay data to remote server in json format. Server address is defined in MainManager.cs scripts. All data is sent after a game ends (either by losing all lives or by winning and moving to a higher level).
 
-Data collected is divided in two tables, "game" and "gamestate":
+Gameplay data is divided in two tables, "game" and "gamestate" (SQL data structure available upon request):
 
 ### "Game" Table:
 
-Contains higher level data of a single game/round/level of Pacman played. A game ends when player loses all lives or wins and moves to a higher level:
+Contains higher level data of a single game/round/level of Pacman played:
 
 - *user_id*: represents player's unique identifier. retrieved on log-in
 - *session_number*: represents the session number in which the game was played (increments each time the user logs in and plays a game)
@@ -95,7 +105,9 @@ Contains higher level data of a single game/round/level of Pacman played. A game
 
 ### "Gamestate" Table:
 
-- *game_id*
+Contains detailed data of the game state at each frame. The states are recorded every 50ms, defined in DataCollector.cs script.
+
+- *game_id*: id of the game in which the state was recorded
 - *time elapsed*: since the start of the round (timer starts as soon as the movement is enabled)
 - *score*
 - *lives*
@@ -106,6 +118,24 @@ Contains higher level data of a single game/round/level of Pacman played. A game
 - *Powerpellets*: number of remaining powerpellets. 
 - *PowerPellet states*: the state of each individual pellet (1 for not eaten/active, 0 for eaten/unactive), numbered from 1 to 4 according to their position in the map ( see PowerPellet.cs)
 - *Fruit states*: state of the fruits. 0 for not spawned, 1 for spawned, 2 for eaten. Two fruits are spawned when remaining pellet count reaches 174 and 74.
+- *input direction*: The input from the player.
+- *movement direction*: The direction of the movement of Pacman.
+
+
+### Psychological Data
+
+Psychological data is stored in secure university server (Research Electronic Data Capture - REDCap). First, the user provides the consent by clicking a button in the welcome screen (see WelcomeScreen.cs). Then, the user is redirected to REDCap to fill in the consent and an initial psychological questionnaire. Second, the user is asked to fill a questionnaire after each game session, starting after the seconde game played. This questionnaire is a scene in Unity, not an external link. The data is sent to REDCap through the API integration (See remote server repository for more details).
+
+## Related Research
+
+This project is part of the [AiPerCog](https://www.helsinki.fi/en/researchgroups/high-performance-cognition/research) research project, which studies human gaming behavior and artificial intelligence modelling.
+
+[Behavlets: a method for practical player modelling using psychology-based player traits and domain specific features](https://link.springer.com/article/10.1007/s11257-016-9170-1)
+
+[Utility of a Behavlets approach to a Decision theoretic predictive player model](https://arxiv.org/abs/1603.08973)
+
+[Real-time rule-based classification of player types in computer games](https://link.springer.com/article/10.1007/s11257-012-9126-z)
+
 
 ## Contact Information
 
