@@ -32,12 +32,15 @@ public class WelcomeScreen : MonoBehaviour
     public Text username;
     public Text session_number;
     public Text game_number;
+    public Link linkOpener;
+    public PressHandler pressHandler;
     
     void Start()
     {
         StartCoroutine(GetGameData(MainManager.Instance.user_id.ToString(), newsession: !MainManager.Instance.already_played)); // Get game data from the server, do not increment session number if the user has already played a game in the current session
         GameButton.onClick.AddListener(LoadGame);
-        goToConsentButton.onClick.AddListener(moveToConsent);
+        // goToConsentButton.onClick.AddListener(moveToConsent);
+        pressHandler.OnPress.AddListener(moveToConsent);
         errorMsg.text = "";
         username.text = "Username: " + MainManager.Instance.username;
 
@@ -78,6 +81,7 @@ public class WelcomeScreen : MonoBehaviour
         survey = data.survey_done;
         consentUrl = data.consent_link;
         surveyUrl = data.survey_link;
+        linkOpener.Field.text = consentUrl;
         if (newsession)
         {
             MainManager.Instance.session_number += 1;
@@ -121,8 +125,11 @@ public class WelcomeScreen : MonoBehaviour
     void moveToConsent()
     {
         StartCoroutine(ShowError("Opening external form, check pop-up window", 10));
-        Application.OpenURL(consentUrl);
-        // SceneManager.LoadScene("Consent");
+        #if !UNITY_EDITOR
+            linkOpener.OpenLinkJSPlugin();
+        #else
+            linkOpener.OpenLink();
+        #endif
     }
 
     void LoadGame()
