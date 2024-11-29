@@ -4,7 +4,7 @@
             {
                 "type": "System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
                 "key": "buildOutputDirList",
-                "value": "{\"m_Value\":\"C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver/Release;C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver/Release_pilot;C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver/pilot5;C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver/2.0;C:/LocalData/pabflore/Unity_Projects/PacBuilds/test;C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver/1.0.1;C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver;C:/LocalData/pabflore/Unity_Projects/PacBuilds/Itchio;C:/LocalData/pabflore/Unity_Projects/PacBuilds;D:/PacmanUnity/Build/itchio\"}"
+                "value": "{\"m_Value\":\"C:/LocalData/pabflore/Unity_Projects/PacBuilds/Itchio/Release;C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver/Release;C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver/Release_pilot;C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver/pilot5;C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver/2.0;C:/LocalData/pabflore/Unity_Projects/PacBuilds/test;C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver/1.0.1;C:/LocalData/pabflore/Unity_Projects/PacBuilds/ITserver;C:/LocalData/pabflore/Unity_Projects/PacBuilds/Itchio;C:/LocalData/pabflore/Unity_Projects/PacBuilds\"}"
             },
             {
                 "type": "System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
