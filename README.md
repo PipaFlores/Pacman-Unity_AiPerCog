@@ -92,16 +92,18 @@ Gameplay data is divided in two tables, "game" and "gamestate" (SQL data structu
 
 ### "Game" Table:
 
-Contains higher level data of a single game/round/level of Pacman played:
+Contains higher level data of a single level of Pacman played (finished at the lose of 3 lives, or when succesfully eating all the pellets):
+NOTE: There is room for confussion here. Each row in this dataframe corresponds to a single level being played. However, a more consistent definition of a "game" (or wholegame) considers the whole process between the start at level 1, until the final death (i.e., Game Over prompt),
+which could span across several levels. Not to be confussed with the "sessions", as they represent login sessions, which may span several wholegames. This difference will appear later during analysis.
 
 - *user_id*: represents player's unique identifier. retrieved on log-in
-- *session_number*: represents the session number in which the game was played (increments each time the user logs in and plays a game)
-- *game_in_session*: represents the position of the game within the current session
+- *session_number*: represents the session number in which the level was played (increments each time the user logs in and plays a game)
+- *game_in_session*: represents the position of the game within the current session (How many levels have been played without closing the web client)
 - *source*: represents the source from where the client is playing the game (e.g., itch.io, University's server, etc.)
 - *date played*
 - *game duration*
 - *win*: 0 for lost game , 1 for a win
-- *level*: Difficulty level of the game
+- *level*: Difficulty level being played.
 
 ### "Gamestate" Table:
 
