@@ -118,7 +118,7 @@ Contains detailed data of the game state at each frame. The states are recorded 
 - *ghost states*: represents the ghost active behavior/state. 0 for home, 1 for scattering, 2 for chasing, 3 for frightened, 4 for eaten
 - *pellets*: number of remaining pellets and powerpellets
 - *Powerpellets*: number of remaining powerpellets. 
-- *PowerPellet states*: the state of each individual pellet (1 for not eaten/active, 0 for eaten/unactive), numbered from 1 to 4 according to their position in the map ( see PowerPellet.cs)
+- *PowerPellet states*: the state of each individual pellet (1 for not eaten/active, 0 for eaten/unactive), numbered from 1 to 4 according to their position in the map (1 upper-left, 2 upper-right, 3 lower-right, 4 lower-left)
 - *Fruit states*: state of the fruits. 0 for not spawned, 1 for spawned, 2 for eaten. Two fruits are spawned when remaining pellet count reaches 174 and 74.
 - *input direction*: The input from the player.
 - *movement direction*: The direction of the movement of Pacman.
