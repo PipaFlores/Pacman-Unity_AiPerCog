@@ -115,7 +115,7 @@ Contains detailed data of the game state at each frame. The states are recorded 
 - *lives*
 - *positions of Pacman and Ghosts*: Positions are sent in (x,y) structure. Values range from -12.5 < x < 12.5 ; -15.5 < y > 12.5
 - *pacman attack state*: represents the state when pacman is eating a ghost. 0 for normal, 1 for eating a ghost
-- *ghost states*: represents the ghost active behavior/state. 0 for home, 1 for scattering, 2 for chasing, 3 for frightened, 4 for eaten
+- *ghost states*: represents the ghost active behavior/state. 0 for home, 1 for scattering, 2 for chasing, 3 for frightened, 4 for eaten (remains as 4 for the time the ghost is at home after being eaten)
 - *pellets*: number of remaining pellets and powerpellets
 - *Powerpellets*: number of remaining powerpellets. 
 - *PowerPellet states*: the state of each individual pellet (1 for not eaten/active, 0 for eaten/unactive), numbered from 1 to 4 according to their position in the map (1 upper-left, 2 upper-right, 3 lower-right, 4 lower-left)
