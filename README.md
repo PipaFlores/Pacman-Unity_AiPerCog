@@ -72,7 +72,11 @@ Fright time:
 - In original pacman, the number of flashes that frightened ghosts have is related to the timing and the moment where they turn. During the first 11 levels, ghost are going to flash 5 times before turning. This gives some guide to predict and watch for the turn in behavior. In this implementation, flashing of the ghosts is simplified and it always flicker three times, starting from half the frightened duration, before turning back to normal. This can be modified easily, by adding the level values in the levelData array (GameManager.cs) and modifying the loadleveldata() method to alter the "flickercount" variable in GhostFrightened.cs script.
 
 Ghosts' home departure:
-- Ghosts departure from home is simplified. Every ghost has a pre-defined timer to leave home. This timer decreases linearly with level progression, reaching its minimum at lvl 13. 
+- Ghosts departure from home is simplified. Every ghost has a pre-defined timer to leave home. This timer decreases linearly with level progression, reaching its minimum at lvl 13.
+  - Red - starts outside home
+  - Pink - leaves in 2 seconds
+  - Cyan - leaves in 8 seconds
+  - Brown  - leaves in 16 seconds
 - Same rule applies for the time the ghosts spend at home after getting eaten.
 
 Ghost behavior:
