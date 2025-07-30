@@ -1751,7 +1751,7 @@ MonoBehaviour:
   total_games: 0
   games_in_session: 0
   source: Unity-Test
-  dataserver: https://aipercog-24.it.helsinki.fi/
+  dataserver: https://aipercog-24.it.helsinki.fi/---
   already_played: 0
   debugging: 0
 --- !u!4 &1985948428

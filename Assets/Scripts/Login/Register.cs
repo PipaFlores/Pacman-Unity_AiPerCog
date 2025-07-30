@@ -13,7 +13,7 @@ public class Register : MonoBehaviour
 
     public InputField usernameInput;
     public InputField passwordInput;
-    public InputField emailinput;
+    public InputField repeatPasswordInput;
     public Button registerButton;
     public Button goToLoginButton;
     public Text confirmationText;
@@ -45,9 +45,9 @@ public class Register : MonoBehaviour
             }
             else if (passwordInput.isFocused)
             {
-                emailinput.Select();
+                repeatPasswordInput.Select();
             }
-            else if (emailinput.isFocused)
+            else if (repeatPasswordInput.isFocused)
             {
                 usernameInput.Select();
             }
@@ -62,17 +62,26 @@ public class Register : MonoBehaviour
             // Check if any field is empty
         if (string.IsNullOrWhiteSpace(usernameInput.text) ||
             string.IsNullOrWhiteSpace(passwordInput.text) ||
-            string.IsNullOrWhiteSpace(emailinput.text))
+            string.IsNullOrWhiteSpace(repeatPasswordInput.text))
         {
             confirmationText.text = "Please fill in all fields.";
             yield return new WaitForSeconds(2); // Display the message for 2 seconds
             confirmationText.text = "";
             yield break; // Stop the coroutine if validation fails
         }
+
+        if (passwordInput.text != repeatPasswordInput.text)
+        {
+            confirmationText.text = "Passwords do not match.";
+            yield return new WaitForSeconds(2); // Display the message for 2 seconds
+            confirmationText.text = "";
+            yield break; // Stop the coroutine if validation fails
+        }
+
         WWWForm form = new WWWForm();
         form.AddField("username", usernameInput.text);
         form.AddField("password", passwordInput.text);
-        form.AddField("email", emailinput.text);
+        form.AddField("email", "null@email.com");
         int maxRetries = 3; // Maximum number of retries
         int retryDelay = 1; // Delay between retries in seconds
         int attempt = 0; // Current attempt counter

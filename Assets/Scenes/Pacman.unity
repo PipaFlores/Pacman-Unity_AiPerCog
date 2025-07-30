@@ -817,7 +817,7 @@ MonoBehaviour:
   total_games: 0
   games_in_session: 0
   source: PacmanSceneTest
-  dataserver: https://aipercog-24.it.helsinki.fi/
+  dataserver: https://aipercog-24.it.helsinki.fi/----
   already_played: 1
   debugging: 0
 --- !u!4 &657005236

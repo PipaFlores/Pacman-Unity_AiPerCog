@@ -325,7 +325,7 @@ GameObject:
   - component: {fileID: 371248763}
   - component: {fileID: 371248761}
   m_Layer: 5
-  m_Name: Email
+  m_Name: Repeat password
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -374,13 +374,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 371248763}
   m_TextComponent: {fileID: 1913780061}
   m_Placeholder: {fileID: 1379585625}
-  m_ContentType: 6
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
-  m_KeyboardType: 7
+  m_KeyboardType: 0
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 5
+  m_CharacterValidation: 0
   m_CharacterLimit: 0
   m_OnSubmit:
     m_PersistentCalls:
@@ -1417,7 +1417,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Email
+  m_Text: 'Repeat password
 
 '
 --- !u!222 &1379585626
@@ -1627,7 +1627,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   usernameInput: {fileID: 945294152}
   passwordInput: {fileID: 1485070390}
-  emailinput: {fileID: 371248761}
+  repeatPasswordInput: {fileID: 371248761}
   registerButton: {fileID: 1224395342}
   goToLoginButton: {fileID: 237429939}
   confirmationText: {fileID: 1212968888}
