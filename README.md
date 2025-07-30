@@ -72,7 +72,11 @@ Fright time:
 - In original pacman, the number of flashes that frightened ghosts have is related to the timing and the moment where they turn. During the first 11 levels, ghost are going to flash 5 times before turning. This gives some guide to predict and watch for the turn in behavior. In this implementation, flashing of the ghosts is simplified and it always flicker three times, starting from half the frightened duration, before turning back to normal. This can be modified easily, by adding the level values in the levelData array (GameManager.cs) and modifying the loadleveldata() method to alter the "flickercount" variable in GhostFrightened.cs script.
 
 Ghosts' home departure:
-- Ghosts departure from home is simplified. Every ghost has a pre-defined timer to leave home. This timer decreases linearly with level progression, reaching its minimum at lvl 13. 
+- Ghosts departure from home is simplified. Every ghost has a pre-defined timer to leave home. This timer decreases linearly with level progression, reaching its minimum at lvl 13.
+  - Red - starts outside home
+  - Pink - leaves in 2 seconds
+  - Cyan - leaves in 8 seconds
+  - Brown  - leaves in 16 seconds
 - Same rule applies for the time the ghosts spend at home after getting eaten.
 
 Ghost behavior:
@@ -92,16 +96,18 @@ Gameplay data is divided in two tables, "game" and "gamestate" (SQL data structu
 
 ### "Game" Table:
 
-Contains higher level data of a single game/round/level of Pacman played:
+Contains higher level data of a single level of Pacman played (finished at the lose of 3 lives, or when succesfully eating all the pellets):
+NOTE: There is room for confussion here. Each row in this dataframe corresponds to a single level being played. However, a more consistent definition of a "game" (or wholegame) considers the whole process between the start at level 1, until the final death (i.e., Game Over prompt),
+which could span across several levels. Not to be confussed with the "sessions", as they represent login sessions, which may span several wholegames. This difference will appear later during analysis.
 
 - *user_id*: represents player's unique identifier. retrieved on log-in
-- *session_number*: represents the session number in which the game was played (increments each time the user logs in and plays a game)
-- *game_in_session*: represents the position of the game within the current session
+- *session_number*: represents the session number in which the level was played (increments each time the user logs in and plays a game)
+- *game_in_session*: represents the position of the game within the current session (How many levels have been played without closing the web client)
 - *source*: represents the source from where the client is playing the game (e.g., itch.io, University's server, etc.)
 - *date played*
 - *game duration*
 - *win*: 0 for lost game , 1 for a win
-- *level*: Difficulty level of the game
+- *level*: Difficulty level being played.
 
 ### "Gamestate" Table:
 
@@ -113,10 +119,10 @@ Contains detailed data of the game state at each frame. The states are recorded 
 - *lives*
 - *positions of Pacman and Ghosts*: Positions are sent in (x,y) structure. Values range from -12.5 < x < 12.5 ; -15.5 < y > 12.5
 - *pacman attack state*: represents the state when pacman is eating a ghost. 0 for normal, 1 for eating a ghost
-- *ghost states*: represents the ghost active behavior/state. 0 for home, 1 for scattering, 2 for chasing, 3 for frightened, 4 for eaten
+- *ghost states*: represents the ghost active behavior/state. 0 for home, 1 for scattering, 2 for chasing, 3 for frightened, 4 for eaten (remains as 4 for the time the ghost is at home after being eaten)
 - *pellets*: number of remaining pellets and powerpellets
 - *Powerpellets*: number of remaining powerpellets. 
-- *PowerPellet states*: the state of each individual pellet (1 for not eaten/active, 0 for eaten/unactive), numbered from 1 to 4 according to their position in the map ( see PowerPellet.cs)
+- *PowerPellet states*: the state of each individual pellet (1 for not eaten/active, 0 for eaten/unactive), numbered from 1 to 4 according to their position in the map (1 upper-left, 2 upper-right, 3 lower-right, 4 lower-left)
 - *Fruit states*: state of the fruits. 0 for not spawned, 1 for spawned, 2 for eaten. Two fruits are spawned when remaining pellet count reaches 174 and 74.
 - *input direction*: The input from the player.
 - *movement direction*: The direction of the movement of Pacman.
