@@ -489,23 +489,30 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator AllLivesLost()
     {
-        yield return StartCoroutine(gameDatacollector.SaveData());
-        if (gameDatacollector.data_upload_success){
-            if (MainManager.Instance.games_in_session % n_games == 0 && MainManager.Instance.total_games >= games_threshold){
-                UserNotification.text = "Loading survey...";
-                yield return new WaitForSeconds(1.5f);
-                UserNotification.text = "";
-                LoadSurvey();
-            } else {
-                yield return new WaitForSeconds(1.5f);
-                PromptRestart();
-            }
-        } else {
-            UserNotification.text = "Returning to main menu...";
-            yield return new WaitForSeconds(1.5f);
-            UserNotification.text = "";
-            SceneManager.LoadScene("WelcomeScreen");
-        }
+        UserNotification.text = "Game Over";
+        yield return new WaitForSeconds(0.0f);
+        UserNotification.text = "";
+        NewGame();
+        // return 0;
+        // yield return StartCoroutine(gameDatacollector.SaveData());
+        // NewGame();
+        // if (gameDatacollector.data_upload_success){
+        //     if (MainManager.Instance.games_in_session % n_games == 0 && MainManager.Instance.total_games >= games_threshold){
+        //         UserNotification.text = "Loading survey...";
+        //         yield return new WaitForSeconds(1.5f);
+        //         UserNotification.text = "";
+        //         LoadSurvey();
+        //     } else {
+        //         yield return new WaitForSeconds(1.5f);
+        //         PromptRestart();
+        //     }
+        // } else {//might need to change this for RL training
+        //     NewGame();
+        //     // UserNotification.text = "Returning to main menu...";
+        //     // yield return new WaitForSeconds(1.5f);
+        //     // UserNotification.text = "";
+        //     // SceneManager.LoadScene("WelcomeScreen");
+        // }
     }
 
 

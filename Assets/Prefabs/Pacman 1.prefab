@@ -128,6 +128,8 @@ GameObject:
   - component: {fileID: 4895633107258695743}
   - component: {fileID: 1098318365966362643}
   - component: {fileID: 5819188152033616117}
+  - component: {fileID: 5505699532958498387}
+  - component: {fileID: 569608339321973488}
   m_Layer: 6
   m_Name: Pacman 1
   m_TagString: Untagged
@@ -277,8 +279,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2974cfe63d7eaab4fa3e476f56c20e35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deathSequence: {fileID: 4242300116568414908}
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  MaxStep: 0
   spriteRenderer: {fileID: 5075936931189376046}
+  pacmanAttack: 0
+  inputDirection: 
 --- !u!114 &1098318365966362643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,9 +318,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 033239205b715fe49a6a07b39eaa458d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
   speedMultiplier: 1
+  normalSpeedMultiplier: 0
+  frightenedSpeedMultiplier: 0
   initialDirection: {x: 0, y: 0}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &5505699532958498387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4025263643488537469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BrainParameters:
+    VectorObservationSize: 3
+    NumStackedVectorObservations: 1
+    m_ActionSpec:
+      m_NumContinuousActions: 0
+      BranchSizes: 04000000
+    VectorActionSize: 04000000
+    VectorActionDescriptions: []
+    VectorActionSpaceType: 0
+    hasUpgradedBrainParametersWithActionSpec: 1
+  m_Model: {fileID: 0}
+  m_InferenceDevice: 0
+  m_BehaviorType: 0
+  m_BehaviorName: PacmanAgent
+  TeamId: 0
+  m_UseChildSensors: 1
+  m_UseChildActuators: 1
+  m_ObservableAttributeHandling: 0
+--- !u!114 &569608339321973488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4025263643488537469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DecisionPeriod: 1
+  TakeActionsBetweenDecisions: 1

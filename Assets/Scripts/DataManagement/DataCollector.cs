@@ -105,49 +105,50 @@ public class DataCollector : MonoBehaviour
 
     private IEnumerator SendGameData(string gameData)
     {
-        string url = dataserver + "SQL/savegamedata_json.php";
-        int maxRetries = 3; // Maximum number of retries
-        int retryDelay = 2; // Delay between retries in seconds
-        int attempt = 0; // Current attempt counter
-        GameManager.Instance.UserNotification.text = "Uploading game data...";
+        // string url = dataserver + "SQL/savegamedata_json.php";
+        // int maxRetries = 3; // Maximum number of retries
+        // int retryDelay = 2; // Delay between retries in seconds
+        // int attempt = 0; // Current attempt counter
+        // GameManager.Instance.UserNotification.text = "Uploading game data...";
 
-        while (attempt < maxRetries)
-        {
-            UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
-            yield return www.SendWebRequest();
-            if (www.result == UnityWebRequest.Result.Success){
-                Debug.Log("Received: " + www.downloadHandler.text);
-                ServerResponse response = JsonUtility.FromJson<ServerResponse>(www.downloadHandler.text);
-                if (response.success)
-                {
-                    Debug.Log("Game data uploaded successfully."); // Log success message
-                    this.dataPointsList.Clear(); // Clear the data points list after successful upload
-                    data_upload_success = true;
-                    yield return StartCoroutine(GameManager.Instance.ErrorMsg("Data uploaded successfully."));
-                    yield break; // Exit the coroutine successfully
-                } 
-                else {
-                    Debug.Log($"Attempt {attempt + 1} failed: {response.message}"); // Log the error
-                    attempt++;
-                    if (attempt < maxRetries)
-                    {
-                        yield return new WaitForSeconds(retryDelay); // Wait before retrying
-                    }
-                }
-            }
-            else
-            {
-                Debug.Log($"Attempt {attempt + 1} failed: {www.error}"); // Log the error
-                attempt++;
-                if (attempt < maxRetries)
-                {
-                    yield return new WaitForSeconds(retryDelay); // Wait before retrying
-                }
-            }
-        }
-        // If all attempts fail, notify the user
-        yield return StartCoroutine(GameManager.Instance.ErrorMsg("Failed to upload game data."));
-        Debug.Log("Failed to upload game data after multiple attempts.");
+        // while (attempt < maxRetries)
+        // {
+        //     UnityWebRequest www = UnityWebRequest.Post(url, gameData, "application/json");
+        //     yield return www.SendWebRequest();
+        //     if (www.result == UnityWebRequest.Result.Success){
+        //         Debug.Log("Received: " + www.downloadHandler.text);
+        //         ServerResponse response = JsonUtility.FromJson<ServerResponse>(www.downloadHandler.text);
+        //         if (response.success)
+        //         {
+        //             Debug.Log("Game data uploaded successfully."); // Log success message
+        //             this.dataPointsList.Clear(); // Clear the data points list after successful upload
+        //             data_upload_success = true;
+        //             yield turern StartCoroutine(GameManager.Instance.ErrorMsg("Data uploaded successfully."));
+        //             yield break; // Exit the coroutine successfully
+        //         } 
+        //         else {
+        //             Debug.Log($"Attempt {attempt + 1} failed: {response.message}"); // Log the error
+        //             attempt++;
+        //             if (attempt < maxRetries)
+        //             {
+        //                 yield return new WaitForSeconds(retryDelay); // Wait before retrying
+        //             }
+        //         }
+        //     }
+        //     else
+        //     {
+        //         Debug.Log($"Attempt {attempt + 1} failed: {www.error}"); // Log the error
+        //         attempt++;
+        //         if (attempt < maxRetries)
+        //         {
+        //             yield return new WaitForSeconds(retryDelay); // Wait before retrying
+        //         }
+        //     }
+        // }
+        // // If all attempts fail, notify the user
+        yield return StartCoroutine(GameManager.Instance.ErrorMsg("Alex was here"));
+        // Debug.Log("Failed to upload game data after multiple attempts.");
+        
     }
  
 

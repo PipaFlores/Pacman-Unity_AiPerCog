@@ -11916,18 +11916,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 357181642116493490, guid: b6827b7737221f249822552b8eebb5f3, type: 3}
-      propertyPath: m_Name
-      value: Death // Moved to livesindicator
-      objectReference: {fileID: 0}
-    - target: {fileID: 357181642116493490, guid: b6827b7737221f249822552b8eebb5f3, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1629637280234697137, guid: b6827b7737221f249822552b8eebb5f3, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3509473606056899525, guid: b6827b7737221f249822552b8eebb5f3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
