@@ -118,7 +118,7 @@ public class Pacman : Agent
     {
         // Allow manual control for testing
         var discreteActionsOut = actionsOut.DiscreteActions;
-        // discreteActionsOut[0] = movement.direction;
+        // discreteActionsOut[0] = movement.direction;sds
 
         if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
             discreteActionsOut[0] = 0;
@@ -130,48 +130,6 @@ public class Pacman : Agent
             discreteActionsOut[0] = 3;
         else
             discreteActionsOut[0] = lastAction; // Default = keep last move
-
-
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)){
-            this.movement.SetDirection(Vector2.up);
-            discreteActionsOut[0] = 0;
-            if (Input.GetKeyDown(KeyCode.UpArrow)){
-                this.inputDirection = "up";
-            } 
-            else{
-                this.inputDirection = "w";
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)){
-            this.movement.SetDirection(Vector2.down);
-            discreteActionsOut[0] = 1;
-            if (Input.GetKeyDown(KeyCode.DownArrow)){
-                this.inputDirection = "down";
-            } 
-            else{
-                this.inputDirection = "s";
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A)){
-            this.movement.SetDirection(Vector2.left);
-            discreteActionsOut[0] = 2;
-            if (Input.GetKeyDown(KeyCode.LeftArrow)){
-                this.inputDirection = "left";
-            } 
-            else{
-                this.inputDirection = "a";
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D)){
-            this.movement.SetDirection(Vector2.right);
-            discreteActionsOut[0] = 3;
-            if (Input.GetKeyDown(KeyCode.RightArrow)){
-                this.inputDirection = "right";
-            } 
-            else{
-                this.inputDirection = "d";
-            }
-        }
         
     }
     public void ResetState()

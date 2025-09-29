@@ -14,6 +14,36 @@ using Unity.VisualScripting;
 // This data can be saved locally or sent to a remote server for analysis.
 // The GameManager class ensures that the game runs smoothly and provides a framework for game progression and data collection.
 
+
+// TODO: remove all UI dependencies 
+    // TODO: Remove restart promps asnd survey screen logic
+    // TODO: Remove all Text fields (only look into this if we use pixels for training)
+// TODO: Episode Handling
+    // TODO: Remove restart logic tied to keypresses
+    // TODO: Call pacman.EndEpisode if Pacman loses all lived
+    // TODO: DO NOT Call pacman.EndEpisode if Pacman collects all Pellets (remember will go to next level instead)
+// TODO: Block Coroutines 
+    // TODO: Remove ReadyCoroutines() (the 3 Second wait at round start)
+    // TODO: Ensure training can run without delays (i.e. No timers or WaitForSeconds())
+// TODO: Environment Reset logic
+    // TODO: Update NewGame() to reset score, lives, and level directly.
+    // TODO: Update NewRound() to reset pellets, ghosts, and Pacman.
+    // TODO: Update ResetState() to reset ghosts, Pacman, and ghost multiplier.
+// TODO: Rewards & penelty logic (will be handeled here and not in Pacman agent)
+    // TODO: Add basic rewards for elements that will be used in all behavelets
+    // TODO: Positive rewards:
+        // TODO: eating pellets & cherry
+        // TODO: eating ghosts
+        // TODO: Total Score
+        // TODO: clearing level
+    // TODO: Negative rewards
+        // TODO: Step penalty (might be easier to implement on python side as steps will be earier to manage rather than ticks)
+        // TODO: Losing Live/ Eaten by ghost
+        // TODO: Whan game over
+
+// TODO: Game Flow Simplification
+    // TODO: Remove all UI specific logic
+    // TODO: Ensure loop is: reset -> play -> end episode -> reset.
 public class GameManager : MonoBehaviour
 {
     
@@ -110,9 +140,6 @@ public class GameManager : MonoBehaviour
     public int games_threshold = 2; // Number of games to play before starting survey iterations
     public int n_games = 1; // Number of games to play between surveys
 
-
-    
-
     //// Singleton pattern to ensure only one instance of GameManager exists (not used, as loading the survey and restarting the game corrups gamemanager references to other objects)
     // private void Awake()
     // {
@@ -130,48 +157,48 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        if (MainManager.Instance.already_played == false){
+        if (MainManager.Instance.already_played == false){// maybe remove this 
             MainManager.Instance.already_played = true;
         }
         NewGame();
 
     }
-
-    private void Update()
-    {
-        if (this.lives <= 0 && Input.GetKeyDown(KeyCode.Space) && restartKey.enabled == true){
-            NewGame(); 
-        }
-        if (this.lives <= 0 && Input.GetKeyDown(KeyCode.Escape) && escapeKey.enabled == true){
-            SceneManager.LoadScene("Welcome Screen");
-        }
-        // Debugging
-        if (MainManager.Instance.debugging){
-            if (Input.GetKeyDown(KeyCode.F4)){
-                StartCoroutine(AllLivesLost());
-            }
-            // Debugging death
-            if (Input.GetKeyDown(KeyCode.F1)){
-                this.lives = 1;
-                PacmanEaten();
-            }
-            // Debugging win
-            if (Input.GetKeyDown(KeyCode.F2)){
-                foreach (Transform pellet in this.pellets){
-                    PelletEaten(pellet.GetComponent<Pellet>());
-                }
-            }
-            if (Input.GetKeyDown(KeyCode.F3)){
-                this.SetScore(this.score + 1400);
-            }
-        }
-
-
-
-
-        // Update timer for data gathering
-        round_timeElapsed = Time.time - round_startTime;
-    }
+    // ML-agents docs say update() is not needed & should probably be removed
+    // private void Update()
+    // {
+    //     if (this.lives <= 0 && Input.GetKeyDown(KeyCode.Space) && restartKey.enabled == true){
+    //         NewGame(); 
+    //     }
+    //     if (this.lives <= 0 && Input.GetKeyDown(KeyCode.Escape) && escapeKey.enabled == true){
+    //         SceneManager.LoadScene("Welcome Screen");
+    //     }
+    //     // Debugging
+    //     if (MainManager.Instance.debugging){
+    //         if (Input.GetKeyDown(KeyCode.F4)){
+    //             StartCoroutine(AllLivesLost());
+    //         }
+    //         // Debugging death
+    //         if (Input.GetKeyDown(KeyCode.F1)){
+    //             this.lives = 1;
+    //             PacmanEaten();
+    //         }
+    //         // Debugging win
+    //         if (Input.GetKeyDown(KeyCode.F2)){
+    //             foreach (Transform pellet in this.pellets){
+    //                 PelletEaten(pellet.GetComponent<Pellet>());
+    //             }
+    //         }
+    //         if (Input.GetKeyDown(KeyCode.F3)){
+    //             this.SetScore(this.score + 1400);
+    //         }
+    //     }
+    //
+    //
+    //
+    //
+    //     // Update timer for data gathering
+    //     round_timeElapsed = Time.time - round_startTime;
+    // }
     private void NewGame() // Starts a new game from the starting level
     {
         SetScore(0);
@@ -204,7 +231,7 @@ public class GameManager : MonoBehaviour
         }
         this.pacman.ResetState(); // reset pacman
         //  freeze the game for 3 seconds before each level start
-        StartCoroutine(GetReady(3.0f));
+        // StartCoroutine(GetReady(3.0f));
         
     }
 
@@ -241,20 +268,23 @@ public class GameManager : MonoBehaviour
             this.ghosts[i].ResetState();
         }
         this.pacman.ResetState();
-        StartCoroutine(GetReady(3.0f, false));
+        // StartCoroutine(GetReady(3.0f, false));
     }
+    // private void SetScore(int score) => this.score = score;
+    // private void SetLives(int lives) => this.lives = lives;
+    // private void SetLevel(int level) => this.level = level;
 
-    private void LoadSurvey()
-    {
-        // Load the survey scene
-        SceneManager.LoadScene("PsychState");
-    }
+    // private void LoadSurvey()
+    // {
+    //     // Load the survey scene
+    //     SceneManager.LoadScene("PsychState");
+    // }
 
-    private void PromptRestart()
-    {
-        restartKey.enabled = true;
-        escapeKey.enabled = true;
-    }
+    // private void PromptRestart()
+    // {
+    //     restartKey.enabled = true;
+    //     escapeKey.enabled = true;
+    // }
 
     // Set the score and update the score text
     private void SetScore(int score)
@@ -341,6 +371,7 @@ public class GameManager : MonoBehaviour
             this.pacman.gameObject.SetActive(false);
             Gameover.enabled = true; // Game over screen;
             StartCoroutine(AllLivesLost()); // Save data and wait for it to upload, then load survey or restart
+            this.pacman.EndEpisode();
         }
     }
 
@@ -485,6 +516,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         UserNotification.text = "";
         NewRound();
+        //Add reward
     }
 
     private IEnumerator AllLivesLost()
@@ -493,6 +525,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.0f);
         UserNotification.text = "";
         NewGame();
+        pacman.EndEpisode();
         // return 0;
         // yield return StartCoroutine(gameDatacollector.SaveData());
         // NewGame();
