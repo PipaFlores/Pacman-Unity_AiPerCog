@@ -65,6 +65,7 @@ public class Pacman : Agent
 
         // Add Pacman’s velocity
         sensor.AddObservation(movement.rigidbody.velocity);
+        // UnityEngine.Debug.Log(sensor);
 
         // TODO: Add observations for environment
         // e.g., distance to ghosts, distance to pellets, etc.

@@ -44,6 +44,8 @@ using Unity.VisualScripting;
 // TODO: Game Flow Simplification
     // TODO: Remove all UI specific logic
     // TODO: Ensure loop is: reset -> play -> end episode -> reset.
+
+//When running the env the agent eventually just dies and looses a life need to check how lives are handeled
 public class GameManager : MonoBehaviour
 {
     
@@ -238,26 +240,26 @@ public class GameManager : MonoBehaviour
     // Freeze the game for 3 seconds before each level start
     // Start the data collection and timer if startDataCollection is true
     // Set the time scale to 1 to resume the game (the time freeze keeps the data collection from being too noisy)
-    private IEnumerator GetReady(float time, bool startDataCollection = true)
-    {
-        this.readyText.enabled = true;
-        Time.timeScale = 0;
-        float pauseEndTime = Time.realtimeSinceStartup + time;
-        int countdown = (int)time;
-        while (Time.realtimeSinceStartup < pauseEndTime)
-        {
-            this.readyText.text = "READY! " + countdown.ToString();
-            countdown--;
-            yield return new WaitForSecondsRealtime(1);
-        }
-        this.readyText.enabled = false;
-        if (startDataCollection)
-        {
-            gameDatacollector.Startdatacollection();
-            StartTimer();
-        }
-        Time.timeScale = 1;
-    }
+    // private IEnumerator GetReady(float time, bool startDataCollection = true)
+    // {
+    //     this.readyText.enabled = true;
+    //     Time.timeScale = 0;
+    //     float pauseEndTime = Time.realtimeSinceStartup + time;
+    //     int countdown = (int)time;
+    //     while (Time.realtimeSinceStartup < pauseEndTime)
+    //     {
+    //         this.readyText.text = "READY! " + countdown.ToString();
+    //         countdown--;
+    //         yield return new WaitForSecondsRealtime(1);
+    //     }
+    //     this.readyText.enabled = false;
+    //     if (startDataCollection)
+    //     {
+    //         gameDatacollector.Startdatacollection();
+    //         StartTimer();
+    //     }
+    //     Time.timeScale = 1;
+    // }
 
     // If pacman dies, resets ghots and pacman but not pellet
     private void ResetState()  
@@ -294,7 +296,7 @@ public class GameManager : MonoBehaviour
         if (previous_score / 10000 != score / 10000){
             this.SetLives(this.lives + 1);
             AudioManager.Instance.PlayExtraLifeSound();
-            StartCoroutine(ErrorMsg("Extra life!"));
+            
         }
         previous_score = score;
     }
@@ -349,6 +351,7 @@ public class GameManager : MonoBehaviour
         SetScore(this.score + points);
         ghost.InstantiateFloatingPoint(points);
         this.ghostMultiplier++;
+        pacman.AddReward(1.0f);
     }
 
     public void PacmanEaten()
@@ -357,12 +360,14 @@ public class GameManager : MonoBehaviour
 
         if (this.lives > 0)
         {
+            pacman.AddReward(-1.0f); // Add negative reward for being eaten
             ResetState(); // If pacman dies, resets ghots and pacman but not pellet (3 seconds delay)
             AudioManager.Instance.PlayDeathSound();
             this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
         }
         else
         {
+            pacman.AddReward(-5.0f);
             AudioManager.Instance.PlayDeathSound();
             this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
             for (int i = 0; i < this.ghosts.Length; i++) {
@@ -370,8 +375,9 @@ public class GameManager : MonoBehaviour
             }
             this.pacman.gameObject.SetActive(false);
             Gameover.enabled = true; // Game over screen;
-            StartCoroutine(AllLivesLost()); // Save data and wait for it to upload, then load survey or restart
-            this.pacman.EndEpisode();
+            // StartCoroutine(AllLivesLost()); // Save data and wait for it to upload, then load survey or restart
+            AllLivesLost();
+            // this.pacman.EndEpisode();
         }
     }
 
@@ -394,6 +400,8 @@ public class GameManager : MonoBehaviour
     {
         pellet.gameObject.SetActive(false);
         SetScore (this.score + pellet.points);
+        // Add Reward for eating a pellet
+        pacman.AddReward(0.2f);
         remainingPellets = CountRemainingPellets();
         remainingPills = CountRemainingPowerPellets();
         if (remainingPellets == 174){
@@ -415,8 +423,10 @@ public class GameManager : MonoBehaviour
             foreach (Ghost ghost in ghosts){
                 ghost.gameObject.SetActive(false);
             }
-            StartCoroutine(LevelComplete()); // Save data and wait for it to upload, then load next level
-            
+            // StartCoroutine(LevelComplete()); // Save data and wait for it to upload, then load next level
+            //Add Reward for eating all Pellets
+            pacman.AddReward(5.0f);
+            LevelComplete();
 
         }
     }
@@ -427,6 +437,8 @@ public class GameManager : MonoBehaviour
             this.ghosts[i].frightened.Enable(pellet.duration);
             }
         PowerPelletEaten(pellet.GetPowerPelletIndex());
+        //Reward for eating power Pellet
+        pacman.AddReward(0.5f);
         PelletEaten(pellet);
         CancelInvoke(); // If you take more than one powerpellet, cancel the first invoke timer and start it again
         PacmanAttack();
@@ -508,24 +520,24 @@ public class GameManager : MonoBehaviour
         UserNotification.text = "";
     }
 
-    private IEnumerator LevelComplete()
+    private void LevelComplete()
     {
-        yield return StartCoroutine(gameDatacollector.SaveData());
+        // yield return StartCoroutine(gameDatacollector.SaveData());
         SetLevel(this.level + 1);
         UserNotification.text = "Loading next level...";
-        yield return new WaitForSeconds(1.5f);
+        // yield return new WaitForSeconds(1.5f);
         UserNotification.text = "";
         NewRound();
         //Add reward
     }
 
-    private IEnumerator AllLivesLost()
+    private void AllLivesLost()
     {
         UserNotification.text = "Game Over";
-        yield return new WaitForSeconds(0.0f);
+        // yield return new WaitForSeconds(0.0f);
         UserNotification.text = "";
+		pacman.EndEpisode();
         NewGame();
-        pacman.EndEpisode();
         // return 0;
         // yield return StartCoroutine(gameDatacollector.SaveData());
         // NewGame();
