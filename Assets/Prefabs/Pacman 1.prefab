@@ -283,9 +283,12 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
+  player: {fileID: 0}
+  ghosts: []
   spriteRenderer: {fileID: 5075936931189376046}
   pacmanAttack: 0
   inputDirection: 
+  gameDatacollector: {fileID: 0}
 --- !u!114 &1098318365966362643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,7 +341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 3
+    VectorObservationSize: 29
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0

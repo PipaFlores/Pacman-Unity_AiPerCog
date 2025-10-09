@@ -5,9 +5,14 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using System.Collections.Specialized;
 
 public class Pacman : Agent
 {
+    public GameObject player;  // Reference to the player (Pacman)
+    public GameObject[] ghosts;
+    private List<GameDataPoint> dataPointsList = new List<GameDataPoint>(); // List to store collected game data points
+    
     public Movement movement { get; private set; }
     public SpriteRenderer spriteRenderer;
     private new Collider2D collider;
@@ -57,18 +62,39 @@ public class Pacman : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // Add Pacman’s position
-        sensor.AddObservation(transform.localPosition);
+        // Add Pacman data
+        sensor.AddObservation(GameManager.Instance.pacman.transform.position); //Might need to normaize
+        sensor.AddObservation(this.pacmanAttack); // Player's attack state
+        sensor.AddObservation(lastAction);//Input Direction
+        sensor.AddObservation(movement.direction);// this is still buggy i think
+        
+        
+        // Collect ghosts' data
+        int ghost_length = GameManager.Instance.ghosts.Length;
+        Vector2[] ghostsPos = new Vector2[ghost_length]; // Array to store positions of all ghosts
+        int[] ghostsState = new int[ghost_length]; // Array to store states of all ghosts
+        for (int i = 0; i < ghost_length; i++)
+        {
+            ghostsPos[i] = GameManager.Instance.ghosts[i].transform.position; // Get each ghost's position
+            sensor.AddObservation(ghostsPos[i]);
+            ghostsState[i] = GetGhostState(GameManager.Instance.ghosts[i]); // Get each ghost's state
+            sensor.AddObservation((float)ghostsState[i]);
+        }
+        int[] PowerPelletStates = new int[GameManager.Instance.PowerPelletStates.Length];
+        for (int i = 0; i < GameManager.Instance.PowerPelletStates.Length; i++)
+        {
+            PowerPelletStates[i] = GameManager.Instance.PowerPelletStates[i]; // Get power pellet states
+            sensor.AddObservation(PowerPelletStates[i]);
+        }
+        sensor.AddObservation((float)GameManager.Instance.score); // Current score
+        sensor.AddObservation((float)GameManager.Instance.lives / 3f); // Normalised lives
+        sensor.AddObservation((float)GameManager.Instance.remainingPellets / 244f); // assuming max 240 pellets
+        sensor.AddObservation((float)GameManager.Instance.remainingPills / 4f); // assuming max 4 power pellets
+        sensor.AddObservation((float)GameManager.Instance.fruitState_1); // State of the first fruit
+        sensor.AddObservation((float)GameManager.Instance.fruitState_2); // State of the Second fruit
 
-        // Add Pacman’s current movement direction
-        sensor.AddObservation(movement.direction);
+        // sensor.AddObservation(11f);
 
-        // Add Pacman’s velocity
-        sensor.AddObservation(movement.rigidbody.velocity);
-        // UnityEngine.Debug.Log(sensor);
-
-        // TODO: Add observations for environment
-        // e.g., distance to ghosts, distance to pellets, etc.
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -106,7 +132,7 @@ public class Pacman : Agent
             transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward);
         }
         // Rewards (example, adapt to your game logic)
-        AddReward(-0.001f); // small negative reward per step (encourages faster play)
+        AddReward(-0.005f); // small negative reward per step (encourages faster play)
         // if (this.lives== 0)
         // {
         //     SetReward(-1.0f);
@@ -141,6 +167,34 @@ public class Pacman : Agent
         // deathSequence.enabled = false;
         movement.ResetState();
         gameObject.SetActive(true);
+    }
+    private int GetGhostState(Ghost ghost)
+    {
+        // Determine the state of a ghost
+        if (ghost.GetComponent<GhostHome>().enabled)
+        {
+            if (ghost.GetComponent<Ghost>().eaten)
+            {
+                return 4; // Ghost is eaten
+            }
+            else return 0; // Ghost is at home (not eaten)
+        }
+        else if (ghost.GetComponent<GhostFrightened>().enabled)
+        {
+            return 3; // Ghost is frightened
+        }
+        else if (ghost.GetComponent<GhostChase>().enabled)
+        {
+            return 2; // Ghost is chasing
+        }
+        else if (ghost.GetComponent<GhostScatter>().enabled)
+        {
+            return 1; // Ghost is scattering
+        }
+        else
+        {
+            return -666; // Error state
+        }
     }
 }
 // Original Pacman
