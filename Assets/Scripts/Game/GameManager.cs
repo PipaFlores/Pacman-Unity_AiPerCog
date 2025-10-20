@@ -401,7 +401,7 @@ public class GameManager : MonoBehaviour
         pellet.gameObject.SetActive(false);
         SetScore (this.score + pellet.points);
         // Add Reward for eating a pellet
-        pacman.AddReward(0.2f);
+        pacman.AddReward(0.4f);
         remainingPellets = CountRemainingPellets();
         remainingPills = CountRemainingPowerPellets();
         if (remainingPellets == 174){
