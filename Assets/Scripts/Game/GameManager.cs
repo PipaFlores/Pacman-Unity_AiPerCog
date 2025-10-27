@@ -295,7 +295,7 @@ public class GameManager : MonoBehaviour
         ScoreText.text = score.ToString().PadLeft(2, '0');
         if (previous_score / 10000 != score / 10000){
             this.SetLives(this.lives + 1);
-            AudioManager.Instance.PlayExtraLifeSound();
+            // AudioManager.Instance.PlayExtraLifeSound(); 
             
         }
         previous_score = score;
@@ -347,7 +347,7 @@ public class GameManager : MonoBehaviour
     public void GhostEaten(Ghost ghost)
     {
         int points = ghost.points * this.ghostMultiplier;
-        AudioManager.Instance.PlayGhostEatenSound();
+        // AudioManager.Instance.PlayGhostEatenSound(); 
         SetScore(this.score + points);
         ghost.InstantiateFloatingPoint(points);
         this.ghostMultiplier++;
@@ -362,13 +362,13 @@ public class GameManager : MonoBehaviour
         {
             pacman.AddReward(-1.0f); // Add negative reward for being eaten
             ResetState(); // If pacman dies, resets ghots and pacman but not pellet (3 seconds delay)
-            AudioManager.Instance.PlayDeathSound();
+            // AudioManager.Instance.PlayDeathSound(); 
             this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
         }
         else
         {
             pacman.AddReward(-5.0f);
-            AudioManager.Instance.PlayDeathSound();
+            // AudioManager.Instance.PlayDeathSound(); 
             this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
             for (int i = 0; i < this.ghosts.Length; i++) {
                 this.ghosts[i].gameObject.SetActive(false);
@@ -416,7 +416,7 @@ public class GameManager : MonoBehaviour
             fruitState_2 = 1;
         }
 
-        AudioManager.Instance.PlayEatingSound();
+        // AudioManager.Instance.PlayEatingSound(); 
         if (remainingPellets == 0){
             win = true;
             this.pacman.gameObject.SetActive(false);
@@ -442,7 +442,7 @@ public class GameManager : MonoBehaviour
         PelletEaten(pellet);
         CancelInvoke(); // If you take more than one powerpellet, cancel the first invoke timer and start it again
         PacmanAttack();
-        AudioManager.Instance.PlayIntermissionSound(pellet.duration);
+        // AudioManager.Instance.PlayIntermissionSound(pellet.duration); 
         Invoke(nameof(PacmanAttackEnd), pellet.duration);
         Invoke(nameof(ResetGhostMultiplier), pellet.duration);        
     }
@@ -523,7 +523,9 @@ public class GameManager : MonoBehaviour
     private void LevelComplete()
     {
         // yield return StartCoroutine(gameDatacollector.SaveData());
-        SetLevel(this.level + 1);
+        // SetLevel(this.level + 1);
+        SetLevel(this.level);
+        SetScore(0);
         UserNotification.text = "Loading next level...";
         // yield return new WaitForSeconds(1.5f);
         UserNotification.text = "";
