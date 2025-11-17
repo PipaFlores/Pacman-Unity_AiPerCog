@@ -26,6 +26,7 @@ public class Pacman : Agent
     private int lastAction = 3; // Default = Right (classic Pacman start)
 
     public DataCollector gameDatacollector;
+    public Transform pellets;
 
     // private void 
     public override void Initialize(){
@@ -86,14 +87,61 @@ public class Pacman : Agent
             PowerPelletStates[i] = GameManager.Instance.PowerPelletStates[i]; // Get power pellet states
             sensor.AddObservation(PowerPelletStates[i]);
         }
-        sensor.AddObservation((float)GameManager.Instance.score); // Current score
+        sensor.AddObservation((float)GameManager.Instance.score / 3200f); // Current score pellet max 2400, 200 per ghost
         sensor.AddObservation((float)GameManager.Instance.lives / 3f); // Normalised lives
-        sensor.AddObservation((float)GameManager.Instance.remainingPellets / 244f); // assuming max 240 pellets
+        sensor.AddObservation((float)GameManager.Instance.remainingPellets/244f); // assuming max 244 pellets
         sensor.AddObservation((float)GameManager.Instance.remainingPills / 4f); // assuming max 4 power pellets
         sensor.AddObservation((float)GameManager.Instance.fruitState_1); // State of the first fruit
         sensor.AddObservation((float)GameManager.Instance.fruitState_2); // State of the Second fruit
-
-        // sensor.AddObservation(11f);
+        
+        //get distances to all active amd inactive pellets active pellets
+        List<float> pellet_distances = new List<float>();
+        foreach (Transform pellet in GameManager.Instance.pellets)
+        {
+            if (pellet.gameObject.activeSelf && pellet.GetComponent<Pellet>() != null)//if pellet exists
+            {
+                float dist = Vector3.Distance(pellet.position, GameManager.Instance.pacman.transform.position);
+                pellet_distances.Add((float)dist);
+                // sensor.AddObservation((float)dist);
+            }
+            else
+            {
+                pellet_distances.Add(0.0f);
+                // sensor.AddObservation(0.0f);
+            }
+        }
+        // get the distance to the closest pellet
+        float[] pellet_distances_array = pellet_distances.ToArray();
+        float closest_pellet = 100.0f; //larg starting point to ensure all pellets are being compared
+        foreach (float pellet in pellet_distances_array)
+        {
+            if (pellet != 0.0f && pellet < closest_pellet)// if pellet is Active and dist is less then current min
+            {
+                closest_pellet = pellet;
+            }
+        }
+        sensor.AddObservation(closest_pellet);
+        
+        // converting the pellet coorindates to boolean grid
+        List<Vector3> active = new List<Vector3>();
+        List<Vector3> inactive = new List<Vector3>();
+        foreach (Transform pellet in GameManager.Instance.pellets)
+        {
+            if (pellet.gameObject.activeSelf && pellet.GetComponent<Pellet>() != null)//if pellet exists
+            {
+                active.Add(pellet.position);
+            }
+            else if (!(pellet.gameObject.activeSelf) && pellet.GetComponent<Pellet>() != null )
+            {
+                inactive.Add(pellet.position);
+            }
+        }
+        bool[] flatGrid = CreatePelletGrid(active, inactive);
+        // sensor.AddObservation((float)flatGrid);
+        foreach (bool pellet_loc in flatGrid)
+        {
+            sensor.AddObservation(pellet_loc);
+        }
 
     }
 
@@ -132,7 +180,7 @@ public class Pacman : Agent
             transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward);
         }
         // Rewards (example, adapt to your game logic)
-        AddReward(-0.005f); // small negative reward per step (encourages faster play)
+        AddReward(-0.025f); // small negative reward per step (encourages faster play)
         // if (this.lives== 0)
         // {
         //     SetReward(-1.0f);
@@ -195,6 +243,59 @@ public class Pacman : Agent
         {
             return -666; // Error state
         }
+    }
+    
+    public bool[] CreatePelletGrid(List<Vector3> activePellets, List<Vector3> inactivePellets)
+    {
+        // Combine all pellets to find grid bounds
+        List<Vector3> allPellets = new List<Vector3>();
+        allPellets.AddRange(activePellets);
+        allPellets.AddRange(inactivePellets);
+    
+        if (allPellets.Count == 0)
+            return new bool[0];
+    
+        // Find min/max coordinates (using x and z for horizontal plane)
+        float minX = float.MaxValue;
+        float maxX = float.MinValue;
+        float minZ = float.MaxValue;
+        float maxZ = float.MinValue;
+    
+        foreach (Vector3 pellet in allPellets)
+        {
+            minX = Mathf.Min(minX, pellet.x);
+            maxX = Mathf.Max(maxX, pellet.x);
+            minZ = Mathf.Min(minZ, pellet.y);
+            maxZ = Mathf.Max(maxZ, pellet.y);
+        }
+    
+        // Calculate grid dimensions
+        int width = Mathf.RoundToInt(maxX - minX) + 1;
+        int height = Mathf.RoundToInt(maxZ - minZ) + 1;
+    
+        // Initialize flattened array with false (0)
+        bool[] grid = new bool[width * height];
+    
+        // Mark active pellets as true (1)
+        foreach (Vector3 pellet in activePellets)
+        {
+            int xIndex = Mathf.RoundToInt(pellet.x - minX);
+            int zIndex = Mathf.RoundToInt(pellet.y - minZ);
+        
+            // Convert 2D coordinates to 1D index (row-major order)
+            int index = zIndex * width + xIndex;
+            grid[index] = true;
+        }
+    
+        return grid;
+    }
+
+    // Helper to convert back to 2D coordinates if needed
+    public Vector2Int GetGridCoordinates(int flatIndex, int width)
+    {
+        int z = flatIndex / width;
+        int x = flatIndex % width;
+        return new Vector2Int(x, z);
     }
 }
 // Original Pacman

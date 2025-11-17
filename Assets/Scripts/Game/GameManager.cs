@@ -351,7 +351,7 @@ public class GameManager : MonoBehaviour
         SetScore(this.score + points);
         ghost.InstantiateFloatingPoint(points);
         this.ghostMultiplier++;
-        pacman.AddReward(1.0f);
+        pacman.AddReward(200.0f);
     }
 
     public void PacmanEaten()
@@ -360,14 +360,16 @@ public class GameManager : MonoBehaviour
 
         if (this.lives > 0)
         {
-            pacman.AddReward(-1.0f); // Add negative reward for being eaten
+            //pacman.AddReward(-1.0f); // Add negative reward for being eaten
+            pacman.AddReward(-500.0f); // Add negative reward for being eaten
             ResetState(); // If pacman dies, resets ghots and pacman but not pellet (3 seconds delay)
             // AudioManager.Instance.PlayDeathSound(); 
             this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
         }
         else
         {
-            pacman.AddReward(-5.0f);
+            //pacman.AddReward(-5.0f);
+            pacman.AddReward(-1000.0f);
             // AudioManager.Instance.PlayDeathSound(); 
             this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
             for (int i = 0; i < this.ghosts.Length; i++) {
@@ -401,7 +403,7 @@ public class GameManager : MonoBehaviour
         pellet.gameObject.SetActive(false);
         SetScore (this.score + pellet.points);
         // Add Reward for eating a pellet
-        pacman.AddReward(0.4f);
+        pacman.AddReward(10.0f);
         remainingPellets = CountRemainingPellets();
         remainingPills = CountRemainingPowerPellets();
         if (remainingPellets == 174){
@@ -425,7 +427,8 @@ public class GameManager : MonoBehaviour
             }
             // StartCoroutine(LevelComplete()); // Save data and wait for it to upload, then load next level
             //Add Reward for eating all Pellets
-            pacman.AddReward(5.0f);
+            //pacman.AddReward(5.0f);
+            pacman.AddReward(1000.0f);
             LevelComplete();
 
         }
@@ -438,7 +441,8 @@ public class GameManager : MonoBehaviour
             }
         PowerPelletEaten(pellet.GetPowerPelletIndex());
         //Reward for eating power Pellet
-        pacman.AddReward(0.5f);
+        //pacman.AddReward(0.5f);
+        pacman.AddReward(50.0f);
         PelletEaten(pellet);
         CancelInvoke(); // If you take more than one powerpellet, cancel the first invoke timer and start it again
         PacmanAttack();
@@ -531,6 +535,7 @@ public class GameManager : MonoBehaviour
         UserNotification.text = "";
         NewRound();
         //Add reward
+		pacman.AddReward(1000.0f);
     }
 
     private void AllLivesLost()
