@@ -11974,7 +11974,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5505699532958498387, guid: b6827b7737221f249822552b8eebb5f3, type: 3}
       propertyPath: m_BrainParameters.VectorObservationSize
-      value: 784
+      value: 788
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

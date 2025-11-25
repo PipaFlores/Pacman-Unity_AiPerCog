@@ -74,12 +74,14 @@ public class Pacman : Agent
         int ghost_length = GameManager.Instance.ghosts.Length;
         Vector2[] ghostsPos = new Vector2[ghost_length]; // Array to store positions of all ghosts
         int[] ghostsState = new int[ghost_length]; // Array to store states of all ghosts
+		float[] ghostDistances = new float[ghost_length];
         for (int i = 0; i < ghost_length; i++)
         {
             ghostsPos[i] = GameManager.Instance.ghosts[i].transform.position; // Get each ghost's position
             sensor.AddObservation(ghostsPos[i]);
             ghostsState[i] = GetGhostState(GameManager.Instance.ghosts[i]); // Get each ghost's state
             sensor.AddObservation((float)ghostsState[i]);
+			ghostDistances[i] = Vector2and3ManhattanDistance(GameManager.Instance.pacman.transform.position, ghostsPos[i]);
         }
         int[] PowerPelletStates = new int[GameManager.Instance.PowerPelletStates.Length];
         for (int i = 0; i < GameManager.Instance.PowerPelletStates.Length; i++)
@@ -141,7 +143,8 @@ public class Pacman : Agent
 				powerPellets.Add(pellet.position);
 			}
         }
-		
+		// calculate ghost distances
+		sensor.AddObservation(ghostDistances);
         //bool[] flatGrid = CreatePelletGrid(active, inactive); 
         // sensor.AddObservation((float)flatGrid);
         //foreach (bool pellet_loc in flatGrid)
