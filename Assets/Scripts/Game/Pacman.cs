@@ -104,7 +104,7 @@ public class Pacman : Agent
             {
                 float dist = Vector3ManhattanDistance(pellet.position, GameManager.Instance.pacman.transform.position);
                 pellet_distances.Add((float)dist);
-                // sensor.AddObservation((float)dist);
+                // sensor.AddObservation((float)ist);
             }
             else
             {
@@ -194,7 +194,8 @@ public class Pacman : Agent
             transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward);
         }
         // Rewards (example, adapt to your game logic)
-        AddReward(-0.025f); // small negative reward per step (encourages faster play)
+        AddReward(-0.25f); // small negative reward per step (encourages faster play)
+        // AddReward(-0.05f); // small negative reward per step (encourages faster play)
         // if (this.lives== 0)
         // {
         //     SetReward(-1.0f);
@@ -437,18 +438,6 @@ public class Pacman : Agent
     
     	// Inactive pellets remain 0 (already initialized)
     
-    	// Mark Pacman as 2
-    	int pacmanX = Mathf.RoundToInt(pacmanPosition.x - minX);
-    	int pacmanY = Mathf.RoundToInt(pacmanPosition.y - minY);
-    	int pacmanIndex = pacmanY * width + pacmanX;
-		if (pacmanAttack)
-		{
-            grid[pacmanIndex] = 4;
-		}
-		else
-		{
-			grid[pacmanIndex] = 3;
-		}
     
     	// Mark ghosts as 4 + state value
 		for (int i =0; i < ghostPositions.Length; i++)
@@ -460,6 +449,19 @@ public class Pacman : Agent
 
 			// represent ghost state by adding state value to base ghost value
 			grid[ghostIndex] = 5 + ghostStates[i];
+		}
+
+        // Mark Pacman as 2
+    	int pacmanX = Mathf.RoundToInt(pacmanPosition.x - minX);
+    	int pacmanY = Mathf.RoundToInt(pacmanPosition.y - minY);
+    	int pacmanIndex = pacmanY * width + pacmanX;
+		if (pacmanAttack)
+		{
+            grid[pacmanIndex] = 4;
+		}
+		else
+		{
+			grid[pacmanIndex] = 3;
 		}
     
     	return grid;

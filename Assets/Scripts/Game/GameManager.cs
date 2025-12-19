@@ -351,7 +351,7 @@ public class GameManager : MonoBehaviour
         SetScore(this.score + points);
         ghost.InstantiateFloatingPoint(points);
         this.ghostMultiplier++;
-        pacman.AddReward(200.0f);
+        // pacman.AddReward(10.0f);
     }
 
     public void PacmanEaten()
@@ -403,7 +403,7 @@ public class GameManager : MonoBehaviour
         pellet.gameObject.SetActive(false);
         SetScore (this.score + pellet.points);
         // Add Reward for eating a pellet
-        pacman.AddReward(10.0f);
+        pacman.AddReward(20.0f);
         remainingPellets = CountRemainingPellets();
         remainingPills = CountRemainingPowerPellets();
         if (remainingPellets == 174){
@@ -420,6 +420,7 @@ public class GameManager : MonoBehaviour
 
         // AudioManager.Instance.PlayEatingSound(); 
         if (remainingPellets == 0){
+            pacman.AddReward(1000.0f);
             win = true;
             this.pacman.gameObject.SetActive(false);
             foreach (Ghost ghost in ghosts){
@@ -428,7 +429,7 @@ public class GameManager : MonoBehaviour
             // StartCoroutine(LevelComplete()); // Save data and wait for it to upload, then load next level
             //Add Reward for eating all Pellets
             //pacman.AddReward(5.0f);
-            pacman.AddReward(1000.0f);
+            // pacman.AddReward(1000.0f);
             LevelComplete();
 
         }
@@ -528,14 +529,16 @@ public class GameManager : MonoBehaviour
     {
         // yield return StartCoroutine(gameDatacollector.SaveData());
         // SetLevel(this.level + 1);
+        pacman.EndEpisode();
+        NewGame();
         SetLevel(this.level);
         SetScore(0);
-        UserNotification.text = "Loading next level...";
+        // UserNotification.text = "Loading next level...";
         // yield return new WaitForSeconds(1.5f);
-        UserNotification.text = "";
+        // UserNotification.text = "";
         NewRound();
         //Add reward
-		pacman.AddReward(1000.0f);
+		// pacman.AddReward(1000.0f);
     }
 
     private void AllLivesLost()
