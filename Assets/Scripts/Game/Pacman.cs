@@ -152,7 +152,7 @@ public class Pacman : Agent
             //sensor.AddObservation(pellet_loc);
         //}
 		//int [] gameGrid = CreateGameGrid(active, inactive, GameManager.Instance.pacman.transform.position, ghostsPos, out _, out _);
-		int [] gameGrid = CreateDetailedGameGrid(active, inactive, powerPellets, GameManager.Instance.pacman.transform.position, this.pacmanAttack, ghostsPos, ghostsState, out _, out _);
+		int [] gameGrid = CreateDetailedGameGrid(active, inactive, powerPellets, GameManager.Instance.pacman.transform.position, this.pacmanAttack, ghostsPos, ghostsState, GameManager.Instance.cherry.transform.position, GameManager.Instance.cherry.gameObject.activeSelf, out _, out _);
 		foreach (int obj_loc in gameGrid)
         {
             sensor.AddObservation(obj_loc);
@@ -378,19 +378,14 @@ public class Pacman : Agent
 	}
 
 	public int[] CreateDetailedGameGrid(List<Vector3> activePellets, List<Vector3> inactivePellets, List<Vector3> PowerPellets,
-                            Vector3 pacmanPosition, bool pacmanAttack, Vector2[] ghostPositions, int[] ghostStates, 
+                            Vector3 pacmanPosition, bool pacmanAttack, Vector2[] ghostPositions, int[] ghostStates, Vector3 cherryPosition, bool cherryActive, 
                             out int width, out int height)
 	{
-    	// Combine all positions to find grid bounds
+    	// Grid bounds from pellets only (active + inactive) -> constant size for the whole episode
     	List<Vector3> allPositions = new List<Vector3>();
     	allPositions.AddRange(activePellets);
     	allPositions.AddRange(inactivePellets);
-    	allPositions.Add(pacmanPosition);
 	
-		foreach (Vector2 ghost in ghostPositions)
-    	{
-        	allPositions.Add(new Vector3(ghost.x, ghost.y, 0));
-    	}
     
     	if (allPositions.Count == 0)
     	{
@@ -439,30 +434,29 @@ public class Pacman : Agent
     	// Inactive pellets remain 0 (already initialized)
     
     
-    	// Mark ghosts as 4 + state value
-		for (int i =0; i < ghostPositions.Length; i++)
+    	// Mark cherry as 10 (ghosts and Pacman are written afterwards, so they take priority)
+		if (cherryActive)
 		{
-			Vector3 ghost = ghostPositions[i];
-        	int ghostX = Mathf.RoundToInt(ghost.x - minX);
-        	int ghostY = Mathf.RoundToInt(ghost.y - minY);
-        	int ghostIndex = ghostY * width + ghostX;
-
-			// represent ghost state by adding state value to base ghost value
-			grid[ghostIndex] = 5 + ghostStates[i];
+			int cherryX = Mathf.RoundToInt(cherryPosition.x - minX);
+			int cherryY = Mathf.RoundToInt(cherryPosition.y - minY);
+			if (cherryX >= 0 && cherryX < width && cherryY >= 0 && cherryY < height)
+				grid[cherryY * width + cherryX] = 10;
 		}
 
-        // Mark Pacman as 2
-    	int pacmanX = Mathf.RoundToInt(pacmanPosition.x - minX);
-    	int pacmanY = Mathf.RoundToInt(pacmanPosition.y - minY);
-    	int pacmanIndex = pacmanY * width + pacmanX;
-		if (pacmanAttack)
+		// Mark ghosts as 5 + state value
+		for (int i = 0; i < ghostPositions.Length; i++)
 		{
-            grid[pacmanIndex] = 4;
+			int ghostX = Mathf.RoundToInt(ghostPositions[i].x - minX);
+			int ghostY = Mathf.RoundToInt(ghostPositions[i].y - minY);
+			if (ghostX >= 0 && ghostX < width && ghostY >= 0 && ghostY < height)
+				grid[ghostY * width + ghostX] = 5 + ghostStates[i];
 		}
-		else
-		{
-			grid[pacmanIndex] = 3;
-		}
+
+        // Mark Pacman as 4 (attacking) or 3 (normal)
+		int pacmanX = Mathf.RoundToInt(pacmanPosition.x - minX);
+		int pacmanY = Mathf.RoundToInt(pacmanPosition.y - minY);
+		if (pacmanX >= 0 && pacmanX < width && pacmanY >= 0 && pacmanY < height)
+			grid[pacmanY * width + pacmanX] = pacmanAttack ? 4 : 3;
     
     	return grid;
 	}

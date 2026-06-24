@@ -351,7 +351,7 @@ public class GameManager : MonoBehaviour
         SetScore(this.score + points);
         ghost.InstantiateFloatingPoint(points);
         this.ghostMultiplier++;
-        // pacman.AddReward(10.0f);
+        // pacman.AddReward(40.0f);
     }
 
     public void PacmanEaten()
@@ -361,10 +361,11 @@ public class GameManager : MonoBehaviour
         if (this.lives > 0)
         {
             //pacman.AddReward(-1.0f); // Add negative reward for being eaten
-            pacman.AddReward(-500.0f); // Add negative reward for being eaten
+            pacman.AddReward(-1000.0f); // Add negative reward for being eaten
             ResetState(); // If pacman dies, resets ghots and pacman but not pellet (3 seconds delay)
             // AudioManager.Instance.PlayDeathSound(); 
             this.livesIndicator.GetComponentInChildren<AnimatedSprite>().PacmanDeathAnimation();
+            AllLivesLost();// envoking single life episodes
         }
         else
         {
@@ -388,6 +389,7 @@ public class GameManager : MonoBehaviour
     public void CherryEaten (Cherry cherry)
     {
         SetScore(this.score + cherry.points);
+        // pacman.AddReward(50.0f);
         if (cherry.cherryIndex == 1){
             fruitState_1 = 2;
         }
